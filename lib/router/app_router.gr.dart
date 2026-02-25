@@ -13,11 +13,11 @@ import 'package:auto_route/auto_route.dart' as _i5;
 import 'package:flutter/material.dart' as _i6;
 import 'package:ultistats/features/dashboard/presentation/screens/dashboard_screen.dart'
     as _i1;
-import 'package:ultistats/features/matches_list/presentation/screens/matches_list_screen.dart'
+import 'package:ultistats/features/matches/presentation/screens/matches_list_screen.dart'
     as _i2;
-import 'package:ultistats/features/players_list/presentation/screens/players_list_screen.dart'
+import 'package:ultistats/features/players/presentation/screens/players_list_screen.dart'
     as _i3;
-import 'package:ultistats/features/teams_list/presentation/screens/teams_list_screen.dart'
+import 'package:ultistats/features/teams/presentation/screens/teams_list_screen.dart'
     as _i4;
 
 /// generated route for
