@@ -1,4 +1,4 @@
-import 'package:ultistats/core/entities/page.dart';
+import 'package:ultistats/core/domain/entities/page.dart';
 import 'package:ultistats/features/matches/domain/entities/match.dart';
 import 'package:ultistats/features/matches/domain/params/create_match_params.dart';
 import 'package:ultistats/features/matches/domain/params/match_filter_params.dart';

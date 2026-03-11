@@ -1,4 +1,4 @@
-import 'package:ultistats/core/entities/page.dart';
+import 'package:ultistats/core/domain/entities/page.dart';
 import 'package:ultistats/features/teams/domain/entities/team.dart';
 import 'package:ultistats/features/teams/domain/params/create_team_params.dart';
 import 'package:ultistats/features/teams/domain/params/team_filter_params.dart';

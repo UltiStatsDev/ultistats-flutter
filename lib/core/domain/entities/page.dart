@@ -1,4 +1,4 @@
-abstract base class Page<T> {
+class Page<T> {
   final List<T> content;
   final int totalElements;
   final int totalPages;

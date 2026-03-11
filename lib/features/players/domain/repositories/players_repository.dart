@@ -1,4 +1,4 @@
-import 'package:ultistats/core/entities/page.dart';
+import 'package:ultistats/core/domain/entities/page.dart';
 import 'package:ultistats/features/players/domain/entities/player.dart';
 import 'package:ultistats/features/players/domain/params/create_player_params.dart';
 import 'package:ultistats/features/players/domain/params/player_filter_params.dart';
