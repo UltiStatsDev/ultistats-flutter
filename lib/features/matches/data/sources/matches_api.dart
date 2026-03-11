@@ -12,7 +12,6 @@ part 'matches_api.g.dart';
 abstract class MatchesApi {
   factory MatchesApi(Dio dio, {String baseUrl}) = _MatchesApi;
 
-  // Matches
   @GET('/api/v1/matches')
   Future<PageModel<MatchModel>> getMatches(@Queries() MatchFilterRequest queries);
 
@@ -36,31 +35,4 @@ abstract class MatchesApi {
 
   @DELETE('/api/v1/matches/{id}')
   Future<void> deleteMatch(@Path('id') String id);
-
-  // // Events
-  // @GET('/api/v1/matches/{matchId}/events')
-  // Future<List<Map<String, dynamic>>> getMatchEvents(@Path('matchId') String matchId);
-  //
-  // @POST('/api/v1/matches/{matchId}/events')
-  // Future<EventResponseModel> createMatchEvent(
-  //   @Path('matchId') String matchId,
-  //   @Body() Map<String, dynamic> body,
-  // );
-  //
-  // @PUT('/api/v1/matches/{matchId}/events/{index}')
-  // Future<EventResponseModel> updateMatchEvent(
-  //   @Path('matchId') String matchId,
-  //   @Path('index') int index,
-  //   @Body() Map<String, dynamic> body,
-  // );
-  //
-  // @DELETE('/api/v1/matches/{matchId}/events/{index}')
-  // Future<EventResponseModel> deleteMatchEvent(
-  //   @Path('matchId') String matchId,
-  //   @Path('index') int index,
-  // );
-  //
-  // // Statistics
-  // @GET('/api/v1/matches/{matchId}/statistics')
-  // Future<Map<String, dynamic>> getMatchStatistics(@Path('matchId') String matchId);
 }

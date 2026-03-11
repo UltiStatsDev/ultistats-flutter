@@ -1,0 +1,10 @@
+import 'package:ultistats/features/matches/domain/entities/match_event.dart';
+import 'package:ultistats/features/matches/domain/params/create_event_params.dart';
+
+abstract interface class MatchEventsRepository {
+  Future<List<MatchEvent>> getEvents(String matchId);
+
+  Future<void> addEvent(CreateEventParams params);
+
+  Future<void> deleteEvent(String matchId, int index);
+}
