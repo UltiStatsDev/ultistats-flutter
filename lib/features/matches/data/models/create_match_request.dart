@@ -16,7 +16,7 @@ class CreateMatchRequest {
   factory CreateMatchRequest.fromParams(CreateMatchParams params) =>
       CreateMatchRequest(
         teamIds: params.teamIds,
-        plannedStartTimestamp: params.plannedStartDate.toIso8601String(),
+        plannedStartTimestamp: params.plannedStartDate.toUtc().toIso8601String(),
       );
 
   Map<String, dynamic> toJson() => _$CreateMatchRequestToJson(this);

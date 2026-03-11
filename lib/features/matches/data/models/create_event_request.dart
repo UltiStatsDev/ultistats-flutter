@@ -25,7 +25,7 @@ class CreateEventRequest {
   factory CreateEventRequest.fromParams(CreateEventParams params) =>
       CreateEventRequest(
         type: params.type,
-        timestamp: params.timestamp.toIso8601String(),
+        timestamp: params.timestamp.toUtc().toIso8601String(),
         teamId: params.teamId,
         playerId: params.playerId,
         toTeamId: params.toTeamId,

@@ -9,7 +9,7 @@ class MatchTimestampRequest {
   const MatchTimestampRequest({required this.timestamp});
 
   factory MatchTimestampRequest.fromDateTime(DateTime date) =>
-      MatchTimestampRequest(timestamp: date.toIso8601String());
+      MatchTimestampRequest(timestamp: date.toUtc().toIso8601String());
 
   Map<String, dynamic> toJson() => _$MatchTimestampRequestToJson(this);
 }
