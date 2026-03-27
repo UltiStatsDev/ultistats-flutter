@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:ultistats/core/themes/app_colors.dart';
 
 ThemeData createLightTheme() {
+  final theme = ThemeData();
   return ThemeData(
     fontFamily: "Montserrat",
     primaryColor: AppColors.purple,
     scaffoldBackgroundColor: AppColors.purple,
+    colorScheme: theme.colorScheme.copyWith(onPrimaryContainer: Colors.white),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
       selectedItemColor: Colors.white,
@@ -27,6 +29,21 @@ ThemeData createLightTheme() {
         letterSpacing: 0,
       ),
     ),
+
+    textTheme: TextTheme(
+      bodyLarge: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 24,
+        color: AppColors.grey,
+        letterSpacing: 0,
+      ),
+      bodyMedium: TextStyle(
+        fontWeight: FontWeight.normal,
+        fontSize: 16,
+        color: AppColors.grey,
+        letterSpacing: 0,
+      ),
+    ),
   );
 }
 
@@ -35,4 +52,10 @@ extension ThemeExtension on ThemeData {
   double get bottomNavigationBarBorderRadius => 10;
 
   double get bottomNavigationBarHeight => 70;
+
+  double get teamCardHeight => 120;
+
+  double get teamCardBorderRadius => 10;
+
+  double get screenPadding => 12;
 }

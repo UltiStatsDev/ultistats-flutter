@@ -10,7 +10,6 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i5;
-import 'package:flutter/material.dart' as _i6;
 import 'package:ultistats/features/dashboard/presentation/screens/dashboard_screen.dart'
     as _i1;
 import 'package:ultistats/features/matches/presentation/screens/matches_list_screen.dart'
@@ -22,46 +21,18 @@ import 'package:ultistats/features/teams/presentation/screens/teams_list_screen.
 
 /// generated route for
 /// [_i1.DashboardScreen]
-class DashboardRoute extends _i5.PageRouteInfo<DashboardRouteArgs> {
-  DashboardRoute({_i6.Key? key, List<_i5.PageRouteInfo>? children})
-    : super(
-        DashboardRoute.name,
-        args: DashboardRouteArgs(key: key),
-        initialChildren: children,
-      );
+class DashboardRoute extends _i5.PageRouteInfo<void> {
+  const DashboardRoute({List<_i5.PageRouteInfo>? children})
+    : super(DashboardRoute.name, initialChildren: children);
 
   static const String name = 'DashboardRoute';
 
   static _i5.PageInfo page = _i5.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<DashboardRouteArgs>(
-        orElse: () => const DashboardRouteArgs(),
-      );
-      return _i1.DashboardScreen(key: args.key);
+      return const _i1.DashboardScreen();
     },
   );
-}
-
-class DashboardRouteArgs {
-  const DashboardRouteArgs({this.key});
-
-  final _i6.Key? key;
-
-  @override
-  String toString() {
-    return 'DashboardRouteArgs{key: $key}';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-    if (other is! DashboardRouteArgs) return false;
-    return key == other.key;
-  }
-
-  @override
-  int get hashCode => key.hashCode;
 }
 
 /// generated route for

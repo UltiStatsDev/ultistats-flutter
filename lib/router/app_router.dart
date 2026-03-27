@@ -11,8 +11,8 @@ class AppRouter extends RootStackRouter {
       initial: true,
       children: [
         CustomRoute(
-          page: PlayersListRoute.page,
-          path: "players",
+          page: MatchesListRoute.page,
+          path: "matches",
           initial: true,
         ),
         CustomRoute(
@@ -20,8 +20,8 @@ class AppRouter extends RootStackRouter {
           path: "teams",
         ),
         CustomRoute(
-          page: MatchesListRoute.page,
-          path: "matches",
+          page: PlayersListRoute.page,
+          path: "players",
         ),
       ],
     ),

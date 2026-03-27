@@ -8,9 +8,9 @@ class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
 
   final _routes = const [
-    PlayersListRoute(),
     MatchesListRoute(),
     TeamsListRoute(),
+    PlayersListRoute(),
   ];
 
   @override
