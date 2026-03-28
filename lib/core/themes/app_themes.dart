@@ -39,9 +39,7 @@ ThemeData createLightTheme() {
     ),
 
     // CircularProgressIndicator
-    progressIndicatorTheme: ProgressIndicatorThemeData(
-      color: Colors.white,
-    ),
+    progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.white),
 
     textTheme: TextTheme(
       bodyLarge: TextStyle(
@@ -56,9 +54,19 @@ ThemeData createLightTheme() {
         color: AppColors.grey,
         letterSpacing: 0,
       ),
+      labelMedium: TextStyle(
+        fontWeight: FontWeight.normal,
+        fontSize: 20,
+        color: AppColors.grey,
+        letterSpacing: 0,
+      ),
+      labelLarge: TextStyle(
+        fontWeight: FontWeight.normal,
+        fontSize: 20,
+        color: Colors.black,
+        letterSpacing: 0,
+      ),
     ),
-
-
   );
 }
 
@@ -74,4 +82,6 @@ extension ThemeExtension on ThemeData {
   double get teamCardBorderRadius => 10;
 
   double get screenPadding => 12;
+
+  double get searchBarSize => 46;
 }

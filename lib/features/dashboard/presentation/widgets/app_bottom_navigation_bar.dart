@@ -35,6 +35,7 @@ class AppBottomNavigationBar extends StatelessWidget {
           onDestinationSelected: (index) {
             tabsRouter.setActiveIndex(index);
           },
+          backgroundColor: theme.bottomNavigationBarTheme.backgroundColor,
           indicatorColor: Colors.transparent,
           indicatorShape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(

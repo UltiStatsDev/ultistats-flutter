@@ -98,7 +98,6 @@ class TeamsRepositoryImpl implements TeamsRepository {
 
   @override
   Future<Page<Team>> getList(TeamFilterParams params) async {
-    await Future.delayed(Duration(seconds: 1));
     final request = TeamFilterRequest.fromParams(params);
     final pageModel = await _api.getTeams(request);
     return Page<Team>(

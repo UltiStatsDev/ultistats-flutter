@@ -13,7 +13,7 @@ class ScreenWrapper extends StatelessWidget {
     final mediaQuery = MediaQuery.of(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light, // белые иконки на статус баре
+      value: SystemUiOverlayStyle.light,
       child: Padding(
         padding: EdgeInsets.only(
           left: theme.screenPadding,
