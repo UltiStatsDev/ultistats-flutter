@@ -35,6 +35,7 @@ ThemeData createLightTheme() {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       sizeConstraints: BoxConstraints.tightFor(width: 68, height: 68),
       foregroundColor: AppColors.purple,
+      elevation: 3
     ),
 
     textTheme: TextTheme(
@@ -55,6 +56,7 @@ ThemeData createLightTheme() {
 }
 
 // TODO поменять название
+// TODO вынести boxShadows сюда
 extension ThemeExtension on ThemeData {
   double get bottomNavigationBarBorderRadius => 10;
 

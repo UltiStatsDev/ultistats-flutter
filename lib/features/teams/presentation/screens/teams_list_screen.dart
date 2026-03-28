@@ -29,7 +29,7 @@ class TeamsListScreen extends StatelessWidget {
             padding: EdgeInsets.only(bottom: theme.screenPadding),
             itemCount: _dummyTeams.length,
             itemBuilder: (context, index) {
-              return TeamCard(team: _dummyTeams[index]);
+              return TeamCard(team: _dummyTeams[index], onPressed: () {});
             },
             separatorBuilder: (context, index) {
               return SizedBox(height: 12);
