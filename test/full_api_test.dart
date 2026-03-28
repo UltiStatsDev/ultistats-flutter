@@ -1,33 +1,28 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-// Импорты всех параметров и сущностей
+import 'package:ultistats/features/matches/data/repositories/match_events_repository_impl.dart';
+import 'package:ultistats/features/matches/data/repositories/match_statistics_repository_impl.dart';
+import 'package:ultistats/features/matches/data/repositories/matches_repository_impl.dart';
+import 'package:ultistats/features/matches/data/sources/match_events_api.dart';
+import 'package:ultistats/features/matches/data/sources/match_statistics_api.dart';
+import 'package:ultistats/features/matches/data/sources/matches_api.dart';
+import 'package:ultistats/features/matches/domain/entities/match_event.dart';
+import 'package:ultistats/features/matches/domain/params/create_event_params.dart';
+import 'package:ultistats/features/matches/domain/params/create_match_params.dart';
+import 'package:ultistats/features/players/data/repositories/players_repository_impl.dart';
+import 'package:ultistats/features/players/data/sources/players_api.dart';
 import 'package:ultistats/features/players/domain/params/create_player_params.dart';
 import 'package:ultistats/features/players/domain/params/player_filter_params.dart';
 import 'package:ultistats/features/players/domain/params/update_player_params.dart';
-import 'package:ultistats/features/players/data/repositories/players_repository_impl.dart';
-import 'package:ultistats/features/players/data/sources/players_api.dart';
-
+import 'package:ultistats/features/teams/data/repositories/teams_repository_impl.dart';
+import 'package:ultistats/features/teams/data/sources/teams_api.dart';
 import 'package:ultistats/features/teams/domain/params/create_team_params.dart';
 import 'package:ultistats/features/teams/domain/params/team_filter_params.dart';
 import 'package:ultistats/features/teams/domain/params/update_team_params.dart';
-import 'package:ultistats/features/teams/data/repositories/teams_repository_impl.dart';
-import 'package:ultistats/features/teams/data/sources/teams_api.dart';
-
-import 'package:ultistats/features/matches/domain/entities/match_event.dart';
-import 'package:ultistats/features/matches/domain/params/create_match_params.dart';
-import 'package:ultistats/features/matches/domain/params/match_filter_params.dart';
-import 'package:ultistats/features/matches/domain/params/create_event_params.dart';
-import 'package:ultistats/features/matches/data/repositories/matches_repository_impl.dart';
-import 'package:ultistats/features/matches/data/repositories/match_events_repository_impl.dart';
-import 'package:ultistats/features/matches/data/repositories/match_statistics_repository_impl.dart';
-import 'package:ultistats/features/matches/data/sources/matches_api.dart';
-import 'package:ultistats/features/matches/data/sources/match_events_api.dart';
-import 'package:ultistats/features/matches/data/sources/match_statistics_api.dart';
 
 void main() {
   final dio = Dio(BaseOptions(
-    baseUrl: 'http://localhost:8080',
+    baseUrl: 'http://192.168.0.93:8080',
     connectTimeout: const Duration(seconds: 10),
   ));
 

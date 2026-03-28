@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 
 class ScreenWrapper extends StatelessWidget {
@@ -9,13 +10,18 @@ class ScreenWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Padding(
-      padding: EdgeInsets.only(
-        left: theme.screenPadding,
-        right: theme.screenPadding,
-        top: theme.screenPadding,
+    final mediaQuery = MediaQuery.of(context);
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light, // белые иконки на статус баре
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: theme.screenPadding,
+          right: theme.screenPadding,
+          top: mediaQuery.padding.top,
+        ),
+        child: child,
       ),
-      child: child,
     );
   }
 }

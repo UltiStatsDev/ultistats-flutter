@@ -2,14 +2,10 @@ import 'package:ultistats/core/domain/entities/page.dart';
 import 'package:ultistats/features/matches/data/models/create_match_request.dart';
 import 'package:ultistats/features/matches/data/models/match_filter_request.dart';
 import 'package:ultistats/features/matches/data/models/match_timestamp_request.dart';
-import 'package:ultistats/features/matches/data/models/create_event_request.dart';
 import 'package:ultistats/features/matches/data/sources/matches_api.dart';
 import 'package:ultistats/features/matches/domain/entities/match.dart';
-import 'package:ultistats/features/matches/domain/entities/match_event.dart';
-import 'package:ultistats/features/matches/domain/entities/match_statistics.dart';
 import 'package:ultistats/features/matches/domain/params/create_match_params.dart';
 import 'package:ultistats/features/matches/domain/params/match_filter_params.dart';
-import 'package:ultistats/features/matches/domain/params/create_event_params.dart';
 import 'package:ultistats/features/matches/domain/repositories/matches_repository.dart';
 
 class MatchesRepositoryImpl implements MatchesRepository {
