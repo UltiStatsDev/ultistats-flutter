@@ -29,6 +29,13 @@ ThemeData createLightTheme() {
         letterSpacing: 0,
       ),
     ),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: Colors.white,
+      iconSize: 44,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      sizeConstraints: BoxConstraints.tightFor(width: 68, height: 68),
+      foregroundColor: AppColors.purple,
+    ),
 
     textTheme: TextTheme(
       bodyLarge: TextStyle(

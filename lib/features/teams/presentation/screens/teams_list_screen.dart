@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
+import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/features/teams/domain/entities/team.dart';
 import 'package:ultistats/features/teams/presentation/widgets/team_card.dart';
 
@@ -21,15 +22,29 @@ class TeamsListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return ListView.separated(
-      padding: EdgeInsets.only(bottom: theme.screenPadding),
-      itemCount: _dummyTeams.length,
-      itemBuilder: (context, index) {
-        return TeamCard(team: _dummyTeams[index]);
-      },
-      separatorBuilder: (context, index) {
-        return SizedBox(height: 12);
-      },
+    return ScreenWrapper(
+      child: Stack(
+        children: [
+          ListView.separated(
+            padding: EdgeInsets.only(bottom: theme.screenPadding),
+            itemCount: _dummyTeams.length,
+            itemBuilder: (context, index) {
+              return TeamCard(team: _dummyTeams[index]);
+            },
+            separatorBuilder: (context, index) {
+              return SizedBox(height: 12);
+            },
+          ),
+          Positioned(
+            right: 19 - theme.screenPadding,
+            bottom: 24,
+            child: FloatingActionButton(
+              onPressed: () {},
+              child: Icon(Icons.add),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
