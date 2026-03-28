@@ -7,7 +7,7 @@ ThemeData createLightTheme() {
     fontFamily: "Montserrat",
     primaryColor: AppColors.purple,
     scaffoldBackgroundColor: AppColors.purple,
-    colorScheme: theme.colorScheme.copyWith(onPrimaryContainer: Colors.white),
+    colorScheme: theme.colorScheme.copyWith(primaryContainer: Colors.white),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
       selectedItemColor: Colors.white,
@@ -35,7 +35,12 @@ ThemeData createLightTheme() {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       sizeConstraints: BoxConstraints.tightFor(width: 68, height: 68),
       foregroundColor: AppColors.purple,
-      elevation: 3
+      elevation: 3,
+    ),
+
+    // CircularProgressIndicator
+    progressIndicatorTheme: ProgressIndicatorThemeData(
+      color: Colors.white,
     ),
 
     textTheme: TextTheme(
@@ -52,6 +57,8 @@ ThemeData createLightTheme() {
         letterSpacing: 0,
       ),
     ),
+
+
   );
 }
 

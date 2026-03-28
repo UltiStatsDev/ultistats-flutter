@@ -33,11 +33,74 @@ class TeamsRepositoryImpl implements TeamsRepository {
     return model.toEntity();
   }
 
+  // Фейковые команды для тестирования пагинации
+  static final List<Team> _allFakeTeams = _generateFakeTeams();
+
+  static List<Team> _generateFakeTeams() {
+    const teamNames = [
+      'Sky Pro',
+      'Ultimate Warriors',
+      'Disk Catchers',
+      'Wind Walkers',
+      'Flyers United',
+      'Storm Bringers',
+      'Thunder Birds',
+      'Flying Discs',
+      'Air Force',
+      'Gravity Defiers',
+      'Disc Masters',
+      'Speed Demons',
+      'Wind Riders',
+      'Sky Hunters',
+      'Flash Point',
+      'Storm Chasers',
+      'Night Hawks',
+      'Phoenix Rising',
+      'Blue Thunder',
+      'Red Dragons',
+      'Golden Eagles',
+      'Silver Wolves',
+      'Dark Knights',
+      'Wild Cards',
+      'Fast Break',
+      'Power Play',
+      'Top Spin',
+      'Full Flight',
+      'End Zone',
+      'Breakaway',
+      'Huck It',
+      'Stack Attack',
+      'Zone Defense',
+      'Deep Cut',
+      'Handler Crew',
+      'Layout Kings',
+      'Sky Strike',
+      'Disc Golf Pros',
+      'Ultimate Legends',
+      'Prime Time',
+      'All Stars',
+      'Dream Team',
+      'Elite Force',
+      'Championship',
+      'Victory Squad',
+      'Winning Edge',
+      'Top Tier',
+      'First Class',
+      'Premium Plus',
+      'Super Stars',
+    ];
+
+    return List.generate(
+      teamNames.length,
+      (i) => Team(id: '${i + 1}', name: teamNames[i], players: []),
+    );
+  }
+
   @override
   Future<Page<Team>> getList(TeamFilterParams params) async {
+    await Future.delayed(Duration(seconds: 1));
     final request = TeamFilterRequest.fromParams(params);
     final pageModel = await _api.getTeams(request);
-
     return Page<Team>(
       content: pageModel.content.map((m) => m.toEntity()).toList(),
       totalElements: pageModel.totalElements,
@@ -45,6 +108,26 @@ class TeamsRepositoryImpl implements TeamsRepository {
       currentPage: pageModel.currentPage,
       size: pageModel.size,
     );
+
+    // Фейковая загрузка с задержкой
+    // await Future.delayed(const Duration(milliseconds: 800));
+    //
+    // final allTeams = _allFakeTeams;
+    // final totalElements = allTeams.length;
+    // final totalPages = (totalElements / params.size).ceil();
+    // final startIndex = params.page * params.size;
+    // final endIndex = (startIndex + params.size).clamp(0, totalElements);
+    //
+    // final pageContent =
+    //     startIndex < totalElements ? allTeams.sublist(startIndex, endIndex) : <Team>[];
+    //
+    // return Page<Team>(
+    //   content: pageContent,
+    //   totalElements: totalElements,
+    //   totalPages: totalPages,
+    //   currentPage: params.page,
+    //   size: params.size,
+    // );
   }
 
   @override

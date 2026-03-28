@@ -22,7 +22,7 @@ import 'package:ultistats/features/matches/data/repositories/match_statistics_re
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'https://your-api-url.com', // ЗАМЕНИ на свой реальный URL
+      baseUrl: 'http://192.168.0.93:8080',
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       headers: {
@@ -31,9 +31,6 @@ final dioProvider = Provider<Dio>((ref) {
       },
     ),
   );
-
-  // Добавляем логгер для удобной отладки в консоли
-  dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true));
 
   return dio;
 });

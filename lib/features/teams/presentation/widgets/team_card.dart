@@ -20,7 +20,7 @@ class TeamCard extends StatelessWidget {
         height: theme.teamCardHeight,
         padding: EdgeInsets.all(14),
         decoration: BoxDecoration(
-          color: theme.colorScheme.onPrimaryContainer,
+          color: theme.colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(theme.teamCardBorderRadius),
           boxShadow: [
             BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.1), blurRadius: 12),
