@@ -42,6 +42,7 @@ ThemeData createLightTheme() {
     progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.white),
 
     textTheme: TextTheme(
+      ///Cards
       bodyLarge: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 24,
@@ -54,6 +55,8 @@ ThemeData createLightTheme() {
         color: AppColors.grey,
         letterSpacing: 0,
       ),
+
+      ///Text fields
       labelMedium: TextStyle(
         fontWeight: FontWeight.normal,
         fontSize: 20,
@@ -66,6 +69,20 @@ ThemeData createLightTheme() {
         color: Colors.black,
         letterSpacing: 0,
       ),
+
+      ///Scores
+      displayLarge: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 40,
+        color: AppColors.grey,
+        letterSpacing: 0,
+      ),
+      displaySmall: TextStyle(
+        fontWeight: FontWeight.normal,
+        fontSize: 10,
+        letterSpacing: 0,
+        color: AppColors.grey,
+      ),
     ),
   );
 }
@@ -77,9 +94,9 @@ extension ThemeExtension on ThemeData {
 
   double get bottomNavigationBarHeight => 70;
 
-  double get teamCardHeight => 120;
+  double get cardHeight => 120;
 
-  double get teamCardBorderRadius => 10;
+  double get cardBorderRadius => 10;
 
   double get screenPadding => 12;
 

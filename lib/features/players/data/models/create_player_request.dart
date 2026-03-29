@@ -3,18 +3,18 @@ import 'package:ultistats/features/players/domain/params/create_player_params.da
 
 part 'create_player_request.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class CreatePlayerRequest {
-  final int number;
+  final int? number;
   final String firstName;
   final String lastName;
-  final String teamId;
+  final String? teamId;
 
   const CreatePlayerRequest({
-    required this.number,
+    this.number,
     required this.firstName,
     required this.lastName,
-    required this.teamId,
+    this.teamId,
   });
 
   factory CreatePlayerRequest.fromParams(CreatePlayerParams params) =>

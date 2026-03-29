@@ -11,11 +11,11 @@ CreateMatchRequest _$CreateMatchRequestFromJson(Map<String, dynamic> json) =>
       teamIds: (json['teamIds'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
-      plannedStartTimestamp: json['plannedStartTimestamp'] as String,
+      plannedStartTimestamp: json['plannedStartTimestamp'] as String?,
     );
 
 Map<String, dynamic> _$CreateMatchRequestToJson(CreateMatchRequest instance) =>
     <String, dynamic>{
       'teamIds': instance.teamIds,
-      'plannedStartTimestamp': instance.plannedStartTimestamp,
+      'plannedStartTimestamp': ?instance.plannedStartTimestamp,
     };

@@ -41,4 +41,18 @@ abstract class TeamsApi {
     @Path('teamId') String teamId,
     @Path('playerId') String playerId,
   );
+
+  @GET('/api/v1/teams/{id}/photo')
+  @DioResponseType(ResponseType.bytes)
+  Future<List<int>> getTeamPhoto(@Path('id') String id);
+
+  @POST('/api/v1/teams/{id}/photo')
+  @MultiPart()
+  Future<Map<String, String>> uploadTeamPhoto(
+    @Path('id') String id,
+    @Part(name: 'file') MultipartFile file,
+  );
+
+  @DELETE('/api/v1/teams/{id}/photo')
+  Future<void> deleteTeamPhoto(@Path('id') String id);
 }

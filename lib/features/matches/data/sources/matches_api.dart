@@ -5,6 +5,7 @@ import 'package:ultistats/features/matches/data/models/match_model.dart';
 import 'package:ultistats/features/matches/data/models/create_match_request.dart';
 import 'package:ultistats/features/matches/data/models/match_filter_request.dart';
 import 'package:ultistats/features/matches/data/models/match_timestamp_request.dart';
+import 'package:ultistats/features/matches/data/models/update_match_request.dart';
 
 part 'matches_api.g.dart';
 
@@ -18,6 +19,18 @@ abstract class MatchesApi {
   @POST('/api/v1/matches')
   Future<MatchModel> createMatch(@Body() CreateMatchRequest body);
 
+  @GET('/api/v1/matches/{id}')
+  Future<MatchModel> getMatchById(@Path('id') String id);
+
+  @PUT('/api/v1/matches/{id}')
+  Future<MatchModel> updateMatch(
+    @Path('id') String id,
+    @Body() UpdateMatchRequest body,
+  );
+
+  @DELETE('/api/v1/matches/{id}')
+  Future<void> deleteMatch(@Path('id') String id);
+
   @POST('/api/v1/matches/{id}/start')
   Future<MatchModel> startMatch(
     @Path('id') String id,
@@ -29,10 +42,4 @@ abstract class MatchesApi {
     @Path('id') String id,
     @Body() MatchTimestampRequest body,
   );
-
-  @GET('/api/v1/matches/{id}')
-  Future<MatchModel> getMatchById(@Path('id') String id);
-
-  @DELETE('/api/v1/matches/{id}')
-  Future<void> deleteMatch(@Path('id') String id);
 }

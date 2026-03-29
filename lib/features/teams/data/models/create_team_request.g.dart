@@ -12,7 +12,12 @@ CreateTeamRequest _$CreateTeamRequestFromJson(Map<String, dynamic> json) =>
       playerIds: (json['playerIds'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
+      city: json['city'] as String?,
     );
 
 Map<String, dynamic> _$CreateTeamRequestToJson(CreateTeamRequest instance) =>
-    <String, dynamic>{'name': instance.name, 'playerIds': instance.playerIds};
+    <String, dynamic>{
+      'name': instance.name,
+      'playerIds': instance.playerIds,
+      'city': ?instance.city,
+    };

@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:ultistats/features/matches/data/models/match_event_model.dart';
 import 'package:ultistats/features/matches/data/models/create_event_request.dart';
+import 'package:ultistats/features/matches/data/models/update_event_request.dart';
 import 'package:ultistats/features/matches/data/models/event_response_model.dart';
 
 part 'match_events_api.g.dart';
@@ -23,7 +24,7 @@ abstract class MatchEventsApi {
   Future<EventResponseModel> updateMatchEvent(
     @Path('matchId') String matchId,
     @Path('index') int index,
-    @Body() CreateEventRequest body,
+    @Body() UpdateEventRequest body,
   );
 
   @DELETE('/api/v1/matches/{matchId}/events/{index}')

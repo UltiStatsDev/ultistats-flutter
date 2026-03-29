@@ -1,4 +1,5 @@
-
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:ultistats/core/domain/entities/page.dart';
 import 'package:ultistats/features/teams/data/models/create_team_request.dart';
 import 'package:ultistats/features/teams/data/models/update_team_request.dart';
@@ -146,5 +147,34 @@ class TeamsRepositoryImpl implements TeamsRepository {
   Future<Team> removePlayerFromTeam(String teamId, String playerId) async {
     final model = await _api.removePlayerFromTeam(teamId, playerId);
     return model.toEntity();
+  }
+
+  @override
+  Future<List<int>> getTeamPhoto(String teamId) {
+    return _api.getTeamPhoto(teamId);
+  }
+
+  @override
+  Future<void> uploadTeamPhoto(String teamId, List<int> bytes, String filename) async {
+    final extension = filename.split('.').last.toLowerCase();
+    final mimeType = switch (extension) {
+      'png' => 'image/png',
+      'jpg' || 'jpeg' => 'image/jpeg',
+      'gif' => 'image/gif',
+      'webp' => 'image/webp',
+      _ => 'application/octet-stream',
+    };
+
+    final file = MultipartFile.fromBytes(
+      bytes,
+      filename: filename,
+      contentType: MediaType.parse(mimeType),
+    );
+    await _api.uploadTeamPhoto(teamId, file);
+  }
+
+  @override
+  Future<void> deleteTeamPhoto(String teamId) {
+    return _api.deleteTeamPhoto(teamId);
   }
 }

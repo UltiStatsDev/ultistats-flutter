@@ -9,11 +9,15 @@ class TeamModel {
   final String id;
   final String name;
   final List<PlayerModel> players;
+  final String? city;
+  final String? photoUrl;
 
   const TeamModel({
     required this.id,
     required this.name,
     required this.players,
+    this.city,
+    this.photoUrl,
   });
 
   factory TeamModel.fromJson(Map<String, dynamic> json) =>
@@ -26,6 +30,8 @@ class TeamModel {
       id: entity.id,
       name: entity.name,
       players: entity.players.map((p) => PlayerModel.fromEntity(p)).toList(),
+      city: entity.city,
+      photoUrl: entity.photoUrl,
     );
   }
 
@@ -34,6 +40,8 @@ class TeamModel {
       id: id,
       name: name,
       players: players.map((p) => p.toEntity()).toList(),
+      city: city,
+      photoUrl: photoUrl,
     );
   }
 }

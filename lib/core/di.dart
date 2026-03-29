@@ -22,7 +22,7 @@ import 'package:ultistats/features/matches/data/repositories/match_statistics_re
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.0.93:8080',
+      baseUrl: 'http://192.168.0.32:8080',
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       headers: {

@@ -10,7 +10,7 @@ import 'package:ultistats/features/teams/presentation/providers/teams_list_state
 import 'package:ultistats/features/teams/presentation/providers/teams_providers.dart';
 import 'package:ultistats/features/teams/presentation/widgets/no_teams_widget.dart';
 import 'package:ultistats/features/teams/presentation/widgets/team_card.dart';
-import 'package:ultistats/features/teams/presentation/widgets/search_filter_bar.dart';
+import 'package:ultistats/core/widgets/search_filter_bar.dart';
 
 @RoutePage()
 class TeamsListScreen extends ConsumerStatefulWidget {

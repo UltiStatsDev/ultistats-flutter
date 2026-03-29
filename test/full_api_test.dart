@@ -22,7 +22,7 @@ import 'package:ultistats/features/teams/domain/params/update_team_params.dart';
 
 void main() {
   final dio = Dio(BaseOptions(
-    baseUrl: 'http://localhost:8080',
+    baseUrl: 'http://192.168.0.93:8080',
     connectTimeout: const Duration(seconds: 10),
   ));
 
@@ -104,7 +104,7 @@ void main() {
       // 3.2 Create Match
       final match = await matchesRepo.createMatch(CreateMatchParams(
         teamIds: [createdTeamId],
-        plannedStartDate: DateTime.now().add(const Duration(days: 1)),
+        plannedStartTimestamp: DateTime.now().add(const Duration(days: 1)),
       ));
       createdMatchId = match.id;
 

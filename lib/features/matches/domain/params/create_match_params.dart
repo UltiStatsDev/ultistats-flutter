@@ -1,9 +1,9 @@
 class CreateMatchParams {
   final List<String> teamIds;
-  final DateTime plannedStartDate;
+  final DateTime? plannedStartTimestamp;
 
   const CreateMatchParams({
     required this.teamIds,
-    required this.plannedStartDate,
+    this.plannedStartTimestamp,
   });
 }

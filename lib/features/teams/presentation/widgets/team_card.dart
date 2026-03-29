@@ -15,13 +15,13 @@ class TeamCard extends StatelessWidget {
     final photoSize = 92.0;
     return AppInkWell(
       onTap: onPressed,
-      borderRadius: BorderRadius.circular(theme.teamCardBorderRadius),
+      borderRadius: BorderRadius.circular(theme.cardBorderRadius),
       child: Ink(
-        height: theme.teamCardHeight,
+        height: theme.cardHeight,
         padding: EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: theme.colorScheme.primaryContainer,
-          borderRadius: BorderRadius.circular(theme.teamCardBorderRadius),
+          borderRadius: BorderRadius.circular(theme.cardBorderRadius),
           boxShadow: [
             BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.1), blurRadius: 12),
           ],

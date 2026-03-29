@@ -85,7 +85,7 @@ class _MatchEventsApi implements MatchEventsApi {
   Future<EventResponseModel> updateMatchEvent(
     String matchId,
     int index,
-    CreateEventRequest body,
+    UpdateEventRequest body,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

@@ -3,20 +3,20 @@ import 'package:ultistats/features/matches/domain/params/create_match_params.dar
 
 part 'create_match_request.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(includeIfNull: false)
 class CreateMatchRequest {
   final List<String> teamIds;
-  final String plannedStartTimestamp;
+  final String? plannedStartTimestamp;
 
   const CreateMatchRequest({
     required this.teamIds,
-    required this.plannedStartTimestamp,
+    this.plannedStartTimestamp,
   });
 
   factory CreateMatchRequest.fromParams(CreateMatchParams params) =>
       CreateMatchRequest(
         teamIds: params.teamIds,
-        plannedStartTimestamp: params.plannedStartDate.toUtc().toIso8601String(),
+        plannedStartTimestamp: params.plannedStartTimestamp?.toUtc().toIso8601String(),
       );
 
   Map<String, dynamic> toJson() => _$CreateMatchRequestToJson(this);

@@ -10,12 +10,20 @@ class MatchModel {
   final List<TeamModel> teams;
   final int eventCount;
   final String? diskHolderId;
+  final DateTime? plannedStartTimestamp;
+  final DateTime? startedAt;
+  final DateTime? endedAt;
+  final String status;
 
   const MatchModel({
     required this.id,
     required this.teams,
     required this.eventCount,
+    required this.status,
     this.diskHolderId,
+    this.plannedStartTimestamp,
+    this.startedAt,
+    this.endedAt,
   });
 
   factory MatchModel.fromJson(Map<String, dynamic> json) =>
@@ -29,6 +37,10 @@ class MatchModel {
       teams: entity.teams.map((t) => TeamModel.fromEntity(t)).toList(),
       eventCount: entity.eventCount,
       diskHolderId: entity.diskHolderId,
+      plannedStartTimestamp: entity.plannedStartTimestamp,
+      startedAt: entity.startedAt,
+      endedAt: entity.endedAt,
+      status: entity.status.name,
     );
   }
 
@@ -38,6 +50,19 @@ class MatchModel {
       teams: teams.map((t) => t.toEntity()).toList(),
       eventCount: eventCount,
       diskHolderId: diskHolderId,
+      plannedStartTimestamp: plannedStartTimestamp,
+      startedAt: startedAt,
+      endedAt: endedAt,
+      status: _parseStatus(status),
     );
+  }
+
+  static MatchStatus _parseStatus(String status) {
+    return switch (status.toUpperCase()) {
+      'PLANNED' => MatchStatus.planned,
+      'IN_PROGRESS' => MatchStatus.inProgress,
+      'FINISHED' => MatchStatus.finished,
+      _ => MatchStatus.planned,
+    };
   }
 }
