@@ -6,6 +6,7 @@ part 'match_event_model.g.dart';
 @JsonSerializable()
 class MatchEventModel {
   final MatchEventType type;
+  @JsonKey(name: "realTimestamp")
   final DateTime timestamp;
   final String? team;
   final String? player;

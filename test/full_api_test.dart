@@ -22,7 +22,7 @@ import 'package:ultistats/features/teams/domain/params/update_team_params.dart';
 
 void main() {
   final dio = Dio(BaseOptions(
-    baseUrl: 'http://192.168.0.93:8080',
+    baseUrl: 'http://localhost:8080',
     connectTimeout: const Duration(seconds: 10),
   ));
 
@@ -118,6 +118,9 @@ void main() {
         type: MatchEventType.GOAL,
         timestamp: DateTime.now(),
         teamId: createdTeamId,
+        playerId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        toPlayerId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+        toTeamId: createdTeamId
       ));
 
       final events = await eventsRepo.getEvents(createdMatchId);

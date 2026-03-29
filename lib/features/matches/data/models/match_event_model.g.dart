@@ -9,7 +9,7 @@ part of 'match_event_model.dart';
 MatchEventModel _$MatchEventModelFromJson(Map<String, dynamic> json) =>
     MatchEventModel(
       type: $enumDecode(_$MatchEventTypeEnumMap, json['type']),
-      timestamp: DateTime.parse(json['timestamp'] as String),
+      timestamp: DateTime.parse(json['realTimestamp'] as String),
       team: json['team'] as String?,
       player: json['player'] as String?,
       fromTeam: json['fromTeam'] as String?,
@@ -21,7 +21,7 @@ MatchEventModel _$MatchEventModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$MatchEventModelToJson(MatchEventModel instance) =>
     <String, dynamic>{
       'type': _$MatchEventTypeEnumMap[instance.type]!,
-      'timestamp': instance.timestamp.toIso8601String(),
+      'realTimestamp': instance.timestamp.toIso8601String(),
       'team': instance.team,
       'player': instance.player,
       'fromTeam': instance.fromTeam,
