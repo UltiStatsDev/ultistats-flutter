@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/app_ink_well.dart';
+import 'package:ultistats/core/widgets/team_photo.dart';
 import 'package:ultistats/features/matches/domain/entities/match.dart';
 import 'package:ultistats/features/teams/domain/entities/team.dart';
 
@@ -66,14 +67,7 @@ class MatchCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(6),
-          child: SizedBox(
-            width: photoSize,
-            height: photoSize,
-            child: Placeholder(),
-          ),
-        ),
+        TeamPhoto(photoUrl: team.photoUrl, size: photoSize),
         SizedBox(height: 4),
         Text(
           team.name,
@@ -81,6 +75,9 @@ class MatchCard extends StatelessWidget {
             fontWeight: FontWeight.bold,
             height: 1,
           ),
+          textAlign: TextAlign.center,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
       ],
     );

@@ -6,7 +6,6 @@ import 'package:ultistats/run_api_test.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Запуск API тестов
   await runFullApiTest();
 
   runApp(ProviderScope(child: App()));

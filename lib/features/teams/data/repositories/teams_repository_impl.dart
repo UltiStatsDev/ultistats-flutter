@@ -150,12 +150,13 @@ class TeamsRepositoryImpl implements TeamsRepository {
   }
 
   @override
-  Future<List<int>> getTeamPhoto(String teamId) {
-    return _api.getTeamPhoto(teamId);
+  Future<String?> getTeamPhotoUrl(String teamId) async {
+    final response = await _api.getTeamPhotoUrl(teamId);
+    return response.url;
   }
 
   @override
-  Future<void> uploadTeamPhoto(String teamId, List<int> bytes, String filename) async {
+  Future<String?> uploadTeamPhoto(String teamId, List<int> bytes, String filename) async {
     final extension = filename.split('.').last.toLowerCase();
     final mimeType = switch (extension) {
       'png' => 'image/png',
@@ -170,11 +171,12 @@ class TeamsRepositoryImpl implements TeamsRepository {
       filename: filename,
       contentType: MediaType.parse(mimeType),
     );
-    await _api.uploadTeamPhoto(teamId, file);
+    final response = await _api.uploadTeamPhoto(teamId, file);
+    return response.url;
   }
 
   @override
-  Future<void> deleteTeamPhoto(String teamId) {
-    return _api.deleteTeamPhoto(teamId);
+  Future<void> deleteTeamPhoto(String teamId) async {
+    await _api.deleteTeamPhoto(teamId);
   }
 }

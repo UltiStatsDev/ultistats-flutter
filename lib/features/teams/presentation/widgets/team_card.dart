@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/app_ink_well.dart';
+import 'package:ultistats/core/widgets/team_photo.dart';
 import 'package:ultistats/features/teams/domain/entities/team.dart';
 
 class TeamCard extends StatelessWidget {
@@ -28,14 +29,7 @@ class TeamCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: SizedBox(
-                width: photoSize,
-                height: photoSize,
-                child: Placeholder(),
-              ),
-            ),
+            TeamPhoto(photoUrl: team.photoUrl, size: photoSize),
             SizedBox(width: 14),
             Expanded(
               child: Column(
@@ -48,7 +42,7 @@ class TeamCard extends StatelessWidget {
                     maxLines: 2,
                   ),
                   Text(
-                    "Новосибирск",
+                    team.city ?? "",
                     style: theme.textTheme.bodyMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

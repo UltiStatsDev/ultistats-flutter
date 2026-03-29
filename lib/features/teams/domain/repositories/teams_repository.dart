@@ -19,9 +19,9 @@ abstract interface class TeamsRepository {
 
   Future<Team> removePlayerFromTeam(String teamId, String playerId);
 
-  Future<List<int>> getTeamPhoto(String teamId);
+  Future<String?> getTeamPhotoUrl(String teamId);
 
-  Future<void> uploadTeamPhoto(String teamId, List<int> bytes, String filename);
+  Future<String?> uploadTeamPhoto(String teamId, List<int> bytes, String filename);
 
   Future<void> deleteTeamPhoto(String teamId);
 }

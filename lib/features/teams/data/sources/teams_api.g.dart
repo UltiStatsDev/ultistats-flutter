@@ -207,30 +207,25 @@ class _TeamsApi implements TeamsApi {
   }
 
   @override
-  Future<List<int>> getTeamPhoto(String id) async {
+  Future<PhotoUrlResponse> getTeamPhotoUrl(String teamId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<int>>(
-      Options(
-            method: 'GET',
-            headers: _headers,
-            extra: _extra,
-            responseType: ResponseType.bytes,
-          )
+    final _options = _setStreamType<PhotoUrlResponse>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/teams/${id}/photo',
+            '/api/v1/teams/${teamId}/photoUrl',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<int> _value;
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late PhotoUrlResponse _value;
     try {
-      _value = _result.data!.cast<int>();
+      _value = PhotoUrlResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -239,16 +234,16 @@ class _TeamsApi implements TeamsApi {
   }
 
   @override
-  Future<Map<String, String>> uploadTeamPhoto(
-    String id,
-    MultipartFile file,
+  Future<PhotoUrlResponse> uploadTeamPhoto(
+    String teamId,
+    MultipartFile multipartFile,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = FormData();
-    _data.files.add(MapEntry('file', file));
-    final _options = _setStreamType<Map<String, String>>(
+    _data.files.add(MapEntry('multipartFile', multipartFile));
+    final _options = _setStreamType<PhotoUrlResponse>(
       Options(
             method: 'POST',
             headers: _headers,
@@ -257,16 +252,16 @@ class _TeamsApi implements TeamsApi {
           )
           .compose(
             _dio.options,
-            '/api/v1/teams/${id}/photo',
+            '/api/v1/teams/${teamId}/uploadPhoto',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Map<String, String> _value;
+    late PhotoUrlResponse _value;
     try {
-      _value = _result.data!.cast<String, String>();
+      _value = PhotoUrlResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -275,22 +270,30 @@ class _TeamsApi implements TeamsApi {
   }
 
   @override
-  Future<void> deleteTeamPhoto(String id) async {
+  Future<PhotoUrlResponse> deleteTeamPhoto(String teamId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<void>(
+    final _options = _setStreamType<PhotoUrlResponse>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/teams/${id}/photo',
+            '/api/v1/teams/${teamId}/photoUrl',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    await _dio.fetch<void>(_options);
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late PhotoUrlResponse _value;
+    try {
+      _value = PhotoUrlResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

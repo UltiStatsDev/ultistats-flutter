@@ -5,6 +5,7 @@ import 'package:ultistats/features/teams/data/models/team_model.dart';
 import 'package:ultistats/features/teams/data/models/create_team_request.dart';
 import 'package:ultistats/features/teams/data/models/update_team_request.dart';
 import 'package:ultistats/features/teams/data/models/team_filter_request.dart';
+import 'package:ultistats/features/teams/data/models/photo_url_response.dart';
 
 part 'teams_api.g.dart';
 
@@ -42,17 +43,16 @@ abstract class TeamsApi {
     @Path('playerId') String playerId,
   );
 
-  @GET('/api/v1/teams/{id}/photo')
-  @DioResponseType(ResponseType.bytes)
-  Future<List<int>> getTeamPhoto(@Path('id') String id);
+  @GET('/api/v1/teams/{teamId}/photoUrl')
+  Future<PhotoUrlResponse> getTeamPhotoUrl(@Path('teamId') String teamId);
 
-  @POST('/api/v1/teams/{id}/photo')
+  @POST('/api/v1/teams/{teamId}/uploadPhoto')
   @MultiPart()
-  Future<Map<String, String>> uploadTeamPhoto(
-    @Path('id') String id,
-    @Part(name: 'file') MultipartFile file,
+  Future<PhotoUrlResponse> uploadTeamPhoto(
+    @Path('teamId') String teamId,
+    @Part(name: 'multipartFile') MultipartFile multipartFile,
   );
 
-  @DELETE('/api/v1/teams/{id}/photo')
-  Future<void> deleteTeamPhoto(@Path('id') String id);
+  @DELETE('/api/v1/teams/{teamId}/photoUrl')
+  Future<PhotoUrlResponse> deleteTeamPhoto(@Path('teamId') String teamId);
 }
