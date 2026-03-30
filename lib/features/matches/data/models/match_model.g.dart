@@ -9,7 +9,7 @@ part of 'match_model.dart';
 MatchModel _$MatchModelFromJson(Map<String, dynamic> json) => MatchModel(
   id: json['id'] as String,
   teams: (json['teams'] as List<dynamic>)
-      .map((e) => TeamModel.fromJson(e as Map<String, dynamic>))
+      .map((e) => TeamMatchResultModel.fromJson(e as Map<String, dynamic>))
       .toList(),
   eventCount: (json['eventCount'] as num).toInt(),
   status: json['status'] as String,

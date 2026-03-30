@@ -1,4 +1,4 @@
-import 'package:ultistats/features/teams/domain/entities/team.dart';
+import 'package:ultistats/features/matches/domain/entities/team_match_result.dart';
 
 enum MatchStatus {
   planned,
@@ -8,7 +8,7 @@ enum MatchStatus {
 
 class Match {
   final String id;
-  final List<Team> teams;
+  final List<TeamMatchResult> teams;
   final int eventCount;
   final String? diskHolderId;
   final DateTime? plannedStartTimestamp;

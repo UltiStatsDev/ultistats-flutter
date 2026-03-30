@@ -4,7 +4,7 @@ import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/app_ink_well.dart';
 import 'package:ultistats/core/widgets/team_photo.dart';
 import 'package:ultistats/features/matches/domain/entities/match.dart';
-import 'package:ultistats/features/teams/domain/entities/team.dart';
+import 'package:ultistats/features/matches/domain/entities/team_match_result.dart';
 
 class MatchCard extends StatelessWidget {
   final Match match;
@@ -33,8 +33,12 @@ class MatchCard extends StatelessWidget {
               child: Stack(
                 children: [
                   Center(
-                    //TODO апи поменяется и поменять эту штуку
-                    child: Text("11:7", style: theme.textTheme.displayLarge),
+                    child: Text(
+                      match.status == MatchStatus.planned
+                          ? "- : -"
+                          : "${match.teams.first.score}:${match.teams[1].score}",
+                      style: theme.textTheme.displayLarge,
+                    ),
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
@@ -63,7 +67,6 @@ class MatchCard extends StatelessWidget {
                 ],
               ),
             ),
-            // TODO переделать на чтото типа second
             Expanded(child: _buildTeam(context, match.teams[1])),
           ],
         ),
@@ -77,7 +80,7 @@ class MatchCard extends StatelessWidget {
   String _formatTime(DateTime? date) =>
       date != null ? DateFormat('HH:mm').format(date) : '---';
 
-  Widget _buildTeam(BuildContext context, Team team) {
+  Widget _buildTeam(BuildContext context, TeamMatchResult team) {
     final theme = Theme.of(context);
     final photoSize = 80.0;
     return Column(

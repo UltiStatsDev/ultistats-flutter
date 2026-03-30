@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:ultistats/features/teams/data/models/team_model.dart';
+import 'package:ultistats/features/matches/data/models/team_match_result_model.dart';
 import 'package:ultistats/features/matches/domain/entities/match.dart';
 
 part 'match_model.g.dart';
@@ -7,7 +7,7 @@ part 'match_model.g.dart';
 @JsonSerializable(explicitToJson: true)
 class MatchModel {
   final String id;
-  final List<TeamModel> teams;
+  final List<TeamMatchResultModel> teams;
   final int eventCount;
   final String? diskHolderId;
   final DateTime? plannedStartTimestamp;
@@ -34,7 +34,7 @@ class MatchModel {
   factory MatchModel.fromEntity(Match entity) {
     return MatchModel(
       id: entity.id,
-      teams: entity.teams.map((t) => TeamModel.fromEntity(t)).toList(),
+      teams: entity.teams.map((t) => TeamMatchResultModel.fromEntity(t)).toList(),
       eventCount: entity.eventCount,
       diskHolderId: entity.diskHolderId,
       plannedStartTimestamp: entity.plannedStartTimestamp,
