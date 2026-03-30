@@ -52,7 +52,7 @@ class TeamPhoto extends StatelessWidget {
 
   Widget _buildLoading(BuildContext context) {
     return Container(
-      color: Theme.of(context).colorScheme.primaryContainer,
+      color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Center(
         child: SizedBox(
           width: size * 0.3,
