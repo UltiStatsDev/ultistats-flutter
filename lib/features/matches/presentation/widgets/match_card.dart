@@ -24,9 +24,7 @@ class MatchCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: theme.colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(theme.cardBorderRadius),
-          boxShadow: [
-            BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.1), blurRadius: 12),
-          ],
+          boxShadow: theme.cardBoxShadow,
         ),
         child: Row(
           children: [

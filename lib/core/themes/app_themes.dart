@@ -7,7 +7,11 @@ ThemeData createLightTheme() {
     fontFamily: "Montserrat",
     primaryColor: AppColors.purple,
     scaffoldBackgroundColor: AppColors.purple,
-    colorScheme: theme.colorScheme.copyWith(primaryContainer: Colors.white),
+    colorScheme: theme.colorScheme.copyWith(
+      primaryContainer: Colors.white,
+      surfaceContainerHighest: Colors.white,
+      error: Color(0xFFDA2121),
+    ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
       selectedItemColor: Colors.white,
@@ -41,7 +45,31 @@ ThemeData createLightTheme() {
     // CircularProgressIndicator
     progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.white),
 
+    filledButtonTheme: FilledButtonThemeData(
+      style: ButtonStyle(
+        iconSize: WidgetStatePropertyAll(20),
+        backgroundColor: WidgetStatePropertyAll(AppColors.purpleDark),
+        iconColor: WidgetStatePropertyAll(Colors.white),
+        textStyle: WidgetStatePropertyAll(
+          TextStyle(
+            fontFamily: "Montserrat",
+            fontWeight: FontWeight.normal,
+            fontSize: 16,
+            color: Colors.white,
+            letterSpacing: 0,
+          ),
+        ),
+      ),
+    ),
+
     textTheme: TextTheme(
+      headlineMedium: TextStyle(
+        fontWeight: FontWeight.normal,
+        fontSize: 20,
+        color: Colors.white,
+        letterSpacing: 0,
+      ),
+
       ///Cards
       bodyLarge: TextStyle(
         fontWeight: FontWeight.bold,
@@ -87,8 +115,6 @@ ThemeData createLightTheme() {
   );
 }
 
-// TODO поменять название
-// TODO вынести boxShadows сюда
 extension ThemeExtension on ThemeData {
   double get bottomNavigationBarBorderRadius => 10;
 
@@ -101,4 +127,16 @@ extension ThemeExtension on ThemeData {
   double get screenPadding => 12;
 
   double get searchBarSize => 46;
+
+  List<BoxShadow> get bottomNavigationBarBoxShadow => [
+    BoxShadow(
+      color: Colors.black.withValues(alpha: 0.2),
+      blurRadius: 12,
+      offset: const Offset(0, -4),
+    ),
+  ];
+
+  List<BoxShadow> get cardBoxShadow => [
+    BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.1), blurRadius: 12),
+  ];
 }

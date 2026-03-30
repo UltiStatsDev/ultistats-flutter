@@ -14,13 +14,7 @@ class AppBottomNavigationBar extends StatelessWidget {
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(theme.bottomNavigationBarBorderRadius),
         ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.2),
-            blurRadius: 12,
-            offset: const Offset(0, -4),
-          ),
-        ],
+        boxShadow: theme.bottomNavigationBarBoxShadow,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.vertical(

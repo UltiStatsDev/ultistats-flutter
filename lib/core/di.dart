@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ultistats/core/data/config.dart';
 
 import 'package:ultistats/features/players/data/sources/players_api.dart';
 import 'package:ultistats/features/teams/data/sources/teams_api.dart';
@@ -22,7 +23,7 @@ import 'package:ultistats/features/matches/data/repositories/match_statistics_re
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
     BaseOptions(
-      baseUrl: 'http://192.168.0.32:8080',
+      baseUrl: AppConfig.baseUrl,
       connectTimeout: const Duration(seconds: 10),
       receiveTimeout: const Duration(seconds: 10),
       headers: {
@@ -88,8 +89,9 @@ final matchEventsRepositoryProvider = Provider<MatchEventsRepository>((ref) {
   return MatchEventsRepositoryImpl(api);
 });
 
-final matchStatisticsRepositoryProvider =
-    Provider<MatchStatisticsRepository>((ref) {
+final matchStatisticsRepositoryProvider = Provider<MatchStatisticsRepository>((
+  ref,
+) {
   final api = ref.watch(matchStatisticsApiProvider);
   return MatchStatisticsRepositoryImpl(api);
 });

@@ -1,6 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-//TODO переделать
 class ErrorScreen extends StatefulWidget {
   final Object exception;
   final StackTrace stackTrace;
@@ -23,68 +23,64 @@ class _ErrorScreenState extends State<ErrorScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isDebugMode = kDebugMode;
 
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.error_outline,
-              size: 64,
-              color: theme.colorScheme.error,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Что-то пошло не так',
-              style: theme.textTheme.titleLarge,
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              widget.exception.toString(),
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Что-то пошло не так :(",
+                style: theme.textTheme.headlineMedium,
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-            ),
-            const SizedBox(height: 24),
-            if (widget.onRetry != null)
-              FilledButton.icon(
-                onPressed: widget.onRetry,
-                icon: const Icon(Icons.refresh),
-                label: const Text('Повторить'),
-              ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: () => setState(() => _showDetails = !_showDetails),
-              child: Text(_showDetails ? 'Скрыть детали' : 'Показать детали'),
-            ),
-            if (_showDetails) ...[
-              const SizedBox(height: 12),
-              Flexible(
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(8),
+              const SizedBox(height: 16),
+              if (isDebugMode) ...[
+                Text(
+                  widget.exception.toString(),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.error,
                   ),
-                  child: SingleChildScrollView(
-                    child: Text(
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                FilledButton.icon(
+                  icon: Icon(_showDetails ? Icons.visibility_off : Icons.visibility),
+                  onPressed: () => setState(() => _showDetails = !_showDetails),
+                  label: Text(_showDetails ? "Скрыть детали" : "Показать детали"),
+                ),
+                if (_showDetails) ...[
+                  const SizedBox(height: 16),
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.surfaceContainerHighest,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: SelectableText(
                       widget.stackTrace.toString(),
                       style: theme.textTheme.bodySmall?.copyWith(
                         fontFamily: 'monospace',
-                        fontSize: 10,
                       ),
                     ),
                   ),
-                ),
+                ],
+              ] else ...[
+                const SizedBox(height: 24),
+              ],
+              const SizedBox(height: 24),
+              FilledButton.icon(
+                icon: Icon(Icons.refresh),
+                onPressed: widget.onRetry,
+                label: Text("Попробовать снова"),
               ),
             ],
-          ],
+          ),
         ),
       ),
     );
