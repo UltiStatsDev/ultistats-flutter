@@ -38,18 +38,33 @@ class MatchCard extends StatelessWidget {
                   ),
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: Text(
-                      _formatDate(match.status == MatchStatus.planned
-                          ? match.plannedStartTimestamp
-                          : match.startedAt),
-                      style: theme.textTheme.displaySmall,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          _formatDate(
+                            match.status == MatchStatus.planned
+                                ? match.plannedStartTimestamp
+                                : match.startedAt,
+                          ),
+                          style: theme.textTheme.displaySmall,
+                        ),
+                        Text(
+                          _formatTime(
+                            match.status == MatchStatus.planned
+                                ? match.plannedStartTimestamp
+                                : match.startedAt,
+                          ),
+                          style: theme.textTheme.displaySmall,
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
             // TODO переделать на чтото типа second
-            Expanded(child: _buildTeam(context, match.teams.first)),
+            Expanded(child: _buildTeam(context, match.teams[1])),
           ],
         ),
       ),
@@ -58,6 +73,9 @@ class MatchCard extends StatelessWidget {
 
   String _formatDate(DateTime? date) =>
       date != null ? DateFormat('dd.MM.yyyy').format(date) : '---';
+
+  String _formatTime(DateTime? date) =>
+      date != null ? DateFormat('HH:mm').format(date) : '---';
 
   Widget _buildTeam(BuildContext context, Team team) {
     final theme = Theme.of(context);

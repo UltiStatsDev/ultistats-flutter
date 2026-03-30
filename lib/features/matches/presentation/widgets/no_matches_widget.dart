@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+//TODO сделать фаб для добавления матча
+//TODO и обновление сделать
 class NoMatchesWidget extends StatelessWidget {
   const NoMatchesWidget({super.key});
 

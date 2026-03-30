@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ultistats/core/data/config.dart';
+import 'package:ultistats/core/config.dart';
 
 class TeamPhoto extends StatelessWidget {
   final String? photoUrl;
@@ -45,7 +45,7 @@ class TeamPhoto extends StatelessWidget {
       child: Icon(
         Icons.groups_outlined,
         size: size * 0.5,
-        color: Theme.of(context).colorScheme.primaryContainer,
+        color: Colors.grey,
       ),
     );
   }

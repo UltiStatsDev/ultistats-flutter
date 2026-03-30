@@ -10,6 +10,7 @@ ThemeData createLightTheme() {
     colorScheme: theme.colorScheme.copyWith(
       primaryContainer: Colors.white,
       surfaceContainerHighest: Colors.white,
+      onSurfaceVariant: AppColors.purple,
       error: Color(0xFFDA2121),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
