@@ -33,6 +33,7 @@ class MatchCard extends StatelessWidget {
               child: Stack(
                 children: [
                   Center(
+                    //TODO апи поменяется и поменять эту штуку
                     child: Text("11:7", style: theme.textTheme.displayLarge),
                   ),
                   Align(

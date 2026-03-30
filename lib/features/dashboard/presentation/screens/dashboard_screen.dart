@@ -13,8 +13,6 @@ class DashboardScreen extends StatelessWidget {
     PlayersListRoute(),
   ];
 
-
-  //TODO добавить pageView и разобраться
   @override
   Widget build(BuildContext context) {
     return AutoTabsRouter.pageView(

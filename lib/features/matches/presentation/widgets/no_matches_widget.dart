@@ -5,10 +5,11 @@ class NoMatchesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
+    final theme = Theme.of(context);
+    return Center(
       child: Text(
         'Нет матчей',
-        style: TextStyle(color: Colors.white, fontSize: 16),
+        style: theme.textTheme.headlineMedium,
       ),
     );
   }
