@@ -20,12 +20,9 @@ class SearchFilterBar extends StatelessWidget {
               borderRadius: BorderRadius.circular(borderRadius),
             ),
             child: TextField(
-              style: theme.textTheme.labelLarge,
+              style: theme.textFieldStyleText,
               decoration: InputDecoration(
-                hintStyle: theme.textTheme.labelMedium,
                 hintText: "Поиск...",
-                enabledBorder: InputBorder.none,
-                focusedBorder: InputBorder.none,
               ),
             ),
           ),

@@ -7,12 +7,25 @@ ThemeData createLightTheme() {
     fontFamily: "Montserrat",
     primaryColor: AppColors.purple,
     scaffoldBackgroundColor: AppColors.purple,
+
     colorScheme: theme.colorScheme.copyWith(
       primaryContainer: Colors.white,
       surfaceContainerHighest: Colors.white,
       onSurfaceVariant: AppColors.purple,
       error: Color(0xFFDA2121),
     ),
+
+    inputDecorationTheme: InputDecorationThemeData(
+      hintStyle: TextStyle(
+        fontWeight: FontWeight.normal,
+        fontSize: 20,
+        color: AppColors.grey,
+        letterSpacing: 0,
+      ),
+      enabledBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+    ),
+
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
       selectedItemColor: Colors.white,
@@ -26,6 +39,7 @@ ThemeData createLightTheme() {
         fontWeight: FontWeight.w600,
         letterSpacing: 0,
       ),
+
       unselectedLabelStyle: TextStyle(
         height: 1,
         color: AppColors.purple,
@@ -63,60 +77,98 @@ ThemeData createLightTheme() {
       ),
     ),
 
-    textTheme: TextTheme(
-      headlineMedium: TextStyle(
-        fontWeight: FontWeight.normal,
-        fontSize: 20,
-        color: Colors.white,
-        letterSpacing: 0,
+    extensions: [
+      AppInputTheme(
+        textFieldStyleText: TextStyle(
+          fontWeight: FontWeight.normal,
+          fontSize: 20,
+          color: Colors.black,
+          letterSpacing: 0,
+        ),
       ),
+    ],
 
-      ///Cards
+    textTheme: TextTheme(
       bodyLarge: TextStyle(
+        fontSize: 40,
         fontWeight: FontWeight.bold,
-        fontSize: 24,
         color: AppColors.grey,
         letterSpacing: 0,
       ),
       bodyMedium: TextStyle(
-        fontWeight: FontWeight.normal,
-        fontSize: 16,
-        color: AppColors.grey,
-        letterSpacing: 0,
-      ),
-
-      ///Text fields
-      labelMedium: TextStyle(
-        fontWeight: FontWeight.normal,
-        fontSize: 20,
-        color: AppColors.grey,
-        letterSpacing: 0,
-      ),
-      labelLarge: TextStyle(
-        fontWeight: FontWeight.normal,
-        fontSize: 20,
-        color: Colors.black,
-        letterSpacing: 0,
-      ),
-
-      ///Scores
-      displayLarge: TextStyle(
+        fontSize: 24,
         fontWeight: FontWeight.bold,
-        fontSize: 40,
         color: AppColors.grey,
+        letterSpacing: 0,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: AppColors.grey,
+        letterSpacing: 0,
+      ),
+
+      labelLarge: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.normal,
+        color: AppColors.grey,
+        letterSpacing: 0,
+      ),
+      labelMedium: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+        color: AppColors.grey,
+        letterSpacing: 0,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 10,
+        fontWeight: FontWeight.normal,
+        color: AppColors.grey,
+        letterSpacing: 0,
+      ),
+
+      titleLarge: TextStyle(
+        fontSize: 40,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+        letterSpacing: 0,
+      ),
+      titleMedium: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+        letterSpacing: 0,
+      ),
+      titleSmall: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+        letterSpacing: 0,
+      ),
+
+      displayLarge: TextStyle(
+        fontSize: 24,
+        fontWeight: FontWeight.normal,
+        color: Colors.white,
+        letterSpacing: 0,
+      ),
+      displayMedium: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+        color: Colors.white,
         letterSpacing: 0,
       ),
       displaySmall: TextStyle(
-        fontWeight: FontWeight.normal,
         fontSize: 10,
+        fontWeight: FontWeight.w500,
+        color: Colors.white,
         letterSpacing: 0,
-        color: AppColors.grey,
       ),
     ),
   );
 }
 
-extension ThemeExtension on ThemeData {
+extension ThemeValueExtension on ThemeData {
   double get bottomNavigationBarBorderRadius => 10;
 
   double get bottomNavigationBarHeight => 70;
@@ -140,4 +192,38 @@ extension ThemeExtension on ThemeData {
   List<BoxShadow> get cardBoxShadow => [
     BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.1), blurRadius: 12),
   ];
+}
+
+///
+/// Extra text themes
+///
+
+extension ThemeAppInputExtension on ThemeData {
+  TextStyle get textFieldStyleText =>
+      extension<AppInputTheme>()!.textFieldStyleText!;
+}
+
+class AppInputTheme extends ThemeExtension<AppInputTheme> {
+  final TextStyle? textFieldStyleText;
+
+  const AppInputTheme({required this.textFieldStyleText});
+
+  @override
+  AppInputTheme copyWith({TextStyle? textFieldStyleText}) {
+    return AppInputTheme(
+      textFieldStyleText: textFieldStyleText ?? this.textFieldStyleText,
+    );
+  }
+
+  @override
+  AppInputTheme lerp(ThemeExtension<AppInputTheme>? other, double t) {
+    if (other is! AppInputTheme) return this;
+    return AppInputTheme(
+      textFieldStyleText: TextStyle.lerp(
+        textFieldStyleText,
+        other.textFieldStyleText,
+        t,
+      )!,
+    );
+  }
 }

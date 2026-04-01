@@ -37,7 +37,7 @@ class MatchCard extends StatelessWidget {
                       match.status == MatchStatus.planned
                           ? "- : -"
                           : "${match.teams.first.score}:${match.teams[1].score}",
-                      style: theme.textTheme.displayLarge,
+                      style: theme.textTheme.bodyLarge,
                     ),
                   ),
                   Align(
@@ -51,7 +51,7 @@ class MatchCard extends StatelessWidget {
                                 ? match.plannedStartTimestamp
                                 : match.startedAt,
                           ),
-                          style: theme.textTheme.displaySmall,
+                          style: theme.textTheme.labelSmall,
                         ),
                         Text(
                           _formatTime(
@@ -59,7 +59,7 @@ class MatchCard extends StatelessWidget {
                                 ? match.plannedStartTimestamp
                                 : match.startedAt,
                           ),
-                          style: theme.textTheme.displaySmall,
+                          style: theme.textTheme.labelSmall,
                         ),
                       ],
                     ),
@@ -91,10 +91,7 @@ class MatchCard extends StatelessWidget {
         SizedBox(height: 4),
         Text(
           team.name,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.bold,
-            height: 1,
-          ),
+          style: theme.textTheme.bodySmall,
           textAlign: TextAlign.center,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,

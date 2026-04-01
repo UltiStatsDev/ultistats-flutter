@@ -35,23 +35,27 @@ class _ErrorScreenState extends State<ErrorScreen> {
             children: [
               Text(
                 "Что-то пошло не так :(",
-                style: theme.textTheme.headlineMedium,
+                style: theme.textTheme.displayLarge,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 16),
               if (isDebugMode) ...[
                 Text(
                   widget.exception.toString(),
-                  style: theme.textTheme.bodyMedium?.copyWith(
+                  style: theme.textTheme.displayMedium?.copyWith(
                     color: theme.colorScheme.error,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 24),
                 FilledButton.icon(
-                  icon: Icon(_showDetails ? Icons.visibility_off : Icons.visibility),
+                  icon: Icon(
+                    _showDetails ? Icons.visibility_off : Icons.visibility,
+                  ),
                   onPressed: () => setState(() => _showDetails = !_showDetails),
-                  label: Text(_showDetails ? "Скрыть детали" : "Показать детали"),
+                  label: Text(
+                    _showDetails ? "Скрыть детали" : "Показать детали",
+                  ),
                 ),
                 if (_showDetails) ...[
                   const SizedBox(height: 16),
@@ -64,9 +68,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
                     ),
                     child: SelectableText(
                       widget.stackTrace.toString(),
-                      style: theme.textTheme.bodySmall?.copyWith(
-                        fontFamily: 'monospace',
-                      ),
+                      style: TextStyle(fontFamily: 'monospace', fontSize: 10),
                     ),
                   ),
                 ],

@@ -35,13 +35,13 @@ class TeamCard extends StatelessWidget {
                 children: [
                   Text(
                     team.name,
-                    style: theme.textTheme.bodyLarge,
+                    style: theme.textTheme.bodyMedium,
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                   ),
                   Text(
                     team.city ?? "",
-                    style: theme.textTheme.bodyMedium,
+                    style: theme.textTheme.labelMedium,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                   ),
