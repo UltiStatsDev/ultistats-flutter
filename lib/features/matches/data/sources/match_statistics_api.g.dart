@@ -29,7 +29,7 @@ class _MatchStatisticsApi implements MatchStatisticsApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/matches/${matchId}/statistics',
+            '/matches/${matchId}/statistics',
             queryParameters: queryParameters,
             data: _data,
           )

@@ -8,6 +8,6 @@ part 'match_statistics_api.g.dart';
 abstract class MatchStatisticsApi {
   factory MatchStatisticsApi(Dio dio, {String baseUrl}) = _MatchStatisticsApi;
 
-  @GET('/api/v1/matches/{matchId}/statistics')
+  @GET('/matches/{matchId}/statistics')
   Future<MatchStatisticsModel> getMatchStatistics(@Path('matchId') String matchId);
 }

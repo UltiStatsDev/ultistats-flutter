@@ -11,23 +11,23 @@ part 'match_events_api.g.dart';
 abstract class MatchEventsApi {
   factory MatchEventsApi(Dio dio, {String baseUrl}) = _MatchEventsApi;
 
-  @GET('/api/v1/matches/{matchId}/events')
+  @GET('/matches/{matchId}/events')
   Future<List<MatchEventModel>> getMatchEvents(@Path('matchId') String matchId);
 
-  @POST('/api/v1/matches/{matchId}/events')
+  @POST('/matches/{matchId}/events')
   Future<EventResponseModel> createMatchEvent(
     @Path('matchId') String matchId,
     @Body() CreateEventRequest body,
   );
 
-  @PUT('/api/v1/matches/{matchId}/events/{index}')
+  @PUT('/matches/{matchId}/events/{index}')
   Future<EventResponseModel> updateMatchEvent(
     @Path('matchId') String matchId,
     @Path('index') int index,
     @Body() UpdateEventRequest body,
   );
 
-  @DELETE('/api/v1/matches/{matchId}/events/{index}')
+  @DELETE('/matches/{matchId}/events/{index}')
   Future<EventResponseModel> deleteMatchEvent(
     @Path('matchId') String matchId,
     @Path('index') int index,

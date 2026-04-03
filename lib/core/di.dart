@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ultistats/core/config.dart';
+import 'package:ultistats/core/config/config.dart';
 
 import 'package:ultistats/features/players/data/sources/players_api.dart';
 import 'package:ultistats/features/teams/data/sources/teams_api.dart';

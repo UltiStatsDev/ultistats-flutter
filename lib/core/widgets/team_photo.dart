@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ultistats/core/config.dart';
+import 'package:ultistats/core/config/config.dart';
 
 class TeamPhoto extends StatelessWidget {
   final String? photoUrl;

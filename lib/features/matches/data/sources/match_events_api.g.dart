@@ -29,7 +29,7 @@ class _MatchEventsApi implements MatchEventsApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/matches/${matchId}/events',
+            '/matches/${matchId}/events',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -64,7 +64,7 @@ class _MatchEventsApi implements MatchEventsApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/matches/${matchId}/events',
+            '/matches/${matchId}/events',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -96,7 +96,7 @@ class _MatchEventsApi implements MatchEventsApi {
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/matches/${matchId}/events/${index}',
+            '/matches/${matchId}/events/${index}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -123,7 +123,7 @@ class _MatchEventsApi implements MatchEventsApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/matches/${matchId}/events/${index}',
+            '/matches/${matchId}/events/${index}',
             queryParameters: queryParameters,
             data: _data,
           )

@@ -36,14 +36,29 @@ android {
             dimension = "app"
             applicationIdSuffix = ".dev"
             versionNameSuffix = "-dev"
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "UltiStats DEV"
+            )
         }
         create("staging") {
             dimension = "app"
             applicationIdSuffix = ".staging"
             versionNameSuffix = "-staging"
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "UltiStats STG"
+            )
         }
         create("prod") {
             dimension = "app"
+            resValue(
+                type = "string",
+                name = "app_name",
+                value = "UltiStats"
+            )
         }
     }
 
