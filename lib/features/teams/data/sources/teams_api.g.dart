@@ -29,7 +29,7 @@ class _TeamsApi implements TeamsApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/teams/${id}',
+            '/teams/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -57,7 +57,7 @@ class _TeamsApi implements TeamsApi {
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/teams/${id}',
+            '/teams/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -84,7 +84,7 @@ class _TeamsApi implements TeamsApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/teams/${id}',
+            '/teams/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -104,7 +104,7 @@ class _TeamsApi implements TeamsApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/teams',
+            '/teams',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -135,7 +135,7 @@ class _TeamsApi implements TeamsApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/teams',
+            '/teams',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -162,7 +162,7 @@ class _TeamsApi implements TeamsApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/teams/${teamId}/players/${playerId}',
+            '/teams/${teamId}/players/${playerId}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -189,7 +189,7 @@ class _TeamsApi implements TeamsApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/teams/${teamId}/players/${playerId}',
+            '/teams/${teamId}/players/${playerId}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -216,7 +216,7 @@ class _TeamsApi implements TeamsApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/teams/${teamId}/photoUrl',
+            '/teams/${teamId}/photoUrl',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -252,7 +252,7 @@ class _TeamsApi implements TeamsApi {
           )
           .compose(
             _dio.options,
-            '/api/v1/teams/${teamId}/uploadPhoto',
+            '/teams/${teamId}/uploadPhoto',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -279,7 +279,7 @@ class _TeamsApi implements TeamsApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/teams/${teamId}/photoUrl',
+            '/teams/${teamId}/photoUrl',
             queryParameters: queryParameters,
             data: _data,
           )

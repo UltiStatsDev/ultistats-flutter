@@ -5,6 +5,7 @@ import 'package:ultistats/features/teams/presentation/providers/teams_list_state
 
 class TeamsListNotifier extends Notifier<TeamsListState> {
   static const int _pageSize = 20;
+  static const double _scrollThreshold = 200.0;
 
   @override
   TeamsListState build() {
@@ -54,7 +55,13 @@ class TeamsListNotifier extends Notifier<TeamsListState> {
     }
   }
 
-  Future<void> loadMore() async {
+  void onScrollUpdate(double offset, double maxScrollExtent) {
+    if (offset >= (maxScrollExtent - _scrollThreshold)) {
+      _loadMore();
+    }
+  }
+
+  Future<void> _loadMore() async {
     final currentState = state;
     if (currentState is! TeamsListLoaded) return;
     if (currentState.isLoadingMore || currentState.hasReachedEnd) return;

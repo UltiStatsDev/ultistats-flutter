@@ -13,46 +13,46 @@ part 'teams_api.g.dart';
 abstract class TeamsApi {
   factory TeamsApi(Dio dio, {String baseUrl}) = _TeamsApi;
 
-  @GET('/api/v1/teams/{id}')
+  @GET('/teams/{id}')
   Future<TeamModel> getTeamById(@Path('id') String id);
 
-  @PUT('/api/v1/teams/{id}')
+  @PUT('/teams/{id}')
   Future<TeamModel> updateTeam(
     @Path('id') String id,
     @Body() UpdateTeamRequest body,
   );
 
-  @DELETE('/api/v1/teams/{id}')
+  @DELETE('/teams/{id}')
   Future<void> deleteTeam(@Path('id') String id);
 
-  @GET('/api/v1/teams')
+  @GET('/teams')
   Future<PageModel<TeamModel>> getTeams(@Queries() TeamFilterRequest queries);
 
-  @POST('/api/v1/teams')
+  @POST('/teams')
   Future<TeamModel> createTeam(@Body() CreateTeamRequest body);
 
-  @POST('/api/v1/teams/{teamId}/players/{playerId}')
+  @POST('/teams/{teamId}/players/{playerId}')
   Future<TeamModel> addPlayerToTeam(
     @Path('teamId') String teamId,
     @Path('playerId') String playerId,
   );
 
-  @DELETE('/api/v1/teams/{teamId}/players/{playerId}')
+  @DELETE('/teams/{teamId}/players/{playerId}')
   Future<TeamModel> removePlayerFromTeam(
     @Path('teamId') String teamId,
     @Path('playerId') String playerId,
   );
 
-  @GET('/api/v1/teams/{teamId}/photoUrl')
+  @GET('/teams/{teamId}/photoUrl')
   Future<PhotoUrlResponse> getTeamPhotoUrl(@Path('teamId') String teamId);
 
-  @POST('/api/v1/teams/{teamId}/uploadPhoto')
+  @POST('/teams/{teamId}/uploadPhoto')
   @MultiPart()
   Future<PhotoUrlResponse> uploadTeamPhoto(
     @Path('teamId') String teamId,
     @Part(name: 'multipartFile') MultipartFile multipartFile,
   );
 
-  @DELETE('/api/v1/teams/{teamId}/photoUrl')
+  @DELETE('/teams/{teamId}/photoUrl')
   Future<PhotoUrlResponse> deleteTeamPhoto(@Path('teamId') String teamId);
 }

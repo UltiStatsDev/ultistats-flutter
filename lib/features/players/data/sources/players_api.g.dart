@@ -29,7 +29,7 @@ class _PlayersApi implements PlayersApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/players/${id}',
+            '/players/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -57,7 +57,7 @@ class _PlayersApi implements PlayersApi {
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/players/${id}',
+            '/players/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -84,7 +84,7 @@ class _PlayersApi implements PlayersApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/players/${id}',
+            '/players/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -104,7 +104,7 @@ class _PlayersApi implements PlayersApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/players',
+            '/players',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -135,7 +135,7 @@ class _PlayersApi implements PlayersApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/players',
+            '/players',
             queryParameters: queryParameters,
             data: _data,
           )

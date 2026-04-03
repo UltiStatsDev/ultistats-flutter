@@ -36,17 +36,12 @@ class _MatchesListScreenState extends ConsumerState<MatchesListScreen> {
   }
 
   void _onScroll() {
-    final state = ref.read(matchesListProvider);
-    if (state is MatchesListLoaded && !state.isLoadingMore && _isNearBottom) {
-      ref.read(matchesListProvider.notifier).loadMore();
-    }
-  }
+    if (!_scrollController.hasClients) return;
 
-  bool get _isNearBottom {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll - 200);
+    ref.read(matchesListProvider.notifier).onScrollUpdate(
+          _scrollController.offset,
+          _scrollController.position.maxScrollExtent,
+        );
   }
 
   @override

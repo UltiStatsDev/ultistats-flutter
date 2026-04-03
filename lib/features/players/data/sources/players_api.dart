@@ -12,21 +12,21 @@ part 'players_api.g.dart';
 abstract class PlayersApi {
   factory PlayersApi(Dio dio, {String baseUrl}) = _PlayersApi;
 
-  @GET('/api/v1/players/{id}')
+  @GET('/players/{id}')
   Future<PlayerModel> getPlayerById(@Path('id') String id);
 
-  @PUT('/api/v1/players/{id}')
+  @PUT('/players/{id}')
   Future<PlayerModel> updatePlayer(
     @Path('id') String id,
     @Body() UpdatePlayerRequest body,
   );
 
-  @DELETE('/api/v1/players/{id}')
+  @DELETE('/players/{id}')
   Future<void> deletePlayer(@Path('id') String id);
 
-  @GET('/api/v1/players')
+  @GET('/players')
   Future<PageModel<PlayerModel>> getPlayers(@Queries() PlayerFilterRequest queries);
 
-  @POST('/api/v1/players')
+  @POST('/players')
   Future<PlayerModel> createPlayer(@Body() CreatePlayerRequest body);
 }

@@ -5,6 +5,7 @@ import 'package:ultistats/features/matches/presentation/providers/matches_list_s
 
 class MatchesListNotifier extends Notifier<MatchesListState> {
   static const int _pageSize = 20;
+  static const double _scrollThreshold = 200.0;
 
   @override
   MatchesListState build() {
@@ -54,7 +55,13 @@ class MatchesListNotifier extends Notifier<MatchesListState> {
     }
   }
 
-  Future<void> loadMore() async {
+  void onScrollUpdate(double offset, double maxScrollExtent) {
+    if (offset >= (maxScrollExtent - _scrollThreshold)) {
+      _loadMore();
+    }
+  }
+
+  Future<void> _loadMore() async {
     final currentState = state;
     if (currentState is! MatchesListLoaded) return;
     if (currentState.isLoadingMore || currentState.hasReachedEnd) return;

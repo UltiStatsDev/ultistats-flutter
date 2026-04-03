@@ -169,9 +169,13 @@ ThemeData createLightTheme() {
 }
 
 extension ThemeValueExtension on ThemeData {
-  double get bottomNavigationBarBorderRadius => 10;
+  double get navBarBorderRadius => 10;
 
-  double get bottomNavigationBarHeight => 70;
+  double get navBarHeight => 70;
+
+  double get navBarItemWidth => 90;
+
+  double get navBarItemHeight => 54;
 
   double get cardHeight => 120;
 

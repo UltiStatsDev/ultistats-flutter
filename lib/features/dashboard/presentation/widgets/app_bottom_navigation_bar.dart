@@ -12,16 +12,16 @@ class AppBottomNavigationBar extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(theme.bottomNavigationBarBorderRadius),
+          top: Radius.circular(theme.navBarBorderRadius),
         ),
         boxShadow: theme.bottomNavigationBarBoxShadow,
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(theme.bottomNavigationBarBorderRadius),
+          top: Radius.circular(theme.navBarBorderRadius),
         ),
         child: NavigationBar(
-          height: theme.bottomNavigationBarHeight,
+          height: theme.navBarHeight,
           surfaceTintColor: Colors.transparent,
           elevation: 0,
           labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
@@ -33,7 +33,7 @@ class AppBottomNavigationBar extends StatelessWidget {
           indicatorColor: Colors.transparent,
           indicatorShape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(
-              theme.bottomNavigationBarBorderRadius,
+              theme.navBarBorderRadius,
             ),
           ),
 
@@ -80,13 +80,11 @@ class _NavigationBarDestination extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final activeBgColor = theme.primaryColor;
-    final width = 90.0;
-    final height = 54.0;
     return NavigationDestination(
       label: label,
       icon: SizedBox(
-        width: width,
-        height: height,
+        width: theme.navBarItemWidth,
+        height: theme.navBarItemHeight,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -103,12 +101,12 @@ class _NavigationBarDestination extends StatelessWidget {
         ),
       ),
       selectedIcon: Container(
-        width: width,
-        height: height,
+        width: theme.navBarItemWidth,
+        height: theme.navBarItemHeight,
         decoration: BoxDecoration(
           color: activeBgColor,
           borderRadius: BorderRadius.circular(
-            theme.bottomNavigationBarBorderRadius,
+            theme.navBarBorderRadius,
           ),
         ),
         child: Column(

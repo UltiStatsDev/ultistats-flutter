@@ -30,7 +30,7 @@ class _MatchesApi implements MatchesApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/matches',
+            '/matches',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -61,7 +61,7 @@ class _MatchesApi implements MatchesApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/matches',
+            '/matches',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -88,7 +88,7 @@ class _MatchesApi implements MatchesApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/matches/${id}',
+            '/matches/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -116,7 +116,7 @@ class _MatchesApi implements MatchesApi {
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/matches/${id}',
+            '/matches/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -143,7 +143,7 @@ class _MatchesApi implements MatchesApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/matches/${id}',
+            '/matches/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -163,7 +163,7 @@ class _MatchesApi implements MatchesApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/matches/${id}/start',
+            '/matches/${id}/start',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -191,7 +191,7 @@ class _MatchesApi implements MatchesApi {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/v1/matches/${id}/end',
+            '/matches/${id}/end',
             queryParameters: queryParameters,
             data: _data,
           )

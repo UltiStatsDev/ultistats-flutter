@@ -36,17 +36,12 @@ class _TeamsListScreenState extends ConsumerState<TeamsListScreen> {
   }
 
   void _onScroll() {
-    final state = ref.read(teamsListProvider);
-    if (state is TeamsListLoaded && !state.isLoadingMore && _isNearBottom) {
-      ref.read(teamsListProvider.notifier).loadMore();
-    }
-  }
+    if (!_scrollController.hasClients) return;
 
-  bool get _isNearBottom {
-    if (!_scrollController.hasClients) return false;
-    final maxScroll = _scrollController.position.maxScrollExtent;
-    final currentScroll = _scrollController.offset;
-    return currentScroll >= (maxScroll - 200);
+    ref.read(teamsListProvider.notifier).onScrollUpdate(
+          _scrollController.offset,
+          _scrollController.position.maxScrollExtent,
+        );
   }
 
   @override
@@ -57,10 +52,10 @@ class _TeamsListScreenState extends ConsumerState<TeamsListScreen> {
       child: switch (state) {
         TeamsListLoading() => const Center(child: CircularProgressIndicator()),
         TeamsListError(:final exception, :final stackTrace) => ErrorScreen(
-          exception: exception,
-          stackTrace: stackTrace,
-          onRetry: () => ref.read(teamsListProvider.notifier).loadInitial(),
-        ),
+            exception: exception,
+            stackTrace: stackTrace,
+            onRetry: () => ref.read(teamsListProvider.notifier).loadInitial(),
+          ),
         TeamsListLoaded(:final teams) when teams.isEmpty => NoTeamsWidget(),
         TeamsListLoaded() => _buildBody(theme, state),
       },
@@ -73,7 +68,7 @@ class _TeamsListScreenState extends ConsumerState<TeamsListScreen> {
         Column(
           children: [
             SearchFilterBar(),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Expanded(
               child: AppRefreshingIndicator(
                 onRefresh: () => ref.read(teamsListProvider.notifier).refresh(),

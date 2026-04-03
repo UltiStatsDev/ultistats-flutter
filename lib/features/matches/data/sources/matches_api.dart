@@ -13,31 +13,31 @@ part 'matches_api.g.dart';
 abstract class MatchesApi {
   factory MatchesApi(Dio dio, {String baseUrl}) = _MatchesApi;
 
-  @GET('/api/v1/matches')
+  @GET('/matches')
   Future<PageModel<MatchModel>> getMatches(@Queries() MatchFilterRequest queries);
 
-  @POST('/api/v1/matches')
+  @POST('/matches')
   Future<MatchModel> createMatch(@Body() CreateMatchRequest body);
 
-  @GET('/api/v1/matches/{id}')
+  @GET('/matches/{id}')
   Future<MatchModel> getMatchById(@Path('id') String id);
 
-  @PUT('/api/v1/matches/{id}')
+  @PUT('/matches/{id}')
   Future<MatchModel> updateMatch(
     @Path('id') String id,
     @Body() UpdateMatchRequest body,
   );
 
-  @DELETE('/api/v1/matches/{id}')
+  @DELETE('/matches/{id}')
   Future<void> deleteMatch(@Path('id') String id);
 
-  @POST('/api/v1/matches/{id}/start')
+  @POST('/matches/{id}/start')
   Future<MatchModel> startMatch(
     @Path('id') String id,
     @Body() MatchTimestampRequest body,
   );
 
-  @POST('/api/v1/matches/{id}/end')
+  @POST('/matches/{id}/end')
   Future<MatchModel> endMatch(
     @Path('id') String id,
     @Body() MatchTimestampRequest body,
