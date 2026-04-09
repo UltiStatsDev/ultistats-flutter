@@ -3,8 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/teams/presentation/providers/teams_providers.dart';
 
-//TODO сделать фаб для добавления команды
-//TODO и обновление сделать кнопку
 class NoTeamsWidget extends ConsumerWidget {
   const NoTeamsWidget({super.key});
 

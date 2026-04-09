@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/matches/presentation/providers/matches_providers.dart';
 
-//TODO и обновление сделать
 class NoMatchesWidget extends ConsumerWidget {
   const NoMatchesWidget({super.key});
 

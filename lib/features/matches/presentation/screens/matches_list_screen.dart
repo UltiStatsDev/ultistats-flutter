@@ -18,17 +18,25 @@ class MatchesListScreen extends ConsumerWidget {
     final state = ref.watch(matchesListProvider);
 
     return ScreenWrapper(
-      child: switch (state) {
-        MatchesListLoading() => LoadingMatchesListWidget(),
-        MatchesListError(:final exception, :final stackTrace) => ErrorScreen(
-          exception: exception,
-          stackTrace: stackTrace,
-          onRetry: () => ref.read(matchesListProvider.notifier).loadInitial(),
-        ),
-        MatchesListLoaded(:final matches) when matches.isEmpty =>
-          const NoMatchesWidget(),
-        MatchesListLoaded() => MatchesListWidget(state: state),
-      },
+      child: AnimatedSwitcher(
+        duration: Duration(milliseconds: 200),
+        reverseDuration: Duration(milliseconds: 200),
+        child: switch (state) {
+          MatchesListLoading() => LoadingMatchesListWidget(key: ValueKey(1)),
+          MatchesListError(:final exception, :final stackTrace) => ErrorScreen(
+            key: ValueKey(2),
+            exception: exception,
+            stackTrace: stackTrace,
+            onRetry: () => ref.read(matchesListProvider.notifier).loadInitial(),
+          ),
+          MatchesListLoaded(:final matches) when matches.isEmpty =>
+            const NoMatchesWidget(key: ValueKey(3)),
+          MatchesListLoaded() => MatchesListWidget(
+            key: ValueKey(4),
+            state: state,
+          ),
+        },
+      ),
     );
   }
 }
