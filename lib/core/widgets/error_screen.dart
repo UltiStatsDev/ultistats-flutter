@@ -63,12 +63,16 @@ class _ErrorScreenState extends State<ErrorScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: theme.colorScheme.surfaceContainerHighest,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: SelectableText(
                       widget.stackTrace.toString(),
-                      style: TextStyle(fontFamily: 'monospace', fontSize: 10),
+                      style: TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 10,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ],
