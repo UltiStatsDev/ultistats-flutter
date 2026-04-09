@@ -14,4 +14,11 @@ class Team {
     this.city,
     this.photoUrl,
   });
+
+  const Team.placeholder()
+    : id = "0",
+      name = "Team Name",
+      players = const [],
+      city = "Novosibirsk",
+      photoUrl = null;
 }

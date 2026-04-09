@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 import 'package:ultistats/core/themes/app_colors.dart';
 
 ThemeData createLightTheme() {
@@ -86,6 +87,13 @@ ThemeData createLightTheme() {
           letterSpacing: 0,
         ),
       ),
+      SkeletonizerConfigData(
+        effect: ShimmerEffect(
+          duration: Duration(seconds: 1),
+          baseColor: Colors.white.withValues(alpha: 0.4),
+          highlightColor: Colors.white.withValues(alpha: 0.5)
+        )
+      )
     ],
 
     textTheme: TextTheme(
@@ -185,6 +193,8 @@ extension ThemeValueExtension on ThemeData {
 
   double get searchBarSize => 46;
 
+  double get searchBarBorderRadius => 10;
+
   List<BoxShadow> get bottomNavigationBarBoxShadow => [
     BoxShadow(
       color: Colors.black.withValues(alpha: 0.2),
@@ -201,7 +211,6 @@ extension ThemeValueExtension on ThemeData {
 ///
 /// Extra text themes
 ///
-
 extension ThemeAppInputExtension on ThemeData {
   TextStyle get textFieldStyleText =>
       extension<AppInputTheme>()!.textFieldStyleText!;

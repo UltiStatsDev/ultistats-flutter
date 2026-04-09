@@ -41,6 +41,8 @@ class TeamPhoto extends StatelessWidget {
   //TODO сделать фотку плейсхолдер нормальную
   Widget _buildPlaceholder(BuildContext context) {
     return Container(
+      width: size,
+      height: size,
       color: Theme.of(context).colorScheme.surfaceContainerHighest,
       child: Icon(
         Icons.groups_outlined,

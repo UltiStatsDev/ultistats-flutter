@@ -14,41 +14,46 @@ class TeamCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final photoSize = 92.0;
-    return AppInkWell(
-      onTap: onPressed,
-      borderRadius: BorderRadius.circular(theme.cardBorderRadius),
-      child: Ink(
-        height: theme.cardHeight,
-        padding: EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.primaryContainer,
-          borderRadius: BorderRadius.circular(theme.cardBorderRadius),
-          boxShadow: theme.cardBoxShadow,
-        ),
-        child: Row(
-          children: [
-            TeamPhoto(photoUrl: team.photoUrl, size: photoSize),
-            SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    team.name,
-                    style: theme.textTheme.bodyMedium,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
-                  ),
-                  Text(
-                    team.city ?? "",
-                    style: theme.textTheme.labelMedium,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
+    final borderRadius = BorderRadius.circular(theme.cardBorderRadius);
+
+    return Container(
+      height: theme.cardHeight,
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primaryContainer,
+        borderRadius: borderRadius,
+        boxShadow: theme.cardBoxShadow,
+      ),
+      child: AppInkWell(
+        onTap: onPressed,
+        borderRadius: borderRadius,
+        child: Padding(
+          padding: const EdgeInsets.all(14),
+          child: Row(
+            children: [
+              TeamPhoto(photoUrl: team.photoUrl, size: photoSize),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      team.name,
+                      style: theme.textTheme.bodyMedium,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                    Text(
+                      team.city ?? "",
+                      style: theme.textTheme.labelMedium,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

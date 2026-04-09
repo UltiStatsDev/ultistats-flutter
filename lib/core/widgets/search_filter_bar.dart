@@ -7,7 +7,6 @@ class SearchFilterBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final borderRadius = 10.0;
     final theme = Theme.of(context);
     return Row(
       children: [
@@ -17,13 +16,11 @@ class SearchFilterBar extends StatelessWidget {
             height: theme.searchBarSize,
             decoration: BoxDecoration(
               color: theme.colorScheme.primaryContainer,
-              borderRadius: BorderRadius.circular(borderRadius),
+              borderRadius: BorderRadius.circular(theme.searchBarBorderRadius),
             ),
             child: TextField(
               style: theme.textFieldStyleText,
-              decoration: InputDecoration(
-                hintText: "Поиск...",
-              ),
+              decoration: InputDecoration(hintText: "Поиск..."),
             ),
           ),
         ),
@@ -47,12 +44,12 @@ class _SearchButton extends StatelessWidget {
     final theme = Theme.of(context);
     return AppInkWell(
       onTap: onPressed,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(theme.searchBarBorderRadius),
       child: Ink(
         width: theme.searchBarSize,
         height: theme.searchBarSize,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(theme.searchBarBorderRadius),
           color: theme.colorScheme.primaryContainer,
         ),
         child: Icon(icon, color: theme.primaryColor, size: 30),

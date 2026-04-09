@@ -8,7 +8,7 @@ class AppInkWell extends StatelessWidget {
     required this.borderRadius,
   });
 
-  final Ink child;
+  final Widget child;
   final VoidCallback onTap;
   final BorderRadius borderRadius;
 
