@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/app_ink_well.dart';
-import 'package:ultistats/core/widgets/team_photo.dart';
+import 'package:ultistats/core/widgets/photo_widget.dart';
 import 'package:ultistats/features/matches/domain/entities/match.dart';
 import 'package:ultistats/features/matches/domain/entities/team_match_result.dart';
 
@@ -87,7 +87,7 @@ class MatchCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        TeamPhoto(photoUrl: team.photoUrl, size: photoSize),
+        PhotoWidget(photoUrl: team.photoUrl, size: photoSize),
         SizedBox(height: 4),
         Text(
           team.name,

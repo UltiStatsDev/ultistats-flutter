@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ultistats/core/config/config.dart';
 
-class TeamPhoto extends StatelessWidget {
+class PhotoWidget extends StatelessWidget {
   final String? photoUrl;
   final double size;
   final double borderRadius;
 
-  const TeamPhoto({
+  const PhotoWidget({
     super.key,
     required this.photoUrl,
     required this.size,
