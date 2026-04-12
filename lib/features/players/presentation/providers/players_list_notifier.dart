@@ -1,6 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
-import 'package:ultistats/features/players/domain/entities/player.dart';
 import 'package:ultistats/features/players/domain/params/player_filter_params.dart';
 import 'package:ultistats/features/players/presentation/providers/players_list_state.dart';
 

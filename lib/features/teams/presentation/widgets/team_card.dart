@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/app_ink_well.dart';
 import 'package:ultistats/core/widgets/photo_widget.dart';
-import 'package:ultistats/features/teams/domain/entities/team.dart';
+import 'package:ultistats/features/teams/domain/entities/team_list_item.dart';
 
 class TeamCard extends StatelessWidget {
   const TeamCard({super.key, required this.team, required this.onPressed});
 
-  final Team team;
+  final TeamListItem team;
   final VoidCallback onPressed;
 
   @override

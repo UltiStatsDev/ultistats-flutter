@@ -1,15 +1,15 @@
-import 'package:dio/dio.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:ultistats/core/domain/entities/page.dart';
-import 'package:ultistats/features/teams/data/models/create_team_request.dart';
-import 'package:ultistats/features/teams/data/models/update_team_request.dart';
-import 'package:ultistats/features/teams/data/models/team_filter_request.dart';
 import 'package:ultistats/features/teams/data/sources/teams_api.dart';
-import 'package:ultistats/features/teams/domain/entities/team.dart';
+import 'package:ultistats/features/teams/domain/entities/team_detail.dart';
+import 'package:ultistats/features/teams/domain/entities/team_list_item.dart';
 import 'package:ultistats/features/teams/domain/params/create_team_params.dart';
 import 'package:ultistats/features/teams/domain/params/team_filter_params.dart';
 import 'package:ultistats/features/teams/domain/params/update_team_params.dart';
 import 'package:ultistats/features/teams/domain/repositories/teams_repository.dart';
+import 'package:ultistats/features/teams/data/models/team_filter_request.dart';
+import 'package:ultistats/features/teams/data/models/create_team_request.dart';
+import 'package:ultistats/features/teams/data/models/update_team_request.dart';
+import 'package:dio/dio.dart';
 
 class TeamsRepositoryImpl implements TeamsRepository {
   final TeamsApi _api;
@@ -17,82 +17,85 @@ class TeamsRepositoryImpl implements TeamsRepository {
   TeamsRepositoryImpl(this._api);
 
   @override
-  Future<Team> createTeam(CreateTeamParams params) async {
-    final request = CreateTeamRequest.fromParams(params);
-    final model = await _api.createTeam(request);
-    return model.toEntity();
-  }
+  Future<Page<TeamListItem>> getList(TeamFilterParams params) async {
+    final request = TeamFilterRequest(
+      page: params.page,
+      size: params.size,
+      name: params.name,
+      sort: params.sort,
+    );
 
-  @override
-  Future<void> deleteById(String teamId) {
-    return _api.deleteTeam(teamId);
-  }
+    final result = await _api.getTeams(request);
 
-  @override
-  Future<Team> getById(String teamId) async {
-    final model = await _api.getTeamById(teamId);
-    return model.toEntity();
-  }
-
-  @override
-  Future<Page<Team>> getList(TeamFilterParams params) async {
-
-    await Future.delayed(Duration(seconds: 2));
-
-    final request = TeamFilterRequest.fromParams(params);
-    final pageModel = await _api.getTeams(request);
-    return Page<Team>(
-      content: pageModel.content.map((m) => m.toEntity()).toList(),
-      totalElements: pageModel.totalElements,
-      totalPages: pageModel.totalPages,
-      currentPage: pageModel.currentPage,
-      size: pageModel.size,
+    return Page(
+      content: result.content.map((e) => e.toEntity()).toList(),
+      totalElements: result.totalElements,
+      totalPages: result.totalPages,
+      currentPage: result.currentPage,
+      size: result.size,
     );
   }
 
   @override
-  Future<Team> updateById(UpdateTeamParams params) async {
-    final request = UpdateTeamRequest.fromParams(params);
-    final model = await _api.updateTeam(params.teamId, request);
-    return model.toEntity();
+  Future<TeamDetail> getById(String teamId) async {
+    final result = await _api.getTeamById(teamId);
+    return result.toEntity();
   }
 
   @override
-  Future<Team> addPlayerToTeam(String teamId, String playerId) async {
-    final model = await _api.addPlayerToTeam(teamId, playerId);
-    return model.toEntity();
+  Future<TeamDetail> createTeam(CreateTeamParams params) async {
+    final body = CreateTeamRequest(
+      name: params.name,
+      playerIds: params.playerIds,
+      city: params.city,
+    );
+    final result = await _api.createTeam(body);
+    return result.toEntity();
   }
 
   @override
-  Future<Team> removePlayerFromTeam(String teamId, String playerId) async {
-    final model = await _api.removePlayerFromTeam(teamId, playerId);
-    return model.toEntity();
+  Future<TeamDetail> updateById(UpdateTeamParams params) async {
+    final body = UpdateTeamRequest(
+      name: params.name,
+      playerIds: params.playerIds,
+      city: params.city,
+    );
+    final result = await _api.updateTeam(params.teamId, body);
+    return result.toEntity();
+  }
+
+  @override
+  Future<void> deleteById(String teamId) async {
+    await _api.deleteTeam(teamId);
+  }
+
+  @override
+  Future<TeamDetail> addPlayerToTeam(String teamId, String playerId) async {
+    final result = await _api.addPlayerToTeam(teamId, playerId);
+    return result.toEntity();
+  }
+
+  @override
+  Future<TeamDetail> removePlayerFromTeam(String teamId, String playerId) async {
+    final result = await _api.removePlayerFromTeam(teamId, playerId);
+    return result.toEntity();
   }
 
   @override
   Future<String?> getTeamPhotoUrl(String teamId) async {
-    final response = await _api.getTeamPhotoUrl(teamId);
-    return response.url;
+    final result = await _api.getTeamPhotoUrl(teamId);
+    return result.url;
   }
 
   @override
-  Future<String?> uploadTeamPhoto(String teamId, List<int> bytes, String filename) async {
-    final extension = filename.split('.').last.toLowerCase();
-    final mimeType = switch (extension) {
-      'png' => 'image/png',
-      'jpg' || 'jpeg' => 'image/jpeg',
-      'gif' => 'image/gif',
-      'webp' => 'image/webp',
-      _ => 'application/octet-stream',
-    };
-
-    final file = MultipartFile.fromBytes(
-      bytes,
-      filename: filename,
-      contentType: MediaType.parse(mimeType),
-    );
-    final response = await _api.uploadTeamPhoto(teamId, file);
-    return response.url;
+  Future<String?> uploadTeamPhoto(
+    String teamId,
+    List<int> bytes,
+    String filename,
+  ) async {
+    final file = MultipartFile.fromBytes(bytes, filename: filename);
+    final result = await _api.uploadTeamPhoto(teamId, file);
+    return result.url;
   }
 
   @override

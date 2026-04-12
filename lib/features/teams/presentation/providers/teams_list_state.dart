@@ -1,4 +1,4 @@
-import 'package:ultistats/features/teams/domain/entities/team.dart';
+import 'package:ultistats/features/teams/domain/entities/team_list_item.dart';
 
 sealed class TeamsListState {
   const TeamsListState();
@@ -16,7 +16,7 @@ class TeamsListError extends TeamsListState {
 }
 
 class TeamsListLoaded extends TeamsListState {
-  final List<Team> teams;
+  final List<TeamListItem> teams;
   final bool isLoadingMore;
   final bool isRefreshing;
   final bool hasReachedEnd;
@@ -33,7 +33,7 @@ class TeamsListLoaded extends TeamsListState {
   });
 
   TeamsListLoaded copyWith({
-    List<Team>? teams,
+    List<TeamListItem>? teams,
     bool? isLoadingMore,
     bool? isRefreshing,
     bool? hasReachedEnd,

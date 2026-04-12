@@ -1,4 +1,4 @@
-import 'package:ultistats/features/players/domain/entities/player.dart';
+import 'package:ultistats/features/players/domain/entities/player_list_item.dart';
 
 sealed class PlayersListState {
   const PlayersListState();
@@ -16,7 +16,7 @@ class PlayersListError extends PlayersListState {
 }
 
 class PlayersListLoaded extends PlayersListState {
-  final List<Player> players;
+  final List<PlayerListItem> players;
   final bool isLoadingMore;
   final bool isRefreshing;
   final bool hasReachedEnd;
@@ -33,7 +33,7 @@ class PlayersListLoaded extends PlayersListState {
   });
 
   PlayersListLoaded copyWith({
-    List<Player>? players,
+    List<PlayerListItem>? players,
     bool? isLoadingMore,
     bool? isRefreshing,
     bool? hasReachedEnd,

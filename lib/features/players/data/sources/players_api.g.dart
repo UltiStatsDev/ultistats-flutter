@@ -20,12 +20,73 @@ class _PlayersApi implements PlayersApi {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<PlayerModel> getPlayerById(String id) async {
+  Future<PageModel<PlayerListItemModel>> getPlayers(
+    PlayerFilterRequest queries,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(queries.toJson());
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<PageModel<PlayerListItemModel>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/players',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late PageModel<PlayerListItemModel> _value;
+    try {
+      _value = PageModel<PlayerListItemModel>.fromJson(
+        _result.data!,
+        (json) => PlayerListItemModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<PlayerDetailModel> createPlayer(CreatePlayerRequest body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _options = _setStreamType<PlayerDetailModel>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/players',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late PlayerDetailModel _value;
+    try {
+      _value = PlayerDetailModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<PlayerDetailModel> getPlayerById(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<PlayerModel>(
+    final _options = _setStreamType<PlayerDetailModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -36,9 +97,9 @@ class _PlayersApi implements PlayersApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late PlayerModel _value;
+    late PlayerDetailModel _value;
     try {
-      _value = PlayerModel.fromJson(_result.data!);
+      _value = PlayerDetailModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -47,13 +108,16 @@ class _PlayersApi implements PlayersApi {
   }
 
   @override
-  Future<PlayerModel> updatePlayer(String id, UpdatePlayerRequest body) async {
+  Future<PlayerDetailModel> updatePlayer(
+    String id,
+    UpdatePlayerRequest body,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<PlayerModel>(
+    final _options = _setStreamType<PlayerDetailModel>(
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -64,9 +128,9 @@ class _PlayersApi implements PlayersApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late PlayerModel _value;
+    late PlayerDetailModel _value;
     try {
-      _value = PlayerModel.fromJson(_result.data!);
+      _value = PlayerDetailModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -94,29 +158,25 @@ class _PlayersApi implements PlayersApi {
   }
 
   @override
-  Future<PageModel<PlayerModel>> getPlayers(PlayerFilterRequest queries) async {
+  Future<PhotoUrlResponse> getPlayerPhotoUrl(String playerId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    queryParameters.addAll(queries.toJson());
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<PageModel<PlayerModel>>(
+    final _options = _setStreamType<PhotoUrlResponse>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/players',
+            '/players/${playerId}/photoUrl',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late PageModel<PlayerModel> _value;
+    late PhotoUrlResponse _value;
     try {
-      _value = PageModel<PlayerModel>.fromJson(
-        _result.data!,
-        (json) => PlayerModel.fromJson(json as Map<String, dynamic>),
-      );
+      _value = PhotoUrlResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -125,26 +185,61 @@ class _PlayersApi implements PlayersApi {
   }
 
   @override
-  Future<PlayerModel> createPlayer(CreatePlayerRequest body) async {
+  Future<PhotoUrlResponse> uploadPlayerPhoto(
+    String playerId,
+    MultipartFile multipartFile,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body.toJson());
-    final _options = _setStreamType<PlayerModel>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
+    final _data = FormData();
+    _data.files.add(MapEntry('multipartFile', multipartFile));
+    final _options = _setStreamType<PhotoUrlResponse>(
+      Options(
+            method: 'POST',
+            headers: _headers,
+            extra: _extra,
+            contentType: 'multipart/form-data',
+          )
           .compose(
             _dio.options,
-            '/players',
+            '/players/${playerId}/uploadPhoto',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late PlayerModel _value;
+    late PhotoUrlResponse _value;
     try {
-      _value = PlayerModel.fromJson(_result.data!);
+      _value = PhotoUrlResponse.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<PhotoUrlResponse> deletePlayerPhoto(String playerId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<PhotoUrlResponse>(
+      Options(method: 'DELETE', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/players/${playerId}/photoUrl',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late PhotoUrlResponse _value;
+    try {
+      _value = PhotoUrlResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

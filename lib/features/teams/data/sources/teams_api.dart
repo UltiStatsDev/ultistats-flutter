@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:ultistats/core/data/models/page_model.dart';
-import 'package:ultistats/features/teams/data/models/team_model.dart';
+import 'package:ultistats/features/teams/data/models/team_detail_model.dart';
+import 'package:ultistats/features/teams/data/models/team_list_item_model.dart';
 import 'package:ultistats/features/teams/data/models/create_team_request.dart';
 import 'package:ultistats/features/teams/data/models/update_team_request.dart';
 import 'package:ultistats/features/teams/data/models/team_filter_request.dart';
-import 'package:ultistats/features/teams/data/models/photo_url_response.dart';
+import 'package:ultistats/core/data/models/photo_url_response.dart';
 
 part 'teams_api.g.dart';
 
@@ -13,11 +14,19 @@ part 'teams_api.g.dart';
 abstract class TeamsApi {
   factory TeamsApi(Dio dio, {String baseUrl}) = _TeamsApi;
 
+  @GET('/teams')
+  Future<PageModel<TeamListItemModel>> getTeams(
+    @Queries() TeamFilterRequest queries,
+  );
+
   @GET('/teams/{id}')
-  Future<TeamModel> getTeamById(@Path('id') String id);
+  Future<TeamDetailModel> getTeamById(@Path('id') String id);
+
+  @POST('/teams')
+  Future<TeamDetailModel> createTeam(@Body() CreateTeamRequest body);
 
   @PUT('/teams/{id}')
-  Future<TeamModel> updateTeam(
+  Future<TeamDetailModel> updateTeam(
     @Path('id') String id,
     @Body() UpdateTeamRequest body,
   );
@@ -25,20 +34,14 @@ abstract class TeamsApi {
   @DELETE('/teams/{id}')
   Future<void> deleteTeam(@Path('id') String id);
 
-  @GET('/teams')
-  Future<PageModel<TeamModel>> getTeams(@Queries() TeamFilterRequest queries);
-
-  @POST('/teams')
-  Future<TeamModel> createTeam(@Body() CreateTeamRequest body);
-
   @POST('/teams/{teamId}/players/{playerId}')
-  Future<TeamModel> addPlayerToTeam(
+  Future<TeamDetailModel> addPlayerToTeam(
     @Path('teamId') String teamId,
     @Path('playerId') String playerId,
   );
 
   @DELETE('/teams/{teamId}/players/{playerId}')
-  Future<TeamModel> removePlayerFromTeam(
+  Future<TeamDetailModel> removePlayerFromTeam(
     @Path('teamId') String teamId,
     @Path('playerId') String playerId,
   );
