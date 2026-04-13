@@ -10,7 +10,7 @@ class DashboardScreen extends StatelessWidget {
   final _routes = const [
     MatchesListRoute(),
     TeamsListRoute(),
-    PlayersListRoute(),
+    PlayersTabRoute(),
   ];
 
   @override

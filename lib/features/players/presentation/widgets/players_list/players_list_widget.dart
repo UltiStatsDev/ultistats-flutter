@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_colors.dart';
@@ -6,7 +7,8 @@ import 'package:ultistats/core/widgets/app_refreshing_indicator.dart';
 import 'package:ultistats/core/widgets/search_filter_bar.dart';
 import 'package:ultistats/features/players/presentation/providers/players_list_state.dart';
 import 'package:ultistats/features/players/presentation/providers/players_providers.dart';
-import 'package:ultistats/features/players/presentation/widgets/player_card.dart';
+import 'package:ultistats/features/players/presentation/widgets/players_list/player_card.dart';
+import 'package:ultistats/router/app_router.gr.dart';
 
 class PlayersListWidget extends ConsumerStatefulWidget {
   const PlayersListWidget({super.key, required this.state});
@@ -83,7 +85,9 @@ class _PlayersListWidgetState extends ConsumerState<PlayersListWidget> {
           right: 19 - theme.screenPadding,
           bottom: 24,
           child: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              context.router.push(CreatePlayerRoute());
+            },
             child: const Icon(Icons.add),
           ),
         ),

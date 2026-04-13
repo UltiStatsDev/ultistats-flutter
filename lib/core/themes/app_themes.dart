@@ -20,7 +20,7 @@ ThemeData createLightTheme() {
       hintStyle: TextStyle(
         fontWeight: FontWeight.normal,
         fontSize: 20,
-        color: AppColors.grey,
+        color: Colors.black.withValues(alpha: 0.35),
         letterSpacing: 0,
       ),
       enabledBorder: InputBorder.none,
@@ -61,6 +61,13 @@ ThemeData createLightTheme() {
     // CircularProgressIndicator
     progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.white),
 
+    iconButtonTheme: IconButtonThemeData(
+      style: ButtonStyle(
+        iconSize: WidgetStatePropertyAll(36),
+        iconColor: WidgetStatePropertyAll(Colors.white)
+      )
+    ),
+    
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
         iconSize: WidgetStatePropertyAll(20),
@@ -83,7 +90,7 @@ ThemeData createLightTheme() {
         textFieldStyleText: TextStyle(
           fontWeight: FontWeight.normal,
           fontSize: 20,
-          color: Colors.black,
+          color: AppColors.grey,
           letterSpacing: 0,
         ),
       ),
@@ -194,6 +201,8 @@ extension ThemeValueExtension on ThemeData {
   double get searchBarSize => 46;
 
   double get searchBarBorderRadius => 10;
+
+  double get appBarHeight => 52;
 
   List<BoxShadow> get bottomNavigationBarBoxShadow => [
     BoxShadow(

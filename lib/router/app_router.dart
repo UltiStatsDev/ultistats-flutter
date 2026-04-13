@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:ultistats/router/app_router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
@@ -15,13 +16,19 @@ class AppRouter extends RootStackRouter {
           path: "matches",
           initial: true,
         ),
+        CustomRoute(page: TeamsListRoute.page, path: "teams"),
         CustomRoute(
-          page: TeamsListRoute.page,
-          path: "teams",
-        ),
-        CustomRoute(
-          page: PlayersListRoute.page,
+          page: PlayersTabRoute.page,
           path: "players",
+          children: [
+            CustomRoute(page: PlayersListRoute.page, path: "", initial: true),
+            CustomRoute(
+              page: CreatePlayerRoute.page,
+              path: "create",
+              duration: Duration(seconds: 0),
+              reverseDuration: Duration(seconds: 0),
+            ),
+          ],
         ),
       ],
     ),
