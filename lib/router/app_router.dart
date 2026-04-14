@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:ultistats/router/app_router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
@@ -23,8 +22,8 @@ class AppRouter extends RootStackRouter {
           children: [
             CustomRoute(page: PlayersListRoute.page, path: "", initial: true),
             CustomRoute(
-              page: CreatePlayerRoute.page,
-              path: "create",
+              page: EditPlayerRoute.page,
+              path: "edit",
               duration: Duration(seconds: 0),
               reverseDuration: Duration(seconds: 0),
             ),

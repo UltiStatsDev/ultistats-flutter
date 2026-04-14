@@ -7,6 +7,7 @@ import 'package:ultistats/core/widgets/app_refreshing_indicator.dart';
 import 'package:ultistats/core/widgets/search_filter_bar.dart';
 import 'package:ultistats/features/players/presentation/providers/players_list_state.dart';
 import 'package:ultistats/features/players/presentation/providers/players_providers.dart';
+import 'package:ultistats/features/players/presentation/screens/edit_player_screen.dart';
 import 'package:ultistats/features/players/presentation/widgets/players_list/player_card.dart';
 import 'package:ultistats/router/app_router.gr.dart';
 
@@ -86,7 +87,13 @@ class _PlayersListWidgetState extends ConsumerState<PlayersListWidget> {
           bottom: 24,
           child: FloatingActionButton(
             onPressed: () {
-              context.router.push(CreatePlayerRoute());
+              context.router.push(
+                EditPlayerRoute(
+                  title: "Создание игрока",
+                  confirmButtonText: "Создать игрока",
+                  editScreenInitial: EditScreenInitial(),
+                ),
+              );
             },
             child: const Icon(Icons.add),
           ),

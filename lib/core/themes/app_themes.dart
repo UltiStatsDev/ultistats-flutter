@@ -85,6 +85,13 @@ ThemeData createLightTheme() {
       ),
     ),
 
+    dialogTheme: DialogThemeData(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(theme.cardBorderRadius),
+      ),
+    ),
+
     extensions: [
       AppInputTheme(
         textFieldStyleText: TextStyle(
@@ -203,6 +210,10 @@ extension ThemeValueExtension on ThemeData {
   double get searchBarBorderRadius => 10;
 
   double get appBarHeight => 52;
+
+  double get textFieldHeight => 46;
+
+  double get textFieldBorderRadius => 10;
 
   List<BoxShadow> get bottomNavigationBarBoxShadow => [
     BoxShadow(

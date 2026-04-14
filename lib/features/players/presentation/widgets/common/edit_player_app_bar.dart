@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 
 // TODO какойто кал со стеком мб посмотреть как сделать получше
-class CreatePlayerAppBar extends StatelessWidget {
-  const CreatePlayerAppBar({super.key, this.onBackPressed});
+class EditPlayerAppBar extends StatelessWidget {
+  const EditPlayerAppBar({super.key, this.onBackPressed, required this.title});
 
   final VoidCallback? onBackPressed;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class CreatePlayerAppBar extends StatelessWidget {
             ),
           ),
           Center(
-            child: Text('Создать игрока', style: theme.textTheme.titleMedium),
+            child: Text(title, style: theme.textTheme.titleMedium),
           ),
         ],
       ),

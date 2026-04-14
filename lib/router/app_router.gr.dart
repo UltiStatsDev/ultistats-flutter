@@ -10,12 +10,13 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:auto_route/auto_route.dart' as _i7;
+import 'package:flutter/material.dart' as _i8;
 import 'package:ultistats/features/dashboard/presentation/screens/dashboard_screen.dart'
-    as _i2;
+    as _i1;
 import 'package:ultistats/features/matches/presentation/screens/matches_list_screen.dart'
     as _i3;
-import 'package:ultistats/features/players/presentation/screens/create_player_screen.dart'
-    as _i1;
+import 'package:ultistats/features/players/presentation/screens/edit_player_screen.dart'
+    as _i2;
 import 'package:ultistats/features/players/presentation/screens/players_list_screen.dart'
     as _i4;
 import 'package:ultistats/features/players/presentation/screens/players_tab_screen.dart'
@@ -24,23 +25,7 @@ import 'package:ultistats/features/teams/presentation/screens/teams_list_screen.
     as _i6;
 
 /// generated route for
-/// [_i1.CreatePlayerScreen]
-class CreatePlayerRoute extends _i7.PageRouteInfo<void> {
-  const CreatePlayerRoute({List<_i7.PageRouteInfo>? children})
-    : super(CreatePlayerRoute.name, initialChildren: children);
-
-  static const String name = 'CreatePlayerRoute';
-
-  static _i7.PageInfo page = _i7.PageInfo(
-    name,
-    builder: (data) {
-      return const _i1.CreatePlayerScreen();
-    },
-  );
-}
-
-/// generated route for
-/// [_i2.DashboardScreen]
+/// [_i1.DashboardScreen]
 class DashboardRoute extends _i7.PageRouteInfo<void> {
   const DashboardRoute({List<_i7.PageRouteInfo>? children})
     : super(DashboardRoute.name, initialChildren: children);
@@ -50,9 +35,84 @@ class DashboardRoute extends _i7.PageRouteInfo<void> {
   static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      return const _i2.DashboardScreen();
+      return const _i1.DashboardScreen();
     },
   );
+}
+
+/// generated route for
+/// [_i2.EditPlayerScreen]
+class EditPlayerRoute extends _i7.PageRouteInfo<EditPlayerRouteArgs> {
+  EditPlayerRoute({
+    _i8.Key? key,
+    required String title,
+    required String confirmButtonText,
+    required _i2.EditScreenInitial editScreenInitial,
+    List<_i7.PageRouteInfo>? children,
+  }) : super(
+         EditPlayerRoute.name,
+         args: EditPlayerRouteArgs(
+           key: key,
+           title: title,
+           confirmButtonText: confirmButtonText,
+           editScreenInitial: editScreenInitial,
+         ),
+         initialChildren: children,
+       );
+
+  static const String name = 'EditPlayerRoute';
+
+  static _i7.PageInfo page = _i7.PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<EditPlayerRouteArgs>();
+      return _i2.EditPlayerScreen(
+        key: args.key,
+        title: args.title,
+        confirmButtonText: args.confirmButtonText,
+        editScreenInitial: args.editScreenInitial,
+      );
+    },
+  );
+}
+
+class EditPlayerRouteArgs {
+  const EditPlayerRouteArgs({
+    this.key,
+    required this.title,
+    required this.confirmButtonText,
+    required this.editScreenInitial,
+  });
+
+  final _i8.Key? key;
+
+  final String title;
+
+  final String confirmButtonText;
+
+  final _i2.EditScreenInitial editScreenInitial;
+
+  @override
+  String toString() {
+    return 'EditPlayerRouteArgs{key: $key, title: $title, confirmButtonText: $confirmButtonText, editScreenInitial: $editScreenInitial}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! EditPlayerRouteArgs) return false;
+    return key == other.key &&
+        title == other.title &&
+        confirmButtonText == other.confirmButtonText &&
+        editScreenInitial == other.editScreenInitial;
+  }
+
+  @override
+  int get hashCode =>
+      key.hashCode ^
+      title.hashCode ^
+      confirmButtonText.hashCode ^
+      editScreenInitial.hashCode;
 }
 
 /// generated route for
