@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:ultistats/features/matches/domain/entities/match.dart';
+import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
 import 'package:ultistats/features/matches/domain/entities/match_list_item.dart';
 
 part 'match_list_item_model.g.dart';

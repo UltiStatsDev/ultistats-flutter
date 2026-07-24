@@ -1,4 +1,4 @@
-import 'package:ultistats/features/matches/domain/entities/match.dart';
+import 'package:ultistats/features/matches/domain/entities/match_list_item.dart';
 
 sealed class MatchesListState {
   const MatchesListState();
@@ -16,7 +16,7 @@ class MatchesListError extends MatchesListState {
 }
 
 class MatchesListLoaded extends MatchesListState {
-  final List<Match> matches;
+  final List<MatchListItem> matches;
   final bool isLoadingMore;
   final bool isRefreshing;
   final bool hasReachedEnd;
@@ -33,7 +33,7 @@ class MatchesListLoaded extends MatchesListState {
   });
 
   MatchesListLoaded copyWith({
-    List<Match>? matches,
+    List<MatchListItem>? matches,
     bool? isLoadingMore,
     bool? isRefreshing,
     bool? hasReachedEnd,

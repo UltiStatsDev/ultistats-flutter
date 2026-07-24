@@ -6,7 +6,7 @@ enum MatchStatus {
   finished,
 }
 
-class Match {
+class MatchDetail {
   final String id;
   final List<TeamMatchResult> teams;
   final int eventCount;
@@ -16,7 +16,7 @@ class Match {
   final DateTime? endedAt;
   final MatchStatus status;
 
-  const Match({
+  const MatchDetail({
     required this.id,
     required this.teams,
     required this.eventCount,

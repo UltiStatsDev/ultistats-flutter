@@ -1,4 +1,4 @@
-import 'package:ultistats/features/matches/domain/entities/match.dart';
+import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
 
 class MatchListItem {
   final String id;
@@ -17,11 +17,8 @@ class MatchListItem {
     this.endedAt,
   });
 
-  factory MatchListItem.placeholder() => const MatchListItem(
-        id: '0',
-        teams: [],
-        status: MatchStatus.planned,
-      );
+  factory MatchListItem.placeholder() =>
+      const MatchListItem(id: '0', teams: [], status: MatchStatus.planned);
 }
 
 class MatchListTeam {

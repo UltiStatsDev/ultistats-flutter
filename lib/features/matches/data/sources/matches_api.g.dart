@@ -20,13 +20,15 @@ class _MatchesApi implements MatchesApi {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<PageModel<MatchModel>> getMatches(MatchFilterRequest queries) async {
+  Future<PageModel<MatchListItemModel>> getMatches(
+    MatchFilterRequest queries,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(queries.toJson());
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<PageModel<MatchModel>>(
+    final _options = _setStreamType<PageModel<MatchListItemModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -37,11 +39,11 @@ class _MatchesApi implements MatchesApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late PageModel<MatchModel> _value;
+    late PageModel<MatchListItemModel> _value;
     try {
-      _value = PageModel<MatchModel>.fromJson(
+      _value = PageModel<MatchListItemModel>.fromJson(
         _result.data!,
-        (json) => MatchModel.fromJson(json as Map<String, dynamic>),
+        (json) => MatchListItemModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
@@ -51,13 +53,13 @@ class _MatchesApi implements MatchesApi {
   }
 
   @override
-  Future<MatchModel> createMatch(CreateMatchRequest body) async {
+  Future<MatchDetailModel> createMatch(CreateMatchRequest body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<MatchModel>(
+    final _options = _setStreamType<MatchDetailModel>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -68,9 +70,9 @@ class _MatchesApi implements MatchesApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MatchModel _value;
+    late MatchDetailModel _value;
     try {
-      _value = MatchModel.fromJson(_result.data!);
+      _value = MatchDetailModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -79,12 +81,12 @@ class _MatchesApi implements MatchesApi {
   }
 
   @override
-  Future<MatchModel> getMatchById(String id) async {
+  Future<MatchDetailModel> getMatchById(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<MatchModel>(
+    final _options = _setStreamType<MatchDetailModel>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -95,9 +97,9 @@ class _MatchesApi implements MatchesApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MatchModel _value;
+    late MatchDetailModel _value;
     try {
-      _value = MatchModel.fromJson(_result.data!);
+      _value = MatchDetailModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -106,13 +108,16 @@ class _MatchesApi implements MatchesApi {
   }
 
   @override
-  Future<MatchModel> updateMatch(String id, UpdateMatchRequest body) async {
+  Future<MatchDetailModel> updateMatch(
+    String id,
+    UpdateMatchRequest body,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<MatchModel>(
+    final _options = _setStreamType<MatchDetailModel>(
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -123,9 +128,9 @@ class _MatchesApi implements MatchesApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MatchModel _value;
+    late MatchDetailModel _value;
     try {
-      _value = MatchModel.fromJson(_result.data!);
+      _value = MatchDetailModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -153,13 +158,16 @@ class _MatchesApi implements MatchesApi {
   }
 
   @override
-  Future<MatchModel> startMatch(String id, MatchTimestampRequest body) async {
+  Future<MatchDetailModel> startMatch(
+    String id,
+    MatchTimestampRequest body,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<MatchModel>(
+    final _options = _setStreamType<MatchDetailModel>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -170,9 +178,9 @@ class _MatchesApi implements MatchesApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MatchModel _value;
+    late MatchDetailModel _value;
     try {
-      _value = MatchModel.fromJson(_result.data!);
+      _value = MatchDetailModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -181,13 +189,16 @@ class _MatchesApi implements MatchesApi {
   }
 
   @override
-  Future<MatchModel> endMatch(String id, MatchTimestampRequest body) async {
+  Future<MatchDetailModel> endMatch(
+    String id,
+    MatchTimestampRequest body,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<MatchModel>(
+    final _options = _setStreamType<MatchDetailModel>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -198,9 +209,9 @@ class _MatchesApi implements MatchesApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MatchModel _value;
+    late MatchDetailModel _value;
     try {
-      _value = MatchModel.fromJson(_result.data!);
+      _value = MatchDetailModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

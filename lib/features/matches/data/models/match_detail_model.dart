@@ -1,11 +1,11 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ultistats/features/matches/data/models/team_match_result_model.dart';
-import 'package:ultistats/features/matches/domain/entities/match.dart';
+import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
 
-part 'match_model.g.dart';
+part 'match_detail_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class MatchModel {
+class MatchDetailModel {
   final String id;
   final List<TeamMatchResultModel> teams;
   final int eventCount;
@@ -15,7 +15,7 @@ class MatchModel {
   final DateTime? endedAt;
   final String status;
 
-  const MatchModel({
+  const MatchDetailModel({
     required this.id,
     required this.teams,
     required this.eventCount,
@@ -26,13 +26,13 @@ class MatchModel {
     this.endedAt,
   });
 
-  factory MatchModel.fromJson(Map<String, dynamic> json) =>
-      _$MatchModelFromJson(json);
+  factory MatchDetailModel.fromJson(Map<String, dynamic> json) =>
+      _$MatchDetailModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MatchModelToJson(this);
+  Map<String, dynamic> toJson() => _$MatchDetailModelToJson(this);
 
-  factory MatchModel.fromEntity(Match entity) {
-    return MatchModel(
+  factory MatchDetailModel.fromEntity(MatchDetail entity) {
+    return MatchDetailModel(
       id: entity.id,
       teams: entity.teams.map((t) => TeamMatchResultModel.fromEntity(t)).toList(),
       eventCount: entity.eventCount,
@@ -44,8 +44,8 @@ class MatchModel {
     );
   }
 
-  Match toEntity() {
-    return Match(
+  MatchDetail toEntity() {
+    return MatchDetail(
       id: id,
       teams: teams.map((t) => t.toEntity()).toList(),
       eventCount: eventCount,

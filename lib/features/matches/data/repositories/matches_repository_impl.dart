@@ -4,7 +4,8 @@ import 'package:ultistats/features/matches/data/models/match_filter_request.dart
 import 'package:ultistats/features/matches/data/models/match_timestamp_request.dart';
 import 'package:ultistats/features/matches/data/models/update_match_request.dart';
 import 'package:ultistats/features/matches/data/sources/matches_api.dart';
-import 'package:ultistats/features/matches/domain/entities/match.dart';
+import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
+import 'package:ultistats/features/matches/domain/entities/match_list_item.dart';
 import 'package:ultistats/features/matches/domain/params/create_match_params.dart';
 import 'package:ultistats/features/matches/domain/params/match_filter_params.dart';
 import 'package:ultistats/features/matches/domain/params/update_match_params.dart';
@@ -16,7 +17,7 @@ class MatchesRepositoryImpl implements MatchesRepository {
   MatchesRepositoryImpl(this._api);
 
   @override
-  Future<Match> createMatch(CreateMatchParams params) async {
+  Future<MatchDetail> createMatch(CreateMatchParams params) async {
     final request = CreateMatchRequest.fromParams(params);
     final model = await _api.createMatch(request);
     return model.toEntity();
@@ -28,24 +29,24 @@ class MatchesRepositoryImpl implements MatchesRepository {
   }
 
   @override
-  Future<Match> endMatch(String matchId, DateTime date) async {
+  Future<MatchDetail> endMatch(String matchId, DateTime date) async {
     final request = MatchTimestampRequest.fromDateTime(date);
     final model = await _api.endMatch(matchId, request);
     return model.toEntity();
   }
 
   @override
-  Future<Match> getById(String matchId) async {
+  Future<MatchDetail> getById(String matchId) async {
     final model = await _api.getMatchById(matchId);
     return model.toEntity();
   }
 
   @override
-  Future<Page<Match>> getList(MatchFilterParams params) async {
+  Future<Page<MatchListItem>> getList(MatchFilterParams params) async {
     final request = MatchFilterRequest.fromParams(params);
     final pageModel = await _api.getMatches(request);
 
-    return Page<Match>(
+    return Page<MatchListItem>(
       content: pageModel.content.map((m) => m.toEntity()).toList(),
       totalElements: pageModel.totalElements,
       totalPages: pageModel.totalPages,
@@ -55,14 +56,14 @@ class MatchesRepositoryImpl implements MatchesRepository {
   }
 
   @override
-  Future<Match> updateById(UpdateMatchParams params) async {
+  Future<MatchDetail> updateById(UpdateMatchParams params) async {
     final request = UpdateMatchRequest.fromParams(params);
     final model = await _api.updateMatch(params.matchId, request);
     return model.toEntity();
   }
 
   @override
-  Future<Match> startMatch(String matchId, DateTime date) async {
+  Future<MatchDetail> startMatch(String matchId, DateTime date) async {
     final request = MatchTimestampRequest.fromDateTime(date);
     final model = await _api.startMatch(matchId, request);
     return model.toEntity();
