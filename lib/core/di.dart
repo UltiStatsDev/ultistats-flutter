@@ -55,9 +55,9 @@ final matchesApiProvider = Provider<MatchesApi>((ref) {
   return MatchesApi(dio);
 });
 
-final matchEventsApiProvider = Provider<MatchEventsApi>((ref) {
+final matchEventsApiProvider = Provider<EventsApi>((ref) {
   final dio = ref.watch(dioProvider);
-  return MatchEventsApi(dio);
+  return EventsApi(dio);
 });
 
 final matchStatisticsApiProvider = Provider<MatchStatisticsApi>((ref) {

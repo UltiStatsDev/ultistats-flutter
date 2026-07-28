@@ -14,10 +14,11 @@ class PhotoWidget extends StatelessWidget {
   });
 
   String? get _fullUrl =>
-      photoUrl != null ? '${AppConfig.baseUrl}$photoUrl' : null;
+      photoUrl != null ? '${AppConfig.photoServerUrl}$photoUrl' : null;
 
   @override
   Widget build(BuildContext context) {
+
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadius),
       child: SizedBox(

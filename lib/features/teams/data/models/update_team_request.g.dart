@@ -9,15 +9,8 @@ part of 'update_team_request.dart';
 UpdateTeamRequest _$UpdateTeamRequestFromJson(Map<String, dynamic> json) =>
     UpdateTeamRequest(
       name: json['name'] as String?,
-      playerIds: (json['playerIds'] as List<dynamic>?)
-          ?.map((e) => e as String)
-          .toList(),
       city: json['city'] as String?,
     );
 
 Map<String, dynamic> _$UpdateTeamRequestToJson(UpdateTeamRequest instance) =>
-    <String, dynamic>{
-      'name': ?instance.name,
-      'playerIds': ?instance.playerIds,
-      'city': ?instance.city,
-    };
+    <String, dynamic>{'name': ?instance.name, 'city': ?instance.city};

@@ -6,31 +6,13 @@ part 'create_event_request.g.dart';
 
 @JsonSerializable(includeIfNull: false)
 class CreateEventRequest {
-  final MatchEventType type;
-  final String timestamp;
-  final String? teamId;
-  final String? playerId;
-  final String? toTeamId;
-  final String? toPlayerId;
+  final DateTime occurredAt;
 
-  const CreateEventRequest({
-    required this.type,
-    required this.timestamp,
-    this.teamId,
-    this.playerId,
-    this.toTeamId,
-    this.toPlayerId,
-  });
-
-  factory CreateEventRequest.fromParams(CreateEventParams params) =>
-      CreateEventRequest(
-        type: params.type,
-        timestamp: params.timestamp.toUtc().toIso8601String(),
-        teamId: params.teamId,
-        playerId: params.playerId,
-        toTeamId: params.toTeamId,
-        toPlayerId: params.toPlayerId,
-      );
+  const CreateEventRequest({required this.occurredAt});
 
   Map<String, dynamic> toJson() => _$CreateEventRequestToJson(this);
+
+  factory CreateEventRequest.fromParams(CreateEventParams params) {
+    return CreateEventRequest(occurredAt: params.occurredAt);
+  }
 }

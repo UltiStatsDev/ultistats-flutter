@@ -1,35 +1,40 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:ultistats/features/matches/data/models/match_event_model.dart';
 import 'package:ultistats/features/matches/data/models/create_event_request.dart';
+import 'package:ultistats/features/matches/data/models/event_model.dart';
 import 'package:ultistats/features/matches/data/models/update_event_request.dart';
-import 'package:ultistats/features/matches/data/models/event_response_model.dart';
 
 part 'match_events_api.g.dart';
 
 @RestApi()
-abstract class MatchEventsApi {
-  factory MatchEventsApi(Dio dio, {String baseUrl}) = _MatchEventsApi;
+abstract class EventsApi {
+  factory EventsApi(Dio dio, {String baseUrl}) = _EventsApi;
 
   @GET('/matches/{matchId}/events')
-  Future<List<MatchEventModel>> getMatchEvents(@Path('matchId') String matchId);
+  Future<List<EventModel>> getEvents(@Path('matchId') String matchId);
 
   @POST('/matches/{matchId}/events')
-  Future<EventResponseModel> createMatchEvent(
+  Future<EventModel> createEvent(
     @Path('matchId') String matchId,
     @Body() CreateEventRequest body,
   );
 
-  @PUT('/matches/{matchId}/events/{index}')
-  Future<EventResponseModel> updateMatchEvent(
+  @GET('/matches/{matchId}/events/{eventId}')
+  Future<EventModel> getEvent(
     @Path('matchId') String matchId,
-    @Path('index') int index,
+    @Path('eventId') String eventId,
+  );
+
+  @PATCH('/matches/{matchId}/events/{eventId}')
+  Future<EventModel> updateEvent(
+    @Path('matchId') String matchId,
+    @Path('eventId') String eventId,
     @Body() UpdateEventRequest body,
   );
 
-  @DELETE('/matches/{matchId}/events/{index}')
-  Future<EventResponseModel> deleteMatchEvent(
+  @DELETE('/matches/{matchId}/events/{eventId}')
+  Future<void> deleteEvent(
     @Path('matchId') String matchId,
-    @Path('index') int index,
+    @Path('eventId') String eventId,
   );
 }

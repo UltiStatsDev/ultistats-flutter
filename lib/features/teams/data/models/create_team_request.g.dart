@@ -9,15 +9,8 @@ part of 'create_team_request.dart';
 CreateTeamRequest _$CreateTeamRequestFromJson(Map<String, dynamic> json) =>
     CreateTeamRequest(
       name: json['name'] as String,
-      playerIds: (json['playerIds'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
       city: json['city'] as String?,
     );
 
 Map<String, dynamic> _$CreateTeamRequestToJson(CreateTeamRequest instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'playerIds': instance.playerIds,
-      'city': ?instance.city,
-    };
+    <String, dynamic>{'name': instance.name, 'city': ?instance.city};

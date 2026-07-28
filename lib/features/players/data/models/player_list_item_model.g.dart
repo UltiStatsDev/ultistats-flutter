@@ -11,8 +11,6 @@ PlayerListItemModel _$PlayerListItemModelFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
-      teamName: json['teamName'] as String?,
-      number: (json['number'] as num?)?.toInt(),
       photoUrl: json['photoUrl'] as String?,
     );
 
@@ -22,7 +20,5 @@ Map<String, dynamic> _$PlayerListItemModelToJson(
   'id': instance.id,
   'firstName': instance.firstName,
   'lastName': instance.lastName,
-  'teamName': instance.teamName,
-  'number': instance.number,
   'photoUrl': instance.photoUrl,
 };

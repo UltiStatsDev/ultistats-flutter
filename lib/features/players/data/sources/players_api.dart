@@ -6,6 +6,7 @@ import 'package:ultistats/features/players/data/models/player_detail_model.dart'
 import 'package:ultistats/features/players/data/models/create_player_request.dart';
 import 'package:ultistats/features/players/data/models/update_player_request.dart';
 import 'package:ultistats/features/players/data/models/player_filter_request.dart';
+import 'package:ultistats/features/players/data/models/player_membership_model.dart';
 import 'package:ultistats/core/data/models/photo_url_response.dart';
 
 part 'players_api.g.dart';
@@ -33,6 +34,9 @@ abstract class PlayersApi {
 
   @DELETE('/players/{id}')
   Future<void> deletePlayer(@Path('id') String id);
+
+  @GET('/players/{playerId}/teams')
+  Future<List<PlayerMembershipModel>> getPlayerTeams(@Path('playerId') String playerId);
 
   @GET('/players/{playerId}/photoUrl')
   Future<PhotoUrlResponse> getPlayerPhotoUrl(@Path('playerId') String playerId);

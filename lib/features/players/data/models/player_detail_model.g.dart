@@ -11,19 +11,17 @@ PlayerDetailModel _$PlayerDetailModelFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
-      team: json['team'] == null
-          ? null
-          : TeamListItemModel.fromJson(json['team'] as Map<String, dynamic>),
-      number: (json['number'] as num?)?.toInt(),
+      memberships: (json['memberships'] as List<dynamic>)
+          .map((e) => PlayerMembershipModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
       photoUrl: json['photoUrl'] as String?,
     );
 
 Map<String, dynamic> _$PlayerDetailModelToJson(PlayerDetailModel instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'team': instance.team?.toJson(),
-      'number': instance.number,
       'firstName': instance.firstName,
       'lastName': instance.lastName,
       'photoUrl': instance.photoUrl,
+      'memberships': instance.memberships.map((e) => e.toJson()).toList(),
     };

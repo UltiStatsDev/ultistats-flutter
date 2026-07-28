@@ -10,8 +10,8 @@ part of 'match_events_api.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main
 
-class _MatchEventsApi implements MatchEventsApi {
-  _MatchEventsApi(this._dio, {this.baseUrl, this.errorLogger});
+class _EventsApi implements EventsApi {
+  _EventsApi(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
@@ -20,12 +20,12 @@ class _MatchEventsApi implements MatchEventsApi {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<List<MatchEventModel>> getMatchEvents(String matchId) async {
+  Future<List<EventModel>> getEvents(String matchId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<List<MatchEventModel>>(
+    final _options = _setStreamType<List<EventModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -36,12 +36,10 @@ class _MatchEventsApi implements MatchEventsApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<List<dynamic>>(_options);
-    late List<MatchEventModel> _value;
+    late List<EventModel> _value;
     try {
       _value = _result.data!
-          .map(
-            (dynamic i) => MatchEventModel.fromJson(i as Map<String, dynamic>),
-          )
+          .map((dynamic i) => EventModel.fromJson(i as Map<String, dynamic>))
           .toList();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
@@ -51,7 +49,7 @@ class _MatchEventsApi implements MatchEventsApi {
   }
 
   @override
-  Future<EventResponseModel> createMatchEvent(
+  Future<EventModel> createEvent(
     String matchId,
     CreateEventRequest body,
   ) async {
@@ -60,7 +58,7 @@ class _MatchEventsApi implements MatchEventsApi {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<EventResponseModel>(
+    final _options = _setStreamType<EventModel>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -71,9 +69,9 @@ class _MatchEventsApi implements MatchEventsApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late EventResponseModel _value;
+    late EventModel _value;
     try {
-      _value = EventResponseModel.fromJson(_result.data!);
+      _value = EventModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -82,9 +80,36 @@ class _MatchEventsApi implements MatchEventsApi {
   }
 
   @override
-  Future<EventResponseModel> updateMatchEvent(
+  Future<EventModel> getEvent(String matchId, String eventId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<EventModel>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/matches/${matchId}/events/${eventId}',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late EventModel _value;
+    try {
+      _value = EventModel.fromJson(_result.data!);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<EventModel> updateEvent(
     String matchId,
-    int index,
+    String eventId,
     UpdateEventRequest body,
   ) async {
     final _extra = <String, dynamic>{};
@@ -92,20 +117,20 @@ class _MatchEventsApi implements MatchEventsApi {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<EventResponseModel>(
-      Options(method: 'PUT', headers: _headers, extra: _extra)
+    final _options = _setStreamType<EventModel>(
+      Options(method: 'PATCH', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/matches/${matchId}/events/${index}',
+            '/matches/${matchId}/events/${eventId}',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late EventResponseModel _value;
+    late EventModel _value;
     try {
-      _value = EventResponseModel.fromJson(_result.data!);
+      _value = EventModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -114,30 +139,22 @@ class _MatchEventsApi implements MatchEventsApi {
   }
 
   @override
-  Future<EventResponseModel> deleteMatchEvent(String matchId, int index) async {
+  Future<void> deleteEvent(String matchId, String eventId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<EventResponseModel>(
+    final _options = _setStreamType<void>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/matches/${matchId}/events/${index}',
+            '/matches/${matchId}/events/${eventId}',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late EventResponseModel _value;
-    try {
-      _value = EventResponseModel.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, response: _result);
-      rethrow;
-    }
-    return _value;
+    await _dio.fetch<void>(_options);
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {

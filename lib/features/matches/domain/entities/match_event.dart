@@ -1,40 +1,31 @@
-enum MatchEventType {
+enum EventType {
   PASS,
-  CATCH,
   GOAL,
-  ASSIST,
-  BLOCK,
-  INTERCEPTION,
   DROP,
   PULL,
   BRICK,
-  TIMEOUT,
-  HALFTIME,
-  VIOLATION,
-  SAVES,
-  SAVE_GOALS,
-  DROPS_ON_MARKER,
-  DROPS_ON_FIELD,
-  CALLAHAN_DROPS,
-  DISC_POSSESSIONS,
-  CALLAHANS,
-  UNKNOWN
+  TURNOVER,
+  BLOCK_MARKER,
+  BLOCK_FIELD,
+  INTERCEPTION,
+  CALLAHAN,
+  TIMEOUT_START,
+  TIMEOUT_END,
+  HALFTIME_START,
+  HALFTIME_END,
+  UNKNOWN,
 }
 
-class MatchEvent {
-  final MatchEventType type;
-  final DateTime timestamp;
-  final String? teamId;
-  final String? playerId;
-  final String? toTeamId;
-  final String? toPlayerId;
+class Event {
+  final DateTime occurredAt;
+  final int sequenceNumber;
+  final String id;
+  final EventType? type;
 
-  const MatchEvent({
-    required this.type,
-    required this.timestamp,
-    this.teamId,
-    this.playerId,
-    this.toTeamId,
-    this.toPlayerId,
+  const Event({
+    required this.occurredAt,
+    required this.sequenceNumber,
+    required this.id,
+    this.type,
   });
 }

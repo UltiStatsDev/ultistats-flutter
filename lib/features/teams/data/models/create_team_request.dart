@@ -6,19 +6,16 @@ part 'create_team_request.g.dart';
 @JsonSerializable(includeIfNull: false)
 class CreateTeamRequest {
   final String name;
-  final List<String> playerIds;
   final String? city;
 
   const CreateTeamRequest({
     required this.name,
-    required this.playerIds,
     this.city,
   });
 
   factory CreateTeamRequest.fromParams(CreateTeamParams params) =>
       CreateTeamRequest(
         name: params.name,
-        playerIds: params.playerIds,
         city: params.city,
       );
 

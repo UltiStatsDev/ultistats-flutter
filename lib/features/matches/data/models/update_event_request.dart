@@ -6,31 +6,13 @@ part 'update_event_request.g.dart';
 
 @JsonSerializable(includeIfNull: false)
 class UpdateEventRequest {
-  final MatchEventType? type;
-  final String? timestamp;
-  final String? teamId;
-  final String? playerId;
-  final String? toTeamId;
-  final String? toPlayerId;
+  final EventType type;
 
-  const UpdateEventRequest({
-    this.type,
-    this.timestamp,
-    this.teamId,
-    this.playerId,
-    this.toTeamId,
-    this.toPlayerId,
-  });
-
-  factory UpdateEventRequest.fromParams(UpdateEventParams params) =>
-      UpdateEventRequest(
-        type: params.type,
-        timestamp: params.timestamp?.toUtc().toIso8601String(),
-        teamId: params.teamId,
-        playerId: params.playerId,
-        toTeamId: params.toTeamId,
-        toPlayerId: params.toPlayerId,
-      );
+  const UpdateEventRequest({required this.type});
 
   Map<String, dynamic> toJson() => _$UpdateEventRequestToJson(this);
+
+  factory UpdateEventRequest.fromParams(UpdateEventParams params) {
+    return UpdateEventRequest(type: params.type);
+  }
 }

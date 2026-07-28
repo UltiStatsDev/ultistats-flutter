@@ -12,4 +12,6 @@ abstract class AppConfig {
   static bool get isDev => appFlavor == 'dev';
   static bool get isProd => appFlavor == 'prod';
   static bool get isStaging => appFlavor == 'staging';
+
+  static String get photoServerUrl => Uri.parse(baseUrl).origin;
 }

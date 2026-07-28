@@ -16,6 +16,15 @@ ThemeData createLightTheme() {
       error: Color(0xFFDA2121),
     ),
 
+    snackBarTheme: SnackBarThemeData(
+      contentTextStyle: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+        color: Colors.white,
+        letterSpacing: 0,
+      )
+    ),
+
     inputDecorationTheme: InputDecorationThemeData(
       hintStyle: TextStyle(
         fontWeight: FontWeight.normal,

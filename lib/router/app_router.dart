@@ -32,4 +32,16 @@ class AppRouter extends RootStackRouter {
       ],
     ),
   ];
+
+  //
+  // @override
+  // List<AutoRoute> get routes => [
+  //   CustomRoute(
+  //     initial: true,
+  //     page: EditPlayerRoute.page,
+  //     path: "/edit",
+  //     duration: Duration(seconds: 0),
+  //     reverseDuration: Duration(seconds: 0),
+  //   ),
+  // ];
 }

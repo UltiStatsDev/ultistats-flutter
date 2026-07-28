@@ -42,8 +42,6 @@ class PlayersRepositoryImpl implements PlayersRepository {
     final body = CreatePlayerRequest(
       firstName: params.firstName,
       lastName: params.lastName,
-      number: params.number,
-      teamId: params.teamId,
     );
     final result = await _api.createPlayer(body);
     return result.toEntity();

@@ -45,9 +45,9 @@ class DashboardRoute extends _i7.PageRouteInfo<void> {
 class EditPlayerRoute extends _i7.PageRouteInfo<EditPlayerRouteArgs> {
   EditPlayerRoute({
     _i8.Key? key,
-    required String title,
-    required String confirmButtonText,
-    required _i2.EditScreenInitial editScreenInitial,
+    String title = "Создание игрока",
+    String confirmButtonText = "Создать",
+    _i2.EditScreenInitial editScreenInitial = const _i2.EditScreenInitial(),
     List<_i7.PageRouteInfo>? children,
   }) : super(
          EditPlayerRoute.name,
@@ -65,7 +65,9 @@ class EditPlayerRoute extends _i7.PageRouteInfo<EditPlayerRouteArgs> {
   static _i7.PageInfo page = _i7.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<EditPlayerRouteArgs>();
+      final args = data.argsAs<EditPlayerRouteArgs>(
+        orElse: () => const EditPlayerRouteArgs(),
+      );
       return _i2.EditPlayerScreen(
         key: args.key,
         title: args.title,
@@ -79,9 +81,9 @@ class EditPlayerRoute extends _i7.PageRouteInfo<EditPlayerRouteArgs> {
 class EditPlayerRouteArgs {
   const EditPlayerRouteArgs({
     this.key,
-    required this.title,
-    required this.confirmButtonText,
-    required this.editScreenInitial,
+    this.title = "Создание игрока",
+    this.confirmButtonText = "Создать",
+    this.editScreenInitial = const _i2.EditScreenInitial(),
   });
 
   final _i8.Key? key;

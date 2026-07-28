@@ -7,44 +7,25 @@ part of 'update_event_request.dart';
 // **************************************************************************
 
 UpdateEventRequest _$UpdateEventRequestFromJson(Map<String, dynamic> json) =>
-    UpdateEventRequest(
-      type: $enumDecodeNullable(_$MatchEventTypeEnumMap, json['type']),
-      timestamp: json['timestamp'] as String?,
-      teamId: json['teamId'] as String?,
-      playerId: json['playerId'] as String?,
-      toTeamId: json['toTeamId'] as String?,
-      toPlayerId: json['toPlayerId'] as String?,
-    );
+    UpdateEventRequest(type: $enumDecode(_$EventTypeEnumMap, json['type']));
 
 Map<String, dynamic> _$UpdateEventRequestToJson(UpdateEventRequest instance) =>
-    <String, dynamic>{
-      'type': ?_$MatchEventTypeEnumMap[instance.type],
-      'timestamp': ?instance.timestamp,
-      'teamId': ?instance.teamId,
-      'playerId': ?instance.playerId,
-      'toTeamId': ?instance.toTeamId,
-      'toPlayerId': ?instance.toPlayerId,
-    };
+    <String, dynamic>{'type': _$EventTypeEnumMap[instance.type]!};
 
-const _$MatchEventTypeEnumMap = {
-  MatchEventType.PASS: 'PASS',
-  MatchEventType.CATCH: 'CATCH',
-  MatchEventType.GOAL: 'GOAL',
-  MatchEventType.ASSIST: 'ASSIST',
-  MatchEventType.BLOCK: 'BLOCK',
-  MatchEventType.INTERCEPTION: 'INTERCEPTION',
-  MatchEventType.DROP: 'DROP',
-  MatchEventType.PULL: 'PULL',
-  MatchEventType.BRICK: 'BRICK',
-  MatchEventType.TIMEOUT: 'TIMEOUT',
-  MatchEventType.HALFTIME: 'HALFTIME',
-  MatchEventType.VIOLATION: 'VIOLATION',
-  MatchEventType.SAVES: 'SAVES',
-  MatchEventType.SAVE_GOALS: 'SAVE_GOALS',
-  MatchEventType.DROPS_ON_MARKER: 'DROPS_ON_MARKER',
-  MatchEventType.DROPS_ON_FIELD: 'DROPS_ON_FIELD',
-  MatchEventType.CALLAHAN_DROPS: 'CALLAHAN_DROPS',
-  MatchEventType.DISC_POSSESSIONS: 'DISC_POSSESSIONS',
-  MatchEventType.CALLAHANS: 'CALLAHANS',
-  MatchEventType.UNKNOWN: 'UNKNOWN',
+const _$EventTypeEnumMap = {
+  EventType.PASS: 'PASS',
+  EventType.GOAL: 'GOAL',
+  EventType.DROP: 'DROP',
+  EventType.PULL: 'PULL',
+  EventType.BRICK: 'BRICK',
+  EventType.TURNOVER: 'TURNOVER',
+  EventType.BLOCK_MARKER: 'BLOCK_MARKER',
+  EventType.BLOCK_FIELD: 'BLOCK_FIELD',
+  EventType.INTERCEPTION: 'INTERCEPTION',
+  EventType.CALLAHAN: 'CALLAHAN',
+  EventType.TIMEOUT_START: 'TIMEOUT_START',
+  EventType.TIMEOUT_END: 'TIMEOUT_END',
+  EventType.HALFTIME_START: 'HALFTIME_START',
+  EventType.HALFTIME_END: 'HALFTIME_END',
+  EventType.UNKNOWN: 'UNKNOWN',
 };

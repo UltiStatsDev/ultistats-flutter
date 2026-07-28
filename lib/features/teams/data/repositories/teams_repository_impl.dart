@@ -9,6 +9,7 @@ import 'package:ultistats/features/teams/domain/repositories/teams_repository.da
 import 'package:ultistats/features/teams/data/models/team_filter_request.dart';
 import 'package:ultistats/features/teams/data/models/create_team_request.dart';
 import 'package:ultistats/features/teams/data/models/update_team_request.dart';
+import 'package:ultistats/features/teams/data/models/upsert_team_player_request.dart';
 import 'package:dio/dio.dart';
 
 class TeamsRepositoryImpl implements TeamsRepository {
@@ -46,7 +47,6 @@ class TeamsRepositoryImpl implements TeamsRepository {
   Future<TeamDetail> createTeam(CreateTeamParams params) async {
     final body = CreateTeamRequest(
       name: params.name,
-      playerIds: params.playerIds,
       city: params.city,
     );
     final result = await _api.createTeam(body);
@@ -57,7 +57,6 @@ class TeamsRepositoryImpl implements TeamsRepository {
   Future<TeamDetail> updateById(UpdateTeamParams params) async {
     final body = UpdateTeamRequest(
       name: params.name,
-      playerIds: params.playerIds,
       city: params.city,
     );
     final result = await _api.updateTeam(params.teamId, body);
@@ -70,15 +69,17 @@ class TeamsRepositoryImpl implements TeamsRepository {
   }
 
   @override
-  Future<TeamDetail> addPlayerToTeam(String teamId, String playerId) async {
-    final result = await _api.addPlayerToTeam(teamId, playerId);
-    return result.toEntity();
+  Future<void> addPlayerToTeam(String teamId, String playerId, {int? number}) async {
+    await _api.addOrUpdatePlayerInTeam(
+      teamId,
+      playerId,
+      UpsertTeamPlayerRequest(number: number),
+    );
   }
 
   @override
-  Future<TeamDetail> removePlayerFromTeam(String teamId, String playerId) async {
-    final result = await _api.removePlayerFromTeam(teamId, playerId);
-    return result.toEntity();
+  Future<void> removePlayerFromTeam(String teamId, String playerId) async {
+    await _api.removePlayerFromTeam(teamId, playerId);
   }
 
   @override

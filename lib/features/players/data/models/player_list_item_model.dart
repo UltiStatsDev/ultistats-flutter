@@ -8,16 +8,12 @@ class PlayerListItemModel {
   final String id;
   final String firstName;
   final String lastName;
-  final String? teamName;
-  final int? number;
   final String? photoUrl;
 
   const PlayerListItemModel({
     required this.id,
     required this.firstName,
     required this.lastName,
-    this.teamName,
-    this.number,
     this.photoUrl,
   });
 
@@ -31,8 +27,6 @@ class PlayerListItemModel {
       id: id,
       firstName: firstName,
       lastName: lastName,
-      teamName: teamName,
-      number: number,
       photoUrl: photoUrl,
     );
   }

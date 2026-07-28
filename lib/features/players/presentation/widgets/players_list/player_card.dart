@@ -42,24 +42,6 @@ class PlayerCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     maxLines: 2,
                   ),
-                  if (player.teamName != null && player.number != null)
-                    Row(
-                      children: [
-                        Text(
-                          player.teamName!,
-                          style: theme.textTheme.labelMedium,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        SizedBox(width: 6),
-                        Text(
-                          "#${player.number}",
-                          style: theme.textTheme.labelMedium,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
                 ],
               ),
             ),

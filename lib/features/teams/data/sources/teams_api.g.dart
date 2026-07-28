@@ -155,16 +155,18 @@ class _TeamsApi implements TeamsApi {
   }
 
   @override
-  Future<TeamDetailModel> addPlayerToTeam(
+  Future<PlayerMembershipModel> addOrUpdatePlayerInTeam(
     String teamId,
     String playerId,
+    UpsertTeamPlayerRequest body,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<TeamDetailModel>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _options = _setStreamType<PlayerMembershipModel>(
+      Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
             '/teams/${teamId}/players/${playerId}',
@@ -174,9 +176,9 @@ class _TeamsApi implements TeamsApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late TeamDetailModel _value;
+    late PlayerMembershipModel _value;
     try {
-      _value = TeamDetailModel.fromJson(_result.data!);
+      _value = PlayerMembershipModel.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -185,15 +187,12 @@ class _TeamsApi implements TeamsApi {
   }
 
   @override
-  Future<TeamDetailModel> removePlayerFromTeam(
-    String teamId,
-    String playerId,
-  ) async {
+  Future<void> removePlayerFromTeam(String teamId, String playerId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<TeamDetailModel>(
+    final _options = _setStreamType<void>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -203,10 +202,34 @@ class _TeamsApi implements TeamsApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late TeamDetailModel _value;
+    await _dio.fetch<void>(_options);
+  }
+
+  @override
+  Future<List<PlayerMembershipModel>> getTeamRoster(String teamId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<List<PlayerMembershipModel>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/teams/${teamId}/players',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<List<dynamic>>(_options);
+    late List<PlayerMembershipModel> _value;
     try {
-      _value = TeamDetailModel.fromJson(_result.data!);
+      _value = _result.data!
+          .map(
+            (dynamic i) =>
+                PlayerMembershipModel.fromJson(i as Map<String, dynamic>),
+          )
+          .toList();
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
