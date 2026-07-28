@@ -69,7 +69,7 @@ class TeamsRepositoryImpl implements TeamsRepository {
   }
 
   @override
-  Future<void> addPlayerToTeam(String teamId, String playerId, {int? number}) async {
+  Future<void> addOrUpdatePlayerInTeam(String teamId, String playerId, int number) async {
     await _api.addOrUpdatePlayerInTeam(
       teamId,
       playerId,

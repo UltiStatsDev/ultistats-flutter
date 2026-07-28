@@ -1,7 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
-import 'package:ultistats/features/teams/presentation/providers/teams_providers.dart';
+import 'package:ultistats/features/teams/presentation/providers/teams_list_notifier.dart';
+import 'package:ultistats/features/teams/presentation/screens/edit_team_screen.dart';
+import 'package:ultistats/router/app_router.gr.dart';
 
 class NoTeamsWidget extends ConsumerWidget {
   const NoTeamsWidget({super.key});
@@ -30,7 +33,15 @@ class NoTeamsWidget extends ConsumerWidget {
           right: 19 - theme.screenPadding,
           bottom: 24,
           child: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              context.router.push(
+                EditTeamRoute(
+                  title: "Создание команды",
+                  confirmButtonText: "Создать команду",
+                  initialData: EditTeamScreenInitial(),
+                ),
+              );
+            },
             child: const Icon(Icons.add),
           ),
         ),

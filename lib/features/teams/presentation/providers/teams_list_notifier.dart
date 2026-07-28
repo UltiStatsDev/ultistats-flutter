@@ -83,3 +83,7 @@ class TeamsListNotifier extends Notifier<TeamsListState> {
     }
   }
 }
+
+final teamsListProvider = NotifierProvider<TeamsListNotifier, TeamsListState>(
+  TeamsListNotifier.new,
+);

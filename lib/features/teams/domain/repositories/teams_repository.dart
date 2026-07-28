@@ -16,7 +16,7 @@ abstract interface class TeamsRepository {
 
   Future<TeamDetail> createTeam(CreateTeamParams params);
 
-  Future<void> addPlayerToTeam(String teamId, String playerId, {int? number});
+  Future<void> addOrUpdatePlayerInTeam(String teamId, String playerId, int number);
 
   Future<void> removePlayerFromTeam(String teamId, String playerId);
 

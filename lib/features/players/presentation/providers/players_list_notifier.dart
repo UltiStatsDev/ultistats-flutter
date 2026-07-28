@@ -83,3 +83,9 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
     }
   }
 }
+
+final playersListProvider =
+NotifierProvider<PlayersListNotifier, PlayersListState>(
+  PlayersListNotifier.new,
+);
+

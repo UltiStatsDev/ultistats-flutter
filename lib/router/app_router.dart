@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:ultistats/features/teams/presentation/screens/teams_tab_screen.dart';
 import 'package:ultistats/router/app_router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
@@ -15,7 +16,21 @@ class AppRouter extends RootStackRouter {
           path: "matches",
           initial: true,
         ),
-        CustomRoute(page: TeamsListRoute.page, path: "teams"),
+
+        CustomRoute(
+          page: TeamsTabRoute.page,
+          path: "teams",
+          children: [
+            CustomRoute(page: TeamsListRoute.page, path: "", initial: true),
+            CustomRoute(
+              page: EditTeamRoute.page,
+              path: "edit",
+              duration: Duration(seconds: 0),
+              reverseDuration: Duration(seconds: 0),
+            ),
+          ],
+        ),
+
         CustomRoute(
           page: PlayersTabRoute.page,
           path: "players",

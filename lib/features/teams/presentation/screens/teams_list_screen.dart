@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/widgets/error_screen.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
+import 'package:ultistats/features/teams/presentation/providers/teams_list_notifier.dart';
 import 'package:ultistats/features/teams/presentation/providers/teams_list_state.dart';
-import 'package:ultistats/features/teams/presentation/providers/teams_providers.dart';
-import 'package:ultistats/features/teams/presentation/widgets/loading_teams_list_widget.dart';
-import 'package:ultistats/features/teams/presentation/widgets/no_teams_widget.dart';
-import 'package:ultistats/features/teams/presentation/widgets/teams_list_widget.dart';
+import 'package:ultistats/features/teams/presentation/widgets/team_list/loading_teams_list_widget.dart';
+import 'package:ultistats/features/teams/presentation/widgets/team_list/no_teams_widget.dart';
+import 'package:ultistats/features/teams/presentation/widgets/team_list/teams_list_widget.dart';
 
 @RoutePage()
 class TeamsListScreen extends ConsumerWidget {
