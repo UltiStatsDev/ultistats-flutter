@@ -14,4 +14,14 @@ class PlayerDetail {
     required this.memberships,
     this.photoUrl,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is PlayerDetail &&
+          runtimeType == other.runtimeType &&
+          id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
 }

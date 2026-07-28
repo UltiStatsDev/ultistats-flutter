@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/players/domain/params/player_filter_params.dart';
@@ -6,6 +7,9 @@ import 'package:ultistats/features/players/presentation/providers/players_list_s
 class PlayersListNotifier extends Notifier<PlayersListState> {
   static const int _pageSize = 20;
   static const double _scrollThreshold = 200.0;
+  
+  String _searchQuery = '';
+  Timer? _debounceTimer;
 
   @override
   PlayersListState build() {
@@ -16,7 +20,11 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
   Future<PlayersListLoaded> _fetchPage(int page) async {
     final repository = ref.read(playersRepositoryProvider);
     final result = await repository.getList(
-      PlayerFilterParams(page: page, size: _pageSize),
+      PlayerFilterParams(
+        page: page, 
+        size: _pageSize,
+        name: _searchQuery.isEmpty ? null : _searchQuery,
+      ),
     );
 
     return PlayersListLoaded(
@@ -31,6 +39,32 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
     state = const PlayersListLoading();
     try {
       state = await _fetchPage(0);
+    } catch (e, st) {
+      state = PlayersListError(e, st);
+    }
+  }
+
+  void onSearchChanged(String query) {
+    if (_searchQuery == query) return;
+    _searchQuery = query;
+    
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      _performSearch();
+    });
+  }
+
+  Future<void> _performSearch() async {
+    final currentState = state;
+    if (currentState is PlayersListLoaded) {
+      state = currentState.copyWith(isRefreshing: true);
+    } else if (currentState is! PlayersListLoading) {
+      state = const PlayersListLoading();
+    }
+
+    try {
+      final newState = await _fetchPage(0);
+      state = newState;
     } catch (e, st) {
       state = PlayersListError(e, st);
     }
@@ -88,4 +122,3 @@ final playersListProvider =
 NotifierProvider<PlayersListNotifier, PlayersListState>(
   PlayersListNotifier.new,
 );
-

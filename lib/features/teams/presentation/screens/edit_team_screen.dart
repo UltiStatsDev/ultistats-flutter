@@ -7,6 +7,7 @@ import 'package:ultistats/core/widgets/add_photo_widget.dart';
 import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/form_tile.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
+import 'package:ultistats/features/players/domain/entities/player_detail.dart';
 import 'package:ultistats/features/teams/presentation/providers/edit_team_notifier.dart';
 import 'package:ultistats/features/teams/presentation/widgets/common/edit_team_app_bar.dart';
 
@@ -51,21 +52,19 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
     final name = _nameTextController.text.trim();
     final city = _cityTextController.text.trim();
 
-    if (name.isEmpty) {
+    if (name.isEmpty || city.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('Введите название команды')));
+      ).showSnackBar(const SnackBar(content: Text('Заполните название и город')));
       return;
     }
 
-    ref
-        .read(editTeamProvider.notifier)
-        .saveTeam(
-          teamId: widget.initialData.id,
-          name: name,
-          city: city.isEmpty ? null : city,
-          photo: _photo,
-        );
+    ref.read(editTeamProvider.notifier).saveTeam(
+      teamId: widget.initialData.id,
+      name: name,
+      city: city,
+      photo: _photo,
+    );
   }
 
   @override
@@ -157,6 +156,13 @@ class EditTeamScreenInitial {
   final String? name;
   final String? city;
   final File? photo;
+  final List<PlayerDetail> players;
 
-  const EditTeamScreenInitial({this.id, this.name, this.city, this.photo});
+  const EditTeamScreenInitial({
+    this.id,
+    this.name,
+    this.city,
+    this.photo,
+    this.players = const [],
+  });
 }

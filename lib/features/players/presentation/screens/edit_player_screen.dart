@@ -9,8 +9,6 @@ import 'package:ultistats/core/widgets/form_tile.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/features/players/presentation/providers/edit_player_notifier.dart';
 import 'package:ultistats/features/players/presentation/widgets/common/edit_player_app_bar.dart';
-import 'package:ultistats/features/players/presentation/widgets/create_player/team_selector_tile.dart';
-import 'package:ultistats/features/teams/domain/entities/team_list_item.dart';
 
 @RoutePage()
 class EditPlayerScreen extends ConsumerStatefulWidget {
@@ -32,7 +30,6 @@ class EditPlayerScreen extends ConsumerStatefulWidget {
 class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
   late final TextEditingController _nameTextController;
   late final TextEditingController _secondNameTextController;
-  TeamListItem? _selectedTeam;
   File? _photo;
 
   @override
@@ -44,7 +41,6 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
     _secondNameTextController = TextEditingController(
       text: widget.editScreenInitial.secondName,
     );
-    _selectedTeam = widget.editScreenInitial.team;
     _photo = widget.editScreenInitial.photo;
   }
 
@@ -68,12 +64,7 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
 
     ref
         .read(editPlayerProvider.notifier)
-        .savePlayer(
-          firstName: name,
-          lastName: secondName,
-          teamId: _selectedTeam?.id,
-          photo: _photo,
-        );
+        .savePlayer(firstName: name, lastName: secondName, photo: _photo);
   }
 
   @override
@@ -138,15 +129,6 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
                       hint: "Фамилия",
                       controller: _secondNameTextController,
                     ),
-                    const SizedBox(height: 12),
-                    TeamSelectorTile(
-                      initialTeam: _selectedTeam,
-                      onTeamSelected: (team) {
-                        setState(() {
-                          _selectedTeam = team;
-                        });
-                      },
-                    ),
                   ],
                 ),
               ),
@@ -172,8 +154,7 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
 class EditScreenInitial {
   final String? name;
   final String? secondName;
-  final TeamListItem? team;
   final File? photo;
 
-  const EditScreenInitial({this.name, this.secondName, this.team, this.photo});
+  const EditScreenInitial({this.name, this.secondName, this.photo});
 }

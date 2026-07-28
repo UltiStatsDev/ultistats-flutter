@@ -3,7 +3,12 @@ import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/app_ink_well.dart';
 
 class SearchFilterBar extends StatelessWidget {
-  const SearchFilterBar({super.key});
+  const SearchFilterBar({
+    super.key,
+    this.onChanged,
+  });
+
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -12,22 +17,23 @@ class SearchFilterBar extends StatelessWidget {
       children: [
         Expanded(
           child: Container(
-            padding: EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
             height: theme.searchBarSize,
             decoration: BoxDecoration(
               color: theme.colorScheme.primaryContainer,
               borderRadius: BorderRadius.circular(theme.searchBarBorderRadius),
             ),
             child: TextField(
+              onChanged: onChanged,
               style: theme.textFieldStyleText,
-              decoration: InputDecoration(hintText: "Поиск..."),
+              decoration: const InputDecoration(hintText: "Поиск..."),
             ),
           ),
         ),
-        SizedBox(width: 8),
-        _SearchButton(icon: Icons.search, onPressed: () {}),
-        SizedBox(width: 8),
-        _SearchButton(icon: Icons.filter_alt_outlined, onPressed: () {}),
+        // SizedBox(width: 8),
+        // _SearchButton(icon: Icons.search, onPressed: () {}),
+        // SizedBox(width: 8),
+        // _SearchButton(icon: Icons.filter_alt_outlined, onPressed: () {}),
       ],
     );
   }

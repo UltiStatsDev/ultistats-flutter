@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:ultistats/features/teams/presentation/screens/teams_tab_screen.dart';
 import 'package:ultistats/router/app_router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
@@ -47,16 +46,4 @@ class AppRouter extends RootStackRouter {
       ],
     ),
   ];
-
-  //
-  // @override
-  // List<AutoRoute> get routes => [
-  //   CustomRoute(
-  //     initial: true,
-  //     page: EditPlayerRoute.page,
-  //     path: "/edit",
-  //     duration: Duration(seconds: 0),
-  //     reverseDuration: Duration(seconds: 0),
-  //   ),
-  // ];
 }

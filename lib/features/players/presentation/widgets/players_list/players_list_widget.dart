@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_colors.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/app_refreshing_indicator.dart';
-import 'package:ultistats/core/widgets/search_filter_bar.dart';
 import 'package:ultistats/features/players/presentation/providers/players_list_notifier.dart';
 import 'package:ultistats/features/players/presentation/providers/players_list_state.dart';
 import 'package:ultistats/features/players/presentation/screens/edit_player_screen.dart';
@@ -37,10 +36,7 @@ class _PlayersListWidgetState extends ConsumerState<PlayersListWidget> {
 
   void _onScroll() {
     if (!_scrollController.hasClients) return;
-
-    ref
-        .read(playersListProvider.notifier)
-        .onScrollUpdate(
+    ref.read(playersListProvider.notifier).onScrollUpdate(
           _scrollController.offset,
           _scrollController.position.maxScrollExtent,
         );
@@ -51,36 +47,24 @@ class _PlayersListWidgetState extends ConsumerState<PlayersListWidget> {
     final theme = Theme.of(context);
     return Stack(
       children: [
-        Column(
-          children: [
-            const SearchFilterBar(),
-            const SizedBox(height: 5),
-            Expanded(
-              child: AppRefreshingIndicator(
-                onRefresh: () =>
-                    ref.read(playersListProvider.notifier).refresh(),
-                child: ListView.separated(
-                  controller: _scrollController,
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.only(bottom: theme.screenPadding, top: 5),
-                  itemCount:
-                      widget.state.players.length +
-                      (widget.state.hasReachedEnd ? 0 : 1),
-                  itemBuilder: (context, index) {
-                    if (index >= widget.state.players.length) {
-                      return _buildLoadingIndicator(widget.state.isLoadingMore);
-                    }
-                    return PlayerCard(
-                      player: widget.state.players[index],
-                      onPressed: () {},
-                    );
-                  },
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 12),
-                ),
-              ),
-            ),
-          ],
+        AppRefreshingIndicator(
+          onRefresh: () => ref.read(playersListProvider.notifier).refresh(),
+          child: ListView.separated(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.only(bottom: theme.screenPadding + 80, top: 5),
+            itemCount: widget.state.players.length + (widget.state.hasReachedEnd ? 0 : 1),
+            itemBuilder: (context, index) {
+              if (index >= widget.state.players.length) {
+                return _buildLoadingIndicator(widget.state.isLoadingMore);
+              }
+              return PlayerCard(
+                player: widget.state.players[index],
+                onPressed: () {},
+              );
+            },
+            separatorBuilder: (context, index) => const SizedBox(height: 12),
+          ),
         ),
         Positioned(
           right: 19 - theme.screenPadding,
@@ -91,7 +75,7 @@ class _PlayersListWidgetState extends ConsumerState<PlayersListWidget> {
                 EditPlayerRoute(
                   title: "Создание игрока",
                   confirmButtonText: "Создать игрока",
-                  editScreenInitial: EditScreenInitial(),
+                  editScreenInitial: const EditScreenInitial(),
                 ),
               );
             },
@@ -99,10 +83,10 @@ class _PlayersListWidgetState extends ConsumerState<PlayersListWidget> {
           ),
         ),
         Positioned(
-          top: theme.searchBarSize + 4.5,
+          top: 0,
           left: 0,
           right: 0,
-          height: 8,
+          height: 12,
           child: _listGradient(),
         ),
       ],
@@ -113,9 +97,7 @@ class _PlayersListWidgetState extends ConsumerState<PlayersListWidget> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Center(
-        child: isLoading
-            ? const CircularProgressIndicator()
-            : const SizedBox.shrink(),
+        child: isLoading ? const CircularProgressIndicator() : const SizedBox.shrink(),
       ),
     );
   }

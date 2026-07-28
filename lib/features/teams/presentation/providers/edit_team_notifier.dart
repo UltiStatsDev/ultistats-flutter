@@ -33,7 +33,7 @@ class EditTeamNotifier extends Notifier<EditTeamState> {
   Future<void> saveTeam({
     String? teamId,
     required String name,
-    String? city,
+    required String city,
     File? photo,
   }) async {
     state = state.copyWith(isLoading: true, error: null, isSuccess: false);

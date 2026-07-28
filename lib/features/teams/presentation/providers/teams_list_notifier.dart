@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/teams/domain/params/team_filter_params.dart';
@@ -6,6 +7,9 @@ import 'package:ultistats/features/teams/presentation/providers/teams_list_state
 class TeamsListNotifier extends Notifier<TeamsListState> {
   static const int _pageSize = 20;
   static const double _scrollThreshold = 200.0;
+  
+  String _searchQuery = '';
+  Timer? _debounceTimer;
 
   @override
   TeamsListState build() {
@@ -16,7 +20,11 @@ class TeamsListNotifier extends Notifier<TeamsListState> {
   Future<TeamsListLoaded> _fetchPage(int page) async {
     final repository = ref.read(teamsRepositoryProvider);
     final result = await repository.getList(
-      TeamFilterParams(page: page, size: _pageSize),
+      TeamFilterParams(
+        page: page, 
+        size: _pageSize,
+        name: _searchQuery.isEmpty ? null : _searchQuery,
+      ),
     );
 
     return TeamsListLoaded(
@@ -31,6 +39,33 @@ class TeamsListNotifier extends Notifier<TeamsListState> {
     state = const TeamsListLoading();
     try {
       state = await _fetchPage(0);
+    } catch (e, st) {
+      state = TeamsListError(e, st);
+    }
+  }
+
+  void onSearchChanged(String query) {
+    if (_searchQuery == query) return;
+    _searchQuery = query;
+    
+    _debounceTimer?.cancel();
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
+      _performSearch();
+    });
+  }
+
+  Future<void> _performSearch() async {
+    final currentState = state;
+
+    if (currentState is TeamsListLoaded) {
+      state = currentState.copyWith(isRefreshing: true);
+    } else if (currentState is! TeamsListLoading) {
+      state = const TeamsListLoading();
+    }
+
+    try {
+      final newState = await _fetchPage(0);
+      state = newState;
     } catch (e, st) {
       state = TeamsListError(e, st);
     }

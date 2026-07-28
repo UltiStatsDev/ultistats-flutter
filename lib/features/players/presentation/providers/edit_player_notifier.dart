@@ -34,7 +34,6 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
     String? playerId,
     required String firstName,
     required String lastName,
-    String? teamId,
     File? photo,
   }) async {
     state = state.copyWith(isLoading: true, error: null, isSuccess: false);
@@ -46,7 +45,6 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
       String finalPlayerId;
 
       if (playerId != null) {
-        // Обновляем существующего
         final player = await playersRepo.updateById(
           UpdatePlayerParams(
             playerId: playerId,
@@ -56,17 +54,10 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
         );
         finalPlayerId = player.id;
       } else {
-        // Создаем нового
         final player = await playersRepo.createPlayer(
           CreatePlayerParams(firstName: firstName, lastName: lastName),
         );
         finalPlayerId = player.id;
-      }
-
-      // Привязка к команде и загрузка фото общие для обоих случаев
-      // TODO номер убрать
-      if (teamId != null && teamId.isNotEmpty) {
-        await teamsRepo.addOrUpdatePlayerInTeam(teamId, finalPlayerId, 0);
       }
 
       if (photo != null) {
