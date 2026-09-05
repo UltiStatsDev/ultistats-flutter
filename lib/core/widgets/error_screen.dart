@@ -5,12 +5,14 @@ class ErrorScreen extends StatefulWidget {
   final Object exception;
   final StackTrace stackTrace;
   final VoidCallback? onRetry;
+  final VoidCallback? onBack;
 
   const ErrorScreen({
     super.key,
     required this.exception,
     required this.stackTrace,
     this.onRetry,
+    this.onBack,
   });
 
   @override
@@ -85,6 +87,13 @@ class _ErrorScreenState extends State<ErrorScreen> {
                 onPressed: widget.onRetry,
                 label: Text("Попробовать снова"),
               ),
+              const SizedBox(height: 24),
+              if (widget.onBack != null)
+                FilledButton.icon(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: widget.onBack,
+                  label: Text("Назад"),
+                ),
             ],
           ),
         ),

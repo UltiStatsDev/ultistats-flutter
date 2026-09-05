@@ -32,7 +32,7 @@ class PlayerDetailWidget extends StatelessWidget {
               style: theme.textTheme.titleMedium,)
           ],
         ),
-        Text("Asd")
+        Text("Команды, будут попоже")
       ],
     );
   }

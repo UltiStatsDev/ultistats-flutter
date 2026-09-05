@@ -37,6 +37,9 @@ class PlayerDetailScreen extends ConsumerWidget {
             onRetry: () {
               ref.read(playerDetailProvider(playerId).notifier).refresh();
             },
+            onBack: () {
+              context.router.pop();
+            },
           ),
         },
       ),
