@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/teams/presentation/providers/team_detail_state.dart';
@@ -15,11 +17,71 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
   Future<void> _loadTeam(String id) async {
     try {
       final repository = ref.read(teamsRepositoryProvider);
-      final player = await repository.getById(id);
+      final team = await repository.getById(id);
 
-      state = TeamDetailLoaded(player);
+      state = TeamDetailLoaded(team);
     } catch (e, st) {
       state = TeamDetailError(e, st);
+    }
+  }
+
+  Future<void> addPlayer(String playerId, int number, [Completer? completer]) async {
+    final currentState = state;
+    if (currentState is! TeamDetailLoaded) return;
+
+    state = currentState.copyWith(
+      processingPlayerIds: {...currentState.processingPlayerIds, playerId},
+    );
+
+    try {
+      final repository = ref.read(teamsRepositoryProvider);
+      await repository.addOrUpdatePlayerInTeam(id, playerId, number);
+      final team = await repository.getById(id);
+      
+      if (state is TeamDetailLoaded) {
+        state = TeamDetailLoaded(
+          team,
+          processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds.where((i) => i != playerId).toSet(),
+        );
+      }
+      completer?.complete();
+    } catch (e, st) {
+      if (state is TeamDetailLoaded) {
+        state = (state as TeamDetailLoaded).copyWith(
+          processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds.where((i) => i != playerId).toSet(),
+        );
+      }
+      completer?.completeError(e, st);
+    }
+  }
+
+  Future<void> removePlayer(String playerId, [Completer? completer]) async {
+    final currentState = state;
+    if (currentState is! TeamDetailLoaded) return;
+
+    state = currentState.copyWith(
+      processingPlayerIds: {...currentState.processingPlayerIds, playerId},
+    );
+
+    try {
+      final repository = ref.read(teamsRepositoryProvider);
+      await repository.removePlayerFromTeam(id, playerId);
+      final team = await repository.getById(id);
+
+      if (state is TeamDetailLoaded) {
+        state = TeamDetailLoaded(
+          team,
+          processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds.where((i) => i != playerId).toSet(),
+        );
+      }
+      completer?.complete();
+    } catch (e, st) {
+      if (state is TeamDetailLoaded) {
+        state = (state as TeamDetailLoaded).copyWith(
+          processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds.where((i) => i != playerId).toSet(),
+        );
+      }
+      completer?.completeError(e, st);
     }
   }
 

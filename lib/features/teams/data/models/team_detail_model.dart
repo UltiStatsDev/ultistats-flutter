@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ultistats/features/players/data/models/player_list_item_model.dart';
+import 'package:ultistats/features/players/data/models/team_player_model.dart';
 import 'package:ultistats/features/teams/domain/entities/team_detail.dart';
 
 part 'team_detail_model.g.dart';
@@ -8,7 +9,7 @@ part 'team_detail_model.g.dart';
 class TeamDetailModel {
   final String id;
   final String name;
-  final List<PlayerListItemModel> players;
+  final List<TeamPlayerModel> players;
   final String? city;
   final String? photoUrl;
 

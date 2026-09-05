@@ -1,4 +1,3 @@
-import 'package:ultistats/features/players/domain/entities/player_detail.dart';
 import 'package:ultistats/features/teams/domain/entities/team_detail.dart';
 
 sealed class TeamDetailState {
@@ -15,8 +14,22 @@ class TeamDetailLoading extends TeamDetailState {
 
 class TeamDetailLoaded extends TeamDetailState {
   final TeamDetail team;
+  final Set<String> processingPlayerIds;
 
-  const TeamDetailLoaded(this.team);
+  const TeamDetailLoaded(
+    this.team, {
+    this.processingPlayerIds = const {},
+  });
+
+  TeamDetailLoaded copyWith({
+    TeamDetail? team,
+    Set<String>? processingPlayerIds,
+  }) {
+    return TeamDetailLoaded(
+      team ?? this.team,
+      processingPlayerIds: processingPlayerIds ?? this.processingPlayerIds,
+    );
+  }
 }
 
 class TeamDetailError extends TeamDetailState {

@@ -22,7 +22,7 @@ ThemeData createLightTheme() {
         fontWeight: FontWeight.normal,
         color: Colors.white,
         letterSpacing: 0,
-      )
+      ),
     ),
 
     inputDecorationTheme: InputDecorationThemeData(
@@ -73,21 +73,30 @@ ThemeData createLightTheme() {
     iconButtonTheme: IconButtonThemeData(
       style: ButtonStyle(
         iconSize: WidgetStatePropertyAll(36),
-        iconColor: WidgetStatePropertyAll(Colors.white)
-      )
+        iconColor: WidgetStatePropertyAll(Colors.white),
+      ),
     ),
-    
+
     filledButtonTheme: FilledButtonThemeData(
       style: ButtonStyle(
-        iconSize: WidgetStatePropertyAll(20),
-        backgroundColor: WidgetStatePropertyAll(AppColors.purpleDark),
-        iconColor: WidgetStatePropertyAll(Colors.white),
-        textStyle: WidgetStatePropertyAll(
+        iconSize: const WidgetStatePropertyAll(20),
+        backgroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return AppColors.purpleDark.withValues(alpha: 0.7);
+          }
+          return AppColors.purpleDark;
+        }),
+        foregroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.disabled)) {
+            return Colors.white.withValues(alpha: 0.7);
+          }
+          return Colors.white;
+        }),
+        textStyle: const WidgetStatePropertyAll(
           TextStyle(
             fontFamily: "Montserrat",
             fontWeight: FontWeight.normal,
             fontSize: 16,
-            color: Colors.white,
             letterSpacing: 0,
           ),
         ),
@@ -114,9 +123,9 @@ ThemeData createLightTheme() {
         effect: ShimmerEffect(
           duration: Duration(seconds: 1),
           baseColor: Colors.white.withValues(alpha: 0.4),
-          highlightColor: Colors.white.withValues(alpha: 0.5)
-        )
-      )
+          highlightColor: Colors.white.withValues(alpha: 0.5),
+        ),
+      ),
     ],
 
     textTheme: TextTheme(

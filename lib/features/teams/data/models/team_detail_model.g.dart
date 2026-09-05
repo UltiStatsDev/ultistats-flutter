@@ -11,7 +11,7 @@ TeamDetailModel _$TeamDetailModelFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       name: json['name'] as String,
       players: (json['players'] as List<dynamic>)
-          .map((e) => PlayerListItemModel.fromJson(e as Map<String, dynamic>))
+          .map((e) => TeamPlayerModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       city: json['city'] as String?,
       photoUrl: json['photoUrl'] as String?,
