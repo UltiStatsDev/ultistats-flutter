@@ -36,7 +36,9 @@ class _TeamsListWidgetState extends ConsumerState<TeamsListWidget> {
 
   void _onScroll() {
     if (!_scrollController.hasClients) return;
-    ref.read(teamsListProvider.notifier).onScrollUpdate(
+    ref
+        .read(teamsListProvider.notifier)
+        .onScrollUpdate(
           _scrollController.offset,
           _scrollController.position.maxScrollExtent,
         );
@@ -53,14 +55,21 @@ class _TeamsListWidgetState extends ConsumerState<TeamsListWidget> {
             controller: _scrollController,
             physics: const AlwaysScrollableScrollPhysics(),
             padding: EdgeInsets.only(bottom: theme.screenPadding + 80, top: 5),
-            itemCount: widget.state.teams.length + (widget.state.hasReachedEnd ? 0 : 1),
+            itemCount:
+                widget.state.teams.length +
+                (widget.state.hasReachedEnd ? 0 : 1),
             itemBuilder: (context, index) {
               if (index >= widget.state.teams.length) {
                 return _buildLoadingIndicator(widget.state.isLoadingMore);
               }
+
+              final team = widget.state.teams[index];
+
               return TeamCard(
-                team: widget.state.teams[index],
-                onPressed: () {},
+                team: team,
+                onPressed: () {
+                  context.router.push(TeamDetailRoute(teamId: team.id));
+                },
               );
             },
             separatorBuilder: (context, index) => const SizedBox(height: 12),
@@ -97,7 +106,9 @@ class _TeamsListWidgetState extends ConsumerState<TeamsListWidget> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16),
       child: Center(
-        child: isLoading ? const CircularProgressIndicator() : const SizedBox.shrink(),
+        child: isLoading
+            ? const CircularProgressIndicator()
+            : const SizedBox.shrink(),
       ),
     );
   }
