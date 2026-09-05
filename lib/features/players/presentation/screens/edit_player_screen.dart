@@ -16,12 +16,12 @@ class EditPlayerScreen extends ConsumerStatefulWidget {
     super.key,
     required this.title,
     required this.confirmButtonText,
-    this.editScreenInitial = const EditScreenInitial(),
+    this.initialData = const EditPlayerScreenInitial(),
   });
 
   final String title;
   final String confirmButtonText;
-  final EditScreenInitial editScreenInitial;
+  final EditPlayerScreenInitial initialData;
 
   @override
   ConsumerState<EditPlayerScreen> createState() => _EditPlayerScreenState();
@@ -36,12 +36,12 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
   void initState() {
     super.initState();
     _nameTextController = TextEditingController(
-      text: widget.editScreenInitial.name,
+      text: widget.initialData.name,
     );
     _secondNameTextController = TextEditingController(
-      text: widget.editScreenInitial.secondName,
+      text: widget.initialData.secondName,
     );
-    _photo = widget.editScreenInitial.photo;
+    _photo = widget.initialData.photo;
   }
 
   @override
@@ -64,7 +64,12 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
 
     ref
         .read(editPlayerProvider.notifier)
-        .savePlayer(firstName: name, lastName: secondName, photo: _photo);
+        .savePlayer(
+          playerId: widget.initialData.id,
+          firstName: name,
+          lastName: secondName,
+          photo: _photo,
+        );
   }
 
   @override
@@ -151,10 +156,16 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
   }
 }
 
-class EditScreenInitial {
+class EditPlayerScreenInitial {
+  final String? id;
   final String? name;
   final String? secondName;
   final File? photo;
 
-  const EditScreenInitial({this.name, this.secondName, this.photo});
+  const EditPlayerScreenInitial({
+    this.id,
+    this.name,
+    this.secondName,
+    this.photo,
+  });
 }

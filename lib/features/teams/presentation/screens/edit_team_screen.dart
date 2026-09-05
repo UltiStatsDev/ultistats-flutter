@@ -7,7 +7,6 @@ import 'package:ultistats/core/widgets/add_photo_widget.dart';
 import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/form_tile.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
-import 'package:ultistats/features/players/domain/entities/player_detail.dart';
 import 'package:ultistats/features/teams/presentation/providers/edit_team_notifier.dart';
 import 'package:ultistats/features/teams/presentation/widgets/common/edit_team_app_bar.dart';
 
@@ -156,13 +155,11 @@ class EditTeamScreenInitial {
   final String? name;
   final String? city;
   final File? photo;
-  final List<PlayerDetail> players;
 
   const EditTeamScreenInitial({
     this.id,
     this.name,
     this.city,
     this.photo,
-    this.players = const [],
   });
 }

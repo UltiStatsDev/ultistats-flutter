@@ -7,6 +7,7 @@ import 'package:ultistats/core/widgets/app_refreshing_indicator.dart';
 import 'package:ultistats/features/players/presentation/providers/players_list_notifier.dart';
 import 'package:ultistats/features/players/presentation/providers/players_list_state.dart';
 import 'package:ultistats/features/players/presentation/screens/edit_player_screen.dart';
+import 'package:ultistats/features/players/presentation/screens/player_detail_screen.dart';
 import 'package:ultistats/features/players/presentation/widgets/players_list/player_card.dart';
 import 'package:ultistats/router/app_router.gr.dart';
 
@@ -58,9 +59,12 @@ class _PlayersListWidgetState extends ConsumerState<PlayersListWidget> {
               if (index >= widget.state.players.length) {
                 return _buildLoadingIndicator(widget.state.isLoadingMore);
               }
+              final player = widget.state.players[index];
               return PlayerCard(
-                player: widget.state.players[index],
-                onPressed: () {},
+                player: player,
+                onPressed: () {
+                  context.router.push(PlayerDetailRoute(playerId: player.id));
+                },
               );
             },
             separatorBuilder: (context, index) => const SizedBox(height: 12),
@@ -75,7 +79,7 @@ class _PlayersListWidgetState extends ConsumerState<PlayersListWidget> {
                 EditPlayerRoute(
                   title: "Создание игрока",
                   confirmButtonText: "Создать игрока",
-                  editScreenInitial: const EditScreenInitial(),
+                  initialData: const EditPlayerScreenInitial(),
                 ),
               );
             },

@@ -7,7 +7,7 @@ import 'package:ultistats/features/players/presentation/providers/players_list_s
 class PlayersListNotifier extends Notifier<PlayersListState> {
   static const int _pageSize = 20;
   static const double _scrollThreshold = 200.0;
-  
+
   String _searchQuery = '';
   Timer? _debounceTimer;
 
@@ -21,7 +21,7 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
     final repository = ref.read(playersRepositoryProvider);
     final result = await repository.getList(
       PlayerFilterParams(
-        page: page, 
+        page: page,
         size: _pageSize,
         name: _searchQuery.isEmpty ? null : _searchQuery,
       ),
@@ -47,7 +47,7 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
   void onSearchChanged(String query) {
     if (_searchQuery == query) return;
     _searchQuery = query;
-    
+
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
       _performSearch();
@@ -119,6 +119,6 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
 }
 
 final playersListProvider =
-NotifierProvider<PlayersListNotifier, PlayersListState>(
-  PlayersListNotifier.new,
-);
+    NotifierProvider<PlayersListNotifier, PlayersListState>(
+      PlayersListNotifier.new,
+    );

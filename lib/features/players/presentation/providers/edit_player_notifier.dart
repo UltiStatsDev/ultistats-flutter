@@ -40,7 +40,6 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
 
     try {
       final playersRepo = ref.read(playersRepositoryProvider);
-      final teamsRepo = ref.read(teamsRepositoryProvider);
 
       String finalPlayerId;
 

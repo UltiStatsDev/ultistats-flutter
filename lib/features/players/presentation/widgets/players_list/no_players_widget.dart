@@ -38,7 +38,7 @@ class NoPlayersWidget extends ConsumerWidget {
                 EditPlayerRoute(
                   title: "Создание игрока",
                   confirmButtonText: "Создать игрока",
-                  editScreenInitial: EditScreenInitial(),
+                  initialData: EditPlayerScreenInitial(),
                 ),
               );
             },

@@ -41,6 +41,12 @@ class AppRouter extends RootStackRouter {
               duration: Duration(seconds: 0),
               reverseDuration: Duration(seconds: 0),
             ),
+            CustomRoute(
+              page: PlayerDetailRoute.page,
+              path: "detail/:playerId",
+              duration: Duration(seconds: 0),
+              reverseDuration: Duration(seconds: 0),
+            ),
           ],
         ),
       ],
