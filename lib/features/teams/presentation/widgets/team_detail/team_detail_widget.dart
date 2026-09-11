@@ -75,9 +75,17 @@ class TeamDetailWidget extends ConsumerWidget {
                       player: player,
                       isProcessing: processingIds.contains(player.playerId),
                       onPressed: () {
-                        context.router.push(
-                          PlayerDetailRoute(playerId: player.playerId),
+                        context.navigateTo(
+                          PlayersTabRoute(
+                            children: [
+                              const PlayersListRoute(),
+                              PlayerDetailRoute(playerId: player.playerId),
+                            ],
+                          ),
                         );
+                        // context.router.push(
+                        //   PlayerDetailRoute(playerId: player.playerId),
+                        // );
                       },
                       onDelete: () {
                         ref

@@ -30,12 +30,10 @@ class _PlayerNumberDialogState extends State<PlayerNumberDialog> {
   }
 
   void _updateButtonState() {
-    final isNotEmpty = _numberController.text.trim().isNotEmpty;
-    if (_isButtonEnabled != isNotEmpty) {
-      setState(() {
-        _isButtonEnabled = isNotEmpty;
-      });
-    }
+    final text = _numberController.text.trim();
+    setState(() {
+      _isButtonEnabled = text.isNotEmpty;
+    });
   }
 
   @override
