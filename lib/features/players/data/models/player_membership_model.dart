@@ -6,11 +6,13 @@ part 'player_membership_model.g.dart';
 @JsonSerializable(explicitToJson: true)
 class PlayerMembershipModel {
   final String teamId;
+  final String teamName;
   final String playerId;
   final int number;
 
   const PlayerMembershipModel({
     required this.teamId,
+    required this.teamName,
     required this.playerId,
     required this.number,
   });
@@ -25,6 +27,7 @@ class PlayerMembershipModel {
       number: number,
       playerId: playerId,
       teamId: teamId,
+      teamName: teamName,
     );
   }
 }

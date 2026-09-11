@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
@@ -26,7 +27,11 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
     }
   }
 
-  Future<void> addPlayer(String playerId, int number, [Completer? completer]) async {
+  Future<void> addPlayer(
+    String playerId,
+    int number, [
+    Completer? completer,
+  ]) async {
     final currentState = state;
     if (currentState is! TeamDetailLoaded) return;
 
@@ -38,11 +43,13 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
       final repository = ref.read(teamsRepositoryProvider);
       await repository.addOrUpdatePlayerInTeam(id, playerId, number);
       final team = await repository.getById(id);
-      
+
       if (state is TeamDetailLoaded) {
         state = TeamDetailLoaded(
           team,
-          processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds.where((i) => i != playerId).toSet(),
+          processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds
+              .where((i) => i != playerId)
+              .toSet(),
         );
       }
       ref.invalidate(playerDetailProvider(playerId));
@@ -50,10 +57,18 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
     } catch (e, st) {
       if (state is TeamDetailLoaded) {
         state = (state as TeamDetailLoaded).copyWith(
-          processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds.where((i) => i != playerId).toSet(),
+          processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds
+              .where((i) => i != playerId)
+              .toSet(),
         );
       }
       completer?.completeError(e, st);
+      log(
+        "Error while addPlayer",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
     }
   }
 
@@ -73,7 +88,9 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
       if (state is TeamDetailLoaded) {
         state = TeamDetailLoaded(
           team,
-          processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds.where((i) => i != playerId).toSet(),
+          processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds
+              .where((i) => i != playerId)
+              .toSet(),
         );
       }
       ref.invalidate(playerDetailProvider(playerId));
@@ -81,7 +98,9 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
     } catch (e, st) {
       if (state is TeamDetailLoaded) {
         state = (state as TeamDetailLoaded).copyWith(
-          processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds.where((i) => i != playerId).toSet(),
+          processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds
+              .where((i) => i != playerId)
+              .toSet(),
         );
       }
       completer?.completeError(e, st);

@@ -51,7 +51,7 @@ class PlayerMembershipCard extends StatelessWidget {
             const SizedBox(width: 8),
             Expanded(
               child: Text(
-                "Команда ID: ${membership.teamId.substring(0, 8)}...",
+                membership.teamName,
                 style: theme.textTheme.labelMedium,
                 overflow: TextOverflow.ellipsis,
               ),
