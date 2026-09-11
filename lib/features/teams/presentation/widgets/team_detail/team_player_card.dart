@@ -26,39 +26,40 @@ class TeamPlayerCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(borderRadius),
       child: Ink(
         height: 50,
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
         decoration: BoxDecoration(
           color: theme.colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Row(
           children: [
-            Expanded(
-              child: RichText(
-                text: TextSpan(
-                  children: [
-                    WidgetSpan(
-                      child: SizedBox(
-                        width: 28,
-                        child: Center(
-                          child: Text(
-                            player.number?.toString() ?? "---",
-                            style: theme.textTheme.labelMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    WidgetSpan(child: SizedBox(width: 4)),
-                    TextSpan(
-                      text: "${player.firstName} ${player.lastName}",
-                      style: theme.textTheme.labelMedium,
-                    ),
-                  ],
+            SizedBox(
+              width: 32,
+              child: Center(
+                child: Text(
+                  "#${player.number?.toString() ?? "---"}",
+                  style: theme.textTheme.labelMedium?.copyWith(
+                      fontWeight: FontWeight.bold
+                  ),
                 ),
               ),
             ),
+            const SizedBox(width: 8),
+            VerticalDivider(
+              indent: 12,
+              endIndent: 12,
+              thickness: 1,
+              color: theme.primaryColor.withValues(alpha: 0.1),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                "${player.firstName} ${player.lastName}",
+                style: theme.textTheme.labelMedium,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+
             if (isProcessing)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8),

@@ -49,7 +49,9 @@ class TeamDetailWidget extends ConsumerWidget {
                           Text(team.name, style: theme.textTheme.titleMedium),
                           Text(
                             team.city ?? "",
-                            style: theme.textTheme.titleSmall,
+                            style: theme.textTheme.titleSmall?.copyWith(
+                              color: Colors.white.withValues(alpha: 0.6),
+                            ),
                           ),
                         ],
                       ),
