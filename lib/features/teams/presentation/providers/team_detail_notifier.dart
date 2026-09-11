@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/features/players/presentation/providers/player_detail_notifier.dart';
 import 'package:ultistats/features/teams/presentation/providers/team_detail_state.dart';
 
 part 'team_detail_notifier.g.dart';
@@ -44,6 +45,7 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
           processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds.where((i) => i != playerId).toSet(),
         );
       }
+      ref.invalidate(playerDetailProvider(playerId));
       completer?.complete();
     } catch (e, st) {
       if (state is TeamDetailLoaded) {
@@ -74,6 +76,7 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
           processingPlayerIds: (state as TeamDetailLoaded).processingPlayerIds.where((i) => i != playerId).toSet(),
         );
       }
+      ref.invalidate(playerDetailProvider(playerId));
       completer?.complete();
     } catch (e, st) {
       if (state is TeamDetailLoaded) {

@@ -59,7 +59,7 @@ final class TeamDetailNotifierProvider
 }
 
 String _$teamDetailNotifierHash() =>
-    r'fdb3033188bc1875411db43c6ae5325c20f33bd1';
+    r'd23bbbc486c09c332f9697129c0b6317c1584915';
 
 final class TeamDetailNotifierFamily extends $Family
     with

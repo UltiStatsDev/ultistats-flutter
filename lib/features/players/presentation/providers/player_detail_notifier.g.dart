@@ -59,7 +59,7 @@ final class PlayerDetailNotifierProvider
 }
 
 String _$playerDetailNotifierHash() =>
-    r'7f889eb0f724d1ffa5cc7a2af803b0d4a0e5a94d';
+    r'4ab820fb2fe5dbba0086dd5d5878736d850d51c2';
 
 final class PlayerDetailNotifierFamily extends $Family
     with

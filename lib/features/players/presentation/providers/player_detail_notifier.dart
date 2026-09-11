@@ -14,10 +14,16 @@ class PlayerDetailNotifier extends _$PlayerDetailNotifier {
 
   Future<void> _loadPlayer(String id) async {
     try {
-      final repository = ref.read(playersRepositoryProvider);
-      final player = await repository.getById(id);
+      final playerRepository = ref.read(playersRepositoryProvider);
+      final teamRepository = ref.read(teamsRepositoryProvider);
 
-      state = PlayerDetailLoaded(player);
+      final player = await playerRepository.getById(id);
+
+      final teams = await Future.wait(
+        player.memberships.map((m) => teamRepository.getById(m.teamId)),
+      );
+
+      state = PlayerDetailLoaded(player, teams);
     } catch (e, st) {
       state = PlayerDetailError(e, st);
     }

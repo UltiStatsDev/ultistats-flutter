@@ -83,9 +83,6 @@ class TeamDetailWidget extends ConsumerWidget {
                             ],
                           ),
                         );
-                        // context.router.push(
-                        //   PlayerDetailRoute(playerId: player.playerId),
-                        // );
                       },
                       onDelete: () {
                         ref

@@ -8,7 +8,6 @@ import 'package:ultistats/features/players/presentation/providers/player_detail_
 import 'package:ultistats/features/players/presentation/widgets/player_detail/loading_player_detail_widget.dart';
 import 'package:ultistats/features/players/presentation/widgets/player_detail/player_detail_widget.dart';
 
-
 @RoutePage()
 class PlayerDetailScreen extends ConsumerWidget {
   const PlayerDetailScreen({super.key, required this.playerId});
@@ -26,9 +25,9 @@ class PlayerDetailScreen extends ConsumerWidget {
         child: switch (state) {
           PlayerDetailInitial() || PlayerDetailLoading() =>
             const LoadingPlayerDetailWidget(key: ValueKey("loading")),
-          PlayerDetailLoaded(:final player) => PlayerDetailWidget(
+          PlayerDetailLoaded() => PlayerDetailWidget(
             key: ValueKey("loaded"),
-            player: player,
+            state: state,
           ),
           PlayerDetailError(:final error, :final stackTrace) => ErrorScreen(
             exception: error,

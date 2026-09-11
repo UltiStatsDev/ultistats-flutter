@@ -34,7 +34,7 @@ class TeamPlayerCard extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 32,
+              width: 36,
               child: Center(
                 child: Text(
                   "#${player.number?.toString() ?? "---"}",

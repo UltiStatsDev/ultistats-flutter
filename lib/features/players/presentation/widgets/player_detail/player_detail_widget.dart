@@ -2,19 +2,20 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/photo_widget.dart';
-import 'package:ultistats/features/players/domain/entities/player_detail.dart';
+import 'package:ultistats/features/players/presentation/providers/player_detail_state.dart';
 import 'package:ultistats/features/players/presentation/widgets/player_detail/player_detail_app_bar.dart';
 import 'package:ultistats/features/players/presentation/widgets/player_detail/player_membership_card.dart';
+import 'package:ultistats/router/app_router.gr.dart';
 
 class PlayerDetailWidget extends StatelessWidget {
-  const PlayerDetailWidget({super.key, required this.player});
+  const PlayerDetailWidget({super.key, required this.state});
 
-  final PlayerDetail player;
+  final PlayerDetailLoaded state;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final player = state.player;
     return Column(
       children: [
         PlayerDetailAppBar(
@@ -85,7 +86,14 @@ class PlayerDetailWidget extends StatelessWidget {
                       return PlayerMembershipCard(
                         membership: membership,
                         onPressed: () {
-                          // TODO: Перейти на страницу команды по membership.teamId
+                          context.navigateTo(
+                            TeamsTabRoute(
+                              children: [
+                                const TeamsListRoute(),
+                                TeamDetailRoute(teamId: membership.teamId),
+                              ]
+                            )
+                          );
                         },
                       );
                     },
