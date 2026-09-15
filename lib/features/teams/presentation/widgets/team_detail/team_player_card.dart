@@ -9,12 +9,14 @@ class TeamPlayerCard extends StatelessWidget {
     required this.player,
     required this.onPressed,
     required this.onDelete,
+    required this.onEdit,
     this.isProcessing = false,
   });
 
   final TeamPlayer player;
   final VoidCallback onPressed;
   final VoidCallback onDelete;
+  final VoidCallback onEdit;
   final bool isProcessing;
 
   @override
@@ -70,14 +72,26 @@ class TeamPlayerCard extends StatelessWidget {
                 ),
               )
             else
-              IconButton(
-                onPressed: onDelete,
-                icon: Icon(
-                  Icons.delete,
-                  color: theme.textTheme.labelMedium?.color,
+              ...[
+                IconButton(
+                  onPressed: onEdit,
+                  icon: Icon(
+                    Icons.numbers,
+                    color: theme.textTheme.labelMedium?.color,
+                  ),
+                  iconSize: 24,
                 ),
-                iconSize: 24,
-              ),
+                SizedBox(width: 8),
+                IconButton(
+                  onPressed: onDelete,
+                  icon: Icon(
+                    Icons.delete,
+                    color: theme.textTheme.labelMedium?.color,
+                  ),
+                  iconSize: 24,
+                ),
+              ]
+
           ],
         ),
       ),

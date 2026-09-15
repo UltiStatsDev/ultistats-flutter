@@ -18,6 +18,40 @@ class TeamDetailWidget extends ConsumerWidget {
 
   final TeamDetail team;
 
+  Future<int?> _enterNumber(
+    BuildContext context,
+    String firstName,
+    String lastName,
+  ) async {
+    final number = await PlayerNumberDialog.show(
+      context: context,
+      firstName: firstName,
+      lastName: lastName,
+    );
+    return number;
+  }
+
+  Future<void> _updatePlayer({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String playerId,
+    required String firstName,
+    required String lastName,
+  }) async {
+    final number = await _enterNumber(context, firstName, lastName);
+    if (number == null) return;
+    await ref
+        .read(teamDetailProvider(team.id).notifier)
+        .updatePlayer(playerId, number);
+  }
+
+  Future<void> _deletePlayer({
+    required WidgetRef ref,
+    required String id,
+  }) async {
+    await ref.read(teamDetailProvider(team.id).notifier).removePlayer(id);
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
@@ -102,25 +136,30 @@ class TeamDetailWidget extends ConsumerWidget {
                         );
                       },
                       onDelete: () {
-                        ref
-                            .read(teamDetailProvider(team.id).notifier)
-                            .removePlayer(player.playerId);
+                        _deletePlayer(ref: ref, id: player.playerId);
+                      },
+                      onEdit: () {
+                        _updatePlayer(
+                          context: context,
+                          ref: ref,
+                          firstName: player.firstName,
+                          lastName: player.lastName,
+                          playerId: player.playerId,
+                        );
                       },
                     );
                   },
                 ),
                 const SizedBox(height: 12),
                 AddPlayerToTeamWidget(
-                  onPlayerSelected: (player) async {
-                    final number = await PlayerNumberDialog.show(
-                      context,
-                      player,
+                  onPlayerSelected: (player) {
+                    _updatePlayer(
+                      context: context,
+                      ref: ref,
+                      firstName: player.firstName,
+                      lastName: player.lastName,
+                      playerId: player.id,
                     );
-                    if (number == null) return;
-
-                    ref
-                        .read(teamDetailProvider(team.id).notifier)
-                        .addPlayer(player.id, number);
                   },
                   isProcessing: processingIds.any(
                     (procId) => !team.players.any((p) => p.playerId == procId),

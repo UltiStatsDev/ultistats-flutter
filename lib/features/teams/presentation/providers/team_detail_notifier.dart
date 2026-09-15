@@ -27,7 +27,7 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
     }
   }
 
-  Future<void> addPlayer(
+  Future<void> updatePlayer(
     String playerId,
     int number, [
     Completer? completer,

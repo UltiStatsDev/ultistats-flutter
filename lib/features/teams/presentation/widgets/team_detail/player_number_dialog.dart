@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
-import 'package:ultistats/features/players/domain/entities/player_list_item.dart';
 
 class PlayerNumberDialog extends StatefulWidget {
-  const PlayerNumberDialog({super.key, required this.player});
+  const PlayerNumberDialog({
+    super.key,
+    required this.firstName,
+    required this.lastName,
+  });
 
-  final PlayerListItem player;
+  final String firstName;
+  final String lastName;
 
   @override
   State<PlayerNumberDialog> createState() => _PlayerNumberDialogState();
 
-  static Future<int?> show(BuildContext context, PlayerListItem player) {
+  static Future<int?> show({
+    required BuildContext context,
+    required String firstName,
+    required String lastName,
+  }) {
     return showDialog<int?>(
       context: context,
-      builder: (context) => PlayerNumberDialog(player: player),
+      builder: (context) =>
+          PlayerNumberDialog(firstName: firstName, lastName: lastName),
     );
   }
 }
@@ -57,13 +66,10 @@ class _PlayerNumberDialogState extends State<PlayerNumberDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Игровой номер",
-              style: theme.textTheme.bodyMedium,
-            ),
+            Text("Игровой номер", style: theme.textTheme.bodyMedium),
             const SizedBox(height: 8),
             Text(
-              "Введите номер для игрока ${widget.player.firstName} ${widget.player.lastName}",
+              "Введите номер для игрока ${widget.firstName} ${widget.lastName}",
               style: theme.textTheme.labelMedium,
             ),
             const SizedBox(height: 20),
@@ -71,8 +77,12 @@ class _PlayerNumberDialogState extends State<PlayerNumberDialog> {
               padding: const EdgeInsets.symmetric(horizontal: 12),
               height: theme.textFieldHeight,
               decoration: BoxDecoration(
-                color: theme.colorScheme.surfaceContainerHighest.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(theme.textFieldBorderRadius),
+                color: theme.colorScheme.surfaceContainerHighest.withValues(
+                  alpha: 0.1,
+                ),
+                borderRadius: BorderRadius.circular(
+                  theme.textFieldBorderRadius,
+                ),
                 border: Border.all(
                   color: theme.primaryColor.withValues(alpha: 0.2),
                 ),
