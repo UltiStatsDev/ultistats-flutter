@@ -6,6 +6,7 @@ import 'package:ultistats/core/widgets/photo_widget.dart';
 import 'package:ultistats/features/teams/domain/entities/team_detail.dart';
 import 'package:ultistats/features/teams/presentation/providers/team_detail_notifier.dart';
 import 'package:ultistats/features/teams/presentation/providers/team_detail_state.dart';
+import 'package:ultistats/features/teams/presentation/screens/edit_team_screen.dart';
 import 'package:ultistats/features/teams/presentation/widgets/team_detail/add_player_to_team_widget.dart';
 import 'package:ultistats/features/teams/presentation/widgets/team_detail/player_number_dialog.dart';
 import 'package:ultistats/features/teams/presentation/widgets/team_detail/team_detail_app_bar.dart';
@@ -28,7 +29,23 @@ class TeamDetailWidget extends ConsumerWidget {
 
     return Column(
       children: [
-        TeamDetailAppBar(onBackPressed: () => context.router.pop()),
+        TeamDetailAppBar(
+          onBackPressed: () => context.router.pop(),
+          onEditPressed: () {
+            context.router.push(
+              EditTeamRoute(
+                title: "Редактирование",
+                confirmButtonText: "Сохранить",
+                initialData: EditTeamScreenInitial(
+                  name: team.name,
+                  id: team.id,
+                  city: team.city,
+                  photoUrl: team.photoUrl,
+                ),
+              ),
+            );
+          },
+        ),
         Expanded(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: theme.screenPadding),

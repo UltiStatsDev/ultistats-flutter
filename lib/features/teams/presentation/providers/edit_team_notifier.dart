@@ -1,9 +1,11 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/teams/domain/params/create_team_params.dart';
 import 'package:ultistats/features/teams/domain/params/update_team_params.dart';
+import 'package:ultistats/features/teams/presentation/providers/team_detail_notifier.dart';
 import 'package:ultistats/features/teams/presentation/providers/teams_list_notifier.dart';
 
 class EditTeamState {
@@ -30,6 +32,22 @@ class EditTeamNotifier extends Notifier<EditTeamState> {
   @override
   EditTeamState build() => const EditTeamState();
 
+  Future<void> deletePhoto(String id) async {
+    try {
+      final teamsRepo = ref.read(teamsRepositoryProvider);
+      await teamsRepo.deleteTeamPhoto(id);
+      ref.invalidate(teamsListProvider);
+      ref.invalidate(teamDetailProvider);
+    } catch (e, st) {
+      log(
+        "Error while deleting team photo",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
+    }
+  }
+
   Future<void> saveTeam({
     String? teamId,
     required String name,
@@ -44,20 +62,12 @@ class EditTeamNotifier extends Notifier<EditTeamState> {
 
       if (teamId != null) {
         final result = await teamsRepo.updateById(
-          UpdateTeamParams(
-            teamId: teamId,
-            name: name,
-            city: city,
-          ),
+          UpdateTeamParams(teamId: teamId, name: name, city: city),
         );
         finalTeamId = result.id;
       } else {
         final result = await teamsRepo.createTeam(
-          CreateTeamParams(
-            name: name,
-            city: city,
-            playerIds: [],
-          ),
+          CreateTeamParams(name: name, city: city, playerIds: []),
         );
         finalTeamId = result.id;
       }
@@ -71,16 +81,18 @@ class EditTeamNotifier extends Notifier<EditTeamState> {
       }
 
       ref.invalidate(teamsListProvider);
+      ref.invalidate(teamDetailProvider);
       state = state.copyWith(isLoading: false, isSuccess: true);
     } catch (e) {
       state = state.copyWith(
-        isLoading: false, 
+        isLoading: false,
         error: kDebugMode ? e.toString() : "Ошибка сохранения команды",
       );
     }
   }
 }
 
-final editTeamProvider = NotifierProvider.autoDispose<EditTeamNotifier, EditTeamState>(
-  EditTeamNotifier.new,
-);
+final editTeamProvider =
+    NotifierProvider.autoDispose<EditTeamNotifier, EditTeamState>(
+      EditTeamNotifier.new,
+    );

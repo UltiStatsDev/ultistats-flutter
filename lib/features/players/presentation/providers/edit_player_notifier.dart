@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -32,10 +33,19 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
   EditPlayerState build() => const EditPlayerState();
 
   Future<void> deleteImage(String playerId) async {
-    final playersRepo = ref.read(playersRepositoryProvider);
-    await playersRepo.deletePlayerPhoto(playerId);
-    ref.invalidate(playerDetailProvider);
-    ref.invalidate(playersListProvider);
+    try {
+      final playersRepo = ref.read(playersRepositoryProvider);
+      await playersRepo.deletePlayerPhoto(playerId);
+      ref.invalidate(playerDetailProvider);
+      ref.invalidate(playersListProvider);
+    } catch (e, st) {
+      log(
+        "Error while deleting player photo",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
+    }
   }
 
   Future<void> savePlayer({
@@ -80,13 +90,14 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
       state = state.copyWith(isLoading: false, isSuccess: true);
     } catch (e) {
       state = state.copyWith(
-        isLoading: false, 
+        isLoading: false,
         error: kDebugMode ? e.toString() : "Ошибка сохранения игрока",
       );
     }
   }
 }
 
-final editPlayerProvider = NotifierProvider.autoDispose<EditPlayerNotifier, EditPlayerState>(
-  EditPlayerNotifier.new,
-);
+final editPlayerProvider =
+    NotifierProvider.autoDispose<EditPlayerNotifier, EditPlayerState>(
+      EditPlayerNotifier.new,
+    );

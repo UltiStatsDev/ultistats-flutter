@@ -47,23 +47,31 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
     super.dispose();
   }
 
+  void _onImageDelete() {
+    if (widget.initialData.id != null) {
+      ref.read(editTeamProvider.notifier).deletePhoto(widget.initialData.id!);
+    }
+  }
+
   void _onSave() {
     final name = _nameTextController.text.trim();
     final city = _cityTextController.text.trim();
 
     if (name.isEmpty || city.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Заполните название и город')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Заполните название и город')),
+      );
       return;
     }
 
-    ref.read(editTeamProvider.notifier).saveTeam(
-      teamId: widget.initialData.id,
-      name: name,
-      city: city,
-      photo: _photo,
-    );
+    ref
+        .read(editTeamProvider.notifier)
+        .saveTeam(
+          teamId: widget.initialData.id,
+          name: name,
+          city: city,
+          photo: _photo,
+        );
   }
 
   @override
@@ -110,11 +118,13 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
                     const SizedBox(height: 24),
                     AddPhotoWidget(
                       size: 200,
+                      initialPhotoUrl: widget.initialData.photoUrl,
                       onImageSelected: (file) {
                         setState(() {
                           _photo = file;
                         });
                       },
+                      onImageDelete: _onImageDelete,
                     ),
                     const SizedBox(height: 24),
                     FormTile(
@@ -154,12 +164,14 @@ class EditTeamScreenInitial {
   final String? id;
   final String? name;
   final String? city;
+  final String? photoUrl;
   final File? photo;
 
   const EditTeamScreenInitial({
     this.id,
     this.name,
     this.city,
+    this.photoUrl,
     this.photo,
   });
 }
