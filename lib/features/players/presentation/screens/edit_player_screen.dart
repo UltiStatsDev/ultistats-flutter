@@ -35,9 +35,7 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
   @override
   void initState() {
     super.initState();
-    _nameTextController = TextEditingController(
-      text: widget.initialData.name,
-    );
+    _nameTextController = TextEditingController(text: widget.initialData.name);
     _secondNameTextController = TextEditingController(
       text: widget.initialData.secondName,
     );
@@ -49,6 +47,14 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
     _nameTextController.dispose();
     _secondNameTextController.dispose();
     super.dispose();
+  }
+
+  void _onImageDelete() {
+    /// If widget.initialData.id == null
+    /// the player is not exist
+    if (widget.initialData.id != null) {
+      ref.read(editPlayerProvider.notifier).deleteImage(widget.initialData.id!);
+    }
   }
 
   void _onSave() {
@@ -116,11 +122,13 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
                     const SizedBox(height: 24),
                     AddPhotoWidget(
                       size: 200,
+                      initialPhotoUrl: widget.initialData.photoUrl,
                       onImageSelected: (file) {
                         setState(() {
                           _photo = file;
                         });
                       },
+                      onImageDelete: _onImageDelete,
                     ),
                     const SizedBox(height: 24),
                     FormTile(
@@ -160,12 +168,14 @@ class EditPlayerScreenInitial {
   final String? id;
   final String? name;
   final String? secondName;
+  final String? photoUrl;
   final File? photo;
 
   const EditPlayerScreenInitial({
     this.id,
     this.name,
     this.secondName,
+    this.photoUrl,
     this.photo,
   });
 }

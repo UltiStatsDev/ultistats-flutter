@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/photo_widget.dart';
 import 'package:ultistats/features/players/presentation/providers/player_detail_state.dart';
+import 'package:ultistats/features/players/presentation/screens/edit_player_screen.dart';
 import 'package:ultistats/features/players/presentation/widgets/player_detail/player_detail_app_bar.dart';
 import 'package:ultistats/features/players/presentation/widgets/player_detail/player_membership_card.dart';
 import 'package:ultistats/router/app_router.gr.dart';
@@ -21,6 +22,20 @@ class PlayerDetailWidget extends StatelessWidget {
         PlayerDetailAppBar(
           onBackPressed: () {
             context.router.pop();
+          },
+          onEditPressed: () {
+            context.router.push(
+              EditPlayerRoute(
+                title: "Редактирование",
+                confirmButtonText: "Сохранить",
+                initialData: EditPlayerScreenInitial(
+                  name: player.firstName,
+                  secondName: player.lastName,
+                  id: player.id,
+                  photoUrl: player.photoUrl,
+                ),
+              ),
+            );
           },
         ),
         Expanded(
@@ -56,10 +71,7 @@ class PlayerDetailWidget extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 32),
-                Text(
-                  "Команды",
-                  style: theme.textTheme.titleMedium,
-                ),
+                Text("Команды", style: theme.textTheme.titleMedium),
                 const SizedBox(height: 16),
                 if (player.memberships.isEmpty)
                   Padding(
@@ -91,8 +103,8 @@ class PlayerDetailWidget extends StatelessWidget {
                               children: [
                                 const TeamsListRoute(),
                                 TeamDetailRoute(teamId: membership.teamId),
-                              ]
-                            )
+                              ],
+                            ),
                           );
                         },
                       );

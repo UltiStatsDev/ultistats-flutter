@@ -1,16 +1,21 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ultistats/core/config/config.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 
 class AddPhotoWidget extends StatefulWidget {
   final double size;
   final Function(File?) onImageSelected;
+  final String? initialPhotoUrl;
+  final VoidCallback? onImageDelete;
 
   const AddPhotoWidget({
     super.key,
     this.size = 120,
     required this.onImageSelected,
+    this.initialPhotoUrl,
+    this.onImageDelete,
   });
 
   @override
@@ -18,8 +23,16 @@ class AddPhotoWidget extends StatefulWidget {
 }
 
 class _AddPhotoWidgetState extends State<AddPhotoWidget> {
+
   File? _image;
+  String? _imageUrl;
   final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _imageUrl = widget.initialPhotoUrl;
+  }
 
   Future<void> _pickImage(ImageSource source) async {
     final XFile? pickedFile = await _picker.pickImage(
@@ -64,14 +77,17 @@ class _AddPhotoWidgetState extends State<AddPhotoWidget> {
                   Navigator.of(bc).pop();
                 },
               ),
-              if (_image != null)
+              if (_image != null || _imageUrl != null)
                 ListTile(
                   leading: const Icon(Icons.close),
                   title: Text('Удалить', style: theme.textTheme.labelLarge),
                   onTap: () {
                     setState(() {
                       _image = null;
+                      _imageUrl = null;
                     });
+                    widget.onImageSelected(null);
+                    widget.onImageDelete?.call();
                     Navigator.of(bc).pop();
                   },
                 ),
@@ -86,6 +102,15 @@ class _AddPhotoWidgetState extends State<AddPhotoWidget> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    ImageProvider? imageProvider;
+    if (_image != null) {
+      imageProvider = FileImage(_image!);
+    } else if (_imageUrl != null) {
+      imageProvider = NetworkImage(
+        '${AppConfig.photoServerUrl}${_imageUrl!}',
+      );
+    }
+
     return GestureDetector(
       onTap: () => _showPicker(context),
       child: Container(
@@ -94,11 +119,11 @@ class _AddPhotoWidgetState extends State<AddPhotoWidget> {
         decoration: BoxDecoration(
           color: theme.colorScheme.primaryContainer,
           borderRadius: BorderRadius.circular(theme.cardBorderRadius),
-          image: _image != null
-              ? DecorationImage(image: FileImage(_image!), fit: BoxFit.cover)
+          image: imageProvider != null
+              ? DecorationImage(image: imageProvider, fit: BoxFit.cover)
               : null,
         ),
-        child: _image == null ? _placeholder(context) : null,
+        child: imageProvider == null ? _placeholder(context) : null,
       ),
     );
   }
@@ -115,7 +140,7 @@ class _AddPhotoWidgetState extends State<AddPhotoWidget> {
           size: 96,
           color: theme.inputDecorationTheme.hintStyle!.color,
         ),
-        SizedBox(height: 12),
+        const SizedBox(height: 12),
         Text("Добавить фото", style: theme.inputDecorationTheme.hintStyle),
       ],
     );
