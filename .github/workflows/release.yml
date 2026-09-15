@@ -1,0 +1,51 @@
+name: Build & Release APK
+
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+        
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with: 
+          distribution: 'zulu'
+          java-version: '17'
+      
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with: 
+          flutter-version: '3.41.6' 
+          cache: true
+      
+      - name: Install dependencies
+        run: flutter pub get
+        
+      - name: Run build runner
+        run: flutter pub run build_runner build --delete-conflicting-outputs
+        
+      - name: Create env file
+        run: | 
+          mkdir -p env
+          echo '${{ secrets.ENV_JSON_PROD }}' > env/env.json
+
+      - name: Build APK
+        run: flutter build apk --release --flavor prod --dart-define-from-file=env/env.json
+        
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with: 
+          files: build/app/outputs/flutter-apk/app-prod-release.apk
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          body: "Автоматическая сборка. Версия Flutter: 3.41.6. Номер сборки: ${{ github.run_number }}"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
