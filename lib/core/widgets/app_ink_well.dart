@@ -4,12 +4,12 @@ class AppInkWell extends StatelessWidget {
   const AppInkWell({
     super.key,
     required this.child,
-    required this.onTap,
+    this.onTap,
     required this.borderRadius,
   });
 
   final Widget child;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final BorderRadius borderRadius;
 
   @override

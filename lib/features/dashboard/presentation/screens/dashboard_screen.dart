@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/features/dashboard/presentation/widgets/dashboard_body.dart';
-import 'package:ultistats/features/matches/presentation/providers/matches_providers.dart';
+import 'package:ultistats/features/matches/presentation/providers/matches_list_notifier.dart';
 import 'package:ultistats/features/players/presentation/providers/players_list_notifier.dart';
 import 'package:ultistats/features/teams/presentation/providers/teams_list_notifier.dart';
 import 'package:ultistats/router/app_router.gr.dart';
@@ -12,7 +12,7 @@ class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   final _routes = const [
-    MatchesListRoute(),
+    MatchesTabRoute(),
     TeamsTabRoute(),
     PlayersTabRoute(),
   ];

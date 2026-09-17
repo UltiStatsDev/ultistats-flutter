@@ -17,10 +17,9 @@ class MatchesRepositoryImpl implements MatchesRepository {
   MatchesRepositoryImpl(this._api);
 
   @override
-  Future<MatchDetail> createMatch(CreateMatchParams params) async {
+  Future<void> createMatch(CreateMatchParams params) async {
     final request = CreateMatchRequest.fromParams(params);
-    final model = await _api.createMatch(request);
-    return model.toEntity();
+    return await _api.createMatch(request);
   }
 
   @override
@@ -56,10 +55,9 @@ class MatchesRepositoryImpl implements MatchesRepository {
   }
 
   @override
-  Future<MatchDetail> updateById(UpdateMatchParams params) async {
+  Future<void> updateById(UpdateMatchParams params) async {
     final request = UpdateMatchRequest.fromParams(params);
-    final model = await _api.updateMatch(params.matchId, request);
-    return model.toEntity();
+    return await _api.updateMatch(params.matchId, request);
   }
 
   @override

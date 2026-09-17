@@ -11,7 +11,7 @@ class MatchListItemModel {
   final DateTime? plannedStartTimestamp;
   final DateTime? startedAt;
   final DateTime? endedAt;
-  final MatchStatus status;
+  final String status;
 
   const MatchListItemModel({
     required this.id,
@@ -34,7 +34,7 @@ class MatchListItemModel {
       plannedStartTimestamp: plannedStartTimestamp,
       startedAt: startedAt,
       endedAt: endedAt,
-      status: status,
+      status: MatchStatus.parse(status),
     );
   }
 }
@@ -44,7 +44,6 @@ class MatchListTeamModel {
   final String teamId;
   final String teamName;
   final int teamScore;
-  final List<String> playerIds;
   final String? city;
   final String? photoUrl;
 
@@ -52,7 +51,6 @@ class MatchListTeamModel {
     required this.teamId,
     required this.teamName,
     required this.teamScore,
-    required this.playerIds,
     this.city,
     this.photoUrl,
   });

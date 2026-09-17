@@ -20,13 +20,13 @@ abstract class MatchesApi {
   );
 
   @POST('/matches')
-  Future<MatchDetailModel> createMatch(@Body() CreateMatchRequest body);
+  Future<void> createMatch(@Body() CreateMatchRequest body);
 
   @GET('/matches/{id}')
   Future<MatchDetailModel> getMatchById(@Path('id') String id);
 
   @PUT('/matches/{id}')
-  Future<MatchDetailModel> updateMatch(
+  Future<void> updateMatch(
     @Path('id') String id,
     @Body() UpdateMatchRequest body,
   );

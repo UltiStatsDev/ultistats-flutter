@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
-import 'package:ultistats/features/matches/presentation/providers/matches_providers.dart';
+import 'package:ultistats/features/matches/presentation/providers/matches_list_notifier.dart';
+import 'package:ultistats/router/app_router.gr.dart';
 
 class NoMatchesWidget extends ConsumerWidget {
   const NoMatchesWidget({super.key});
@@ -30,7 +32,14 @@ class NoMatchesWidget extends ConsumerWidget {
           right: 19 - theme.screenPadding,
           bottom: 24,
           child: FloatingActionButton(
-            onPressed: () {},
+            onPressed: () {
+              context.router.push(
+                EditMatchRoute(
+                  title: "Создать матч",
+                  confirmButtonText: "Создать",
+                ),
+              );
+            },
             child: const Icon(Icons.add),
           ),
         ),

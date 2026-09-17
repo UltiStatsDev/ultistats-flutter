@@ -8,11 +8,11 @@ import 'package:ultistats/features/matches/domain/params/update_match_params.dar
 abstract interface class MatchesRepository {
   Future<Page<MatchListItem>> getList(MatchFilterParams params);
 
-  Future<MatchDetail> createMatch(CreateMatchParams params);
+  Future<void> createMatch(CreateMatchParams params);
 
   Future<MatchDetail> getById(String matchId);
 
-  Future<MatchDetail> updateById(UpdateMatchParams params);
+  Future<void> updateById(UpdateMatchParams params);
 
   Future<void> deleteById(String matchId);
 

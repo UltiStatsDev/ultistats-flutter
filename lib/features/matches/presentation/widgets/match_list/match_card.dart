@@ -82,7 +82,7 @@ class MatchCard extends StatelessWidget {
 
   Widget _buildTeam(BuildContext context, MatchListTeam team) {
     final theme = Theme.of(context);
-    final photoSize = 80.0;
+    final photoSize = 75.0;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,

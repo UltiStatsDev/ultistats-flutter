@@ -21,7 +21,7 @@ MatchListItemModel _$MatchListItemModelFromJson(Map<String, dynamic> json) =>
       endedAt: json['endedAt'] == null
           ? null
           : DateTime.parse(json['endedAt'] as String),
-      status: $enumDecode(_$MatchStatusEnumMap, json['status']),
+      status: json['status'] as String,
     );
 
 Map<String, dynamic> _$MatchListItemModelToJson(
@@ -32,13 +32,7 @@ Map<String, dynamic> _$MatchListItemModelToJson(
   'plannedStartTimestamp': instance.plannedStartTimestamp?.toIso8601String(),
   'startedAt': instance.startedAt?.toIso8601String(),
   'endedAt': instance.endedAt?.toIso8601String(),
-  'status': _$MatchStatusEnumMap[instance.status]!,
-};
-
-const _$MatchStatusEnumMap = {
-  MatchStatus.planned: 'planned',
-  MatchStatus.inProgress: 'inProgress',
-  MatchStatus.finished: 'finished',
+  'status': instance.status,
 };
 
 MatchListTeamModel _$MatchListTeamModelFromJson(Map<String, dynamic> json) =>
@@ -46,9 +40,6 @@ MatchListTeamModel _$MatchListTeamModelFromJson(Map<String, dynamic> json) =>
       teamId: json['teamId'] as String,
       teamName: json['teamName'] as String,
       teamScore: (json['teamScore'] as num).toInt(),
-      playerIds: (json['playerIds'] as List<dynamic>)
-          .map((e) => e as String)
-          .toList(),
       city: json['city'] as String?,
       photoUrl: json['photoUrl'] as String?,
     );
@@ -58,7 +49,6 @@ Map<String, dynamic> _$MatchListTeamModelToJson(MatchListTeamModel instance) =>
       'teamId': instance.teamId,
       'teamName': instance.teamName,
       'teamScore': instance.teamScore,
-      'playerIds': instance.playerIds,
       'city': instance.city,
       'photoUrl': instance.photoUrl,
     };

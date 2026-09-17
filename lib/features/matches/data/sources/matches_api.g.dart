@@ -53,13 +53,13 @@ class _MatchesApi implements MatchesApi {
   }
 
   @override
-  Future<MatchDetailModel> createMatch(CreateMatchRequest body) async {
+  Future<void> createMatch(CreateMatchRequest body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<MatchDetailModel>(
+    final _options = _setStreamType<void>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -69,15 +69,7 @@ class _MatchesApi implements MatchesApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MatchDetailModel _value;
-    try {
-      _value = MatchDetailModel.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, response: _result);
-      rethrow;
-    }
-    return _value;
+    await _dio.fetch<void>(_options);
   }
 
   @override
@@ -108,16 +100,13 @@ class _MatchesApi implements MatchesApi {
   }
 
   @override
-  Future<MatchDetailModel> updateMatch(
-    String id,
-    UpdateMatchRequest body,
-  ) async {
+  Future<void> updateMatch(String id, UpdateMatchRequest body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
-    final _options = _setStreamType<MatchDetailModel>(
+    final _options = _setStreamType<void>(
       Options(method: 'PUT', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -127,15 +116,7 @@ class _MatchesApi implements MatchesApi {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late MatchDetailModel _value;
-    try {
-      _value = MatchDetailModel.fromJson(_result.data!);
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, response: _result);
-      rethrow;
-    }
-    return _value;
+    await _dio.fetch<void>(_options);
   }
 
   @override

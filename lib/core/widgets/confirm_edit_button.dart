@@ -3,10 +3,10 @@ import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/app_ink_well.dart';
 
 class ConfirmEditButton extends StatelessWidget {
-  const ConfirmEditButton({super.key, required this.confirmButtonText, required this.onTap});
+  const ConfirmEditButton({super.key, required this.confirmButtonText, this.onTap});
 
   final String confirmButtonText;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:ultistats/features/matches/presentation/screens/match_screen.dart';
 import 'package:ultistats/router/app_router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')
@@ -11,9 +12,24 @@ class AppRouter extends RootStackRouter {
       initial: true,
       children: [
         CustomRoute(
-          page: MatchesListRoute.page,
+          page: MatchesTabRoute.page,
           path: "matches",
           initial: true,
+          children: [
+            CustomRoute(page: MatchesListRoute.page, path: "", initial: true),
+            CustomRoute(
+              page: EditMatchRoute.page,
+              path: "edit",
+              duration: Duration(seconds: 0),
+              reverseDuration: Duration(seconds: 0),
+            ),
+            CustomRoute(
+              page: MatchDetailRoute.page,
+              path: "match_detail/:matchId",
+              duration: Duration(seconds: 0),
+              reverseDuration: Duration(seconds: 0),
+            )
+          ],
         ),
 
         CustomRoute(
@@ -57,5 +73,6 @@ class AppRouter extends RootStackRouter {
         ),
       ],
     ),
+    AutoRoute(page: MatchRoute.page, path: "/match"),
   ];
 }

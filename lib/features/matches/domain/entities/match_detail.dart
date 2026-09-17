@@ -1,16 +1,24 @@
-import 'package:ultistats/features/matches/domain/entities/team_match_result.dart';
+import 'package:ultistats/features/matches/domain/entities/match_team.dart';
 
 enum MatchStatus {
   planned,
   inProgress,
-  finished,
+  finished;
+
+  static MatchStatus parse(String status) {
+    return switch (status.toUpperCase()) {
+      'PLANNED' => MatchStatus.planned,
+      'IN_PROGRESS' => MatchStatus.inProgress,
+      'FINISHED' => MatchStatus.finished,
+      _ => MatchStatus.planned,
+    };
+  }
 }
 
 class MatchDetail {
   final String id;
-  final List<TeamMatchResult> teams;
+  final List<MatchTeam> teams;
   final int eventCount;
-  final String? diskHolderId;
   final DateTime? plannedStartTimestamp;
   final DateTime? startedAt;
   final DateTime? endedAt;
@@ -21,7 +29,6 @@ class MatchDetail {
     required this.teams,
     required this.eventCount,
     required this.status,
-    this.diskHolderId,
     this.plannedStartTimestamp,
     this.startedAt,
     this.endedAt,

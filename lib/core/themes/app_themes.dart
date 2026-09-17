@@ -12,6 +12,7 @@ ThemeData createLightTheme() {
     colorScheme: theme.colorScheme.copyWith(
       primaryContainer: Colors.white,
       surfaceContainerHighest: Colors.white,
+      surfaceContainerHigh: Colors.black12,
       onSurfaceVariant: AppColors.purple,
       error: Color(0xFFDA2121),
     ),
@@ -23,6 +24,13 @@ ThemeData createLightTheme() {
         color: Colors.white,
         letterSpacing: 0,
       ),
+    ),
+
+    listTileTheme: ListTileThemeData(
+      tileColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadiusGeometry.circular(10)
+      )
     ),
 
     inputDecorationTheme: InputDecorationThemeData(
