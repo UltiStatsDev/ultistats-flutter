@@ -4,20 +4,122 @@ import 'package:ultistats/core/themes/app_colors.dart';
 
 ThemeData createLightTheme() {
   final theme = ThemeData();
+  final baseBorderRadius = 10.0;
+
   return ThemeData(
     fontFamily: "Montserrat",
     primaryColor: AppColors.purple,
     scaffoldBackgroundColor: AppColors.purple,
 
     colorScheme: theme.colorScheme.copyWith(
+      primary: AppColors.purple,
+      onPrimary: Colors.white,
       primaryContainer: Colors.white,
+      surface: Colors.white,
+      onSurface: AppColors.grey,
       surfaceContainerHighest: Colors.white,
       surfaceContainerHigh: Colors.black12,
       onSurfaceVariant: AppColors.purple,
-      error: Color(0xFFDA2121),
+      error: const Color(0xFFDA2121),
     ),
 
-    snackBarTheme: SnackBarThemeData(
+    datePickerTheme: DatePickerThemeData(
+      backgroundColor: Colors.white,
+      headerBackgroundColor: AppColors.purple,
+      headerForegroundColor: Colors.white,
+      surfaceTintColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(baseBorderRadius),
+      ),
+      headerHelpStyle: const TextStyle(
+        fontFamily: "Montserrat",
+        fontSize: 14,
+        color: Colors.white,
+        fontWeight: FontWeight.normal,
+      ),
+      headerHeadlineStyle: const TextStyle(
+        fontFamily: "Montserrat",
+        fontSize: 24,
+        color: Colors.white,
+      ),
+      weekdayStyle: const TextStyle(
+        fontFamily: "Montserrat",
+        fontSize: 16,
+        color: AppColors.grey,
+      ),
+      dayStyle: const TextStyle(
+        fontFamily: "Montserrat",
+        fontSize: 18,
+        fontWeight: FontWeight.w600,
+      ),
+      yearStyle: const TextStyle(fontFamily: "Montserrat", fontSize: 16),
+      cancelButtonStyle: ButtonStyle(
+        textStyle: WidgetStatePropertyAll(
+          TextStyle(fontFamily: "Montserrat", fontWeight: FontWeight.w600),
+        ),
+        foregroundColor: WidgetStatePropertyAll(
+          AppColors.purple.withValues(alpha: 0.7),
+        ),
+      ),
+      confirmButtonStyle: const ButtonStyle(
+        textStyle: WidgetStatePropertyAll(
+          TextStyle(fontFamily: "Montserrat", fontWeight: FontWeight.bold),
+        ),
+        foregroundColor: WidgetStatePropertyAll(AppColors.purple),
+      ),
+    ),
+
+    timePickerTheme: TimePickerThemeData(
+      backgroundColor: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(baseBorderRadius),
+      ),
+      dayPeriodColor: AppColors.purple.withValues(alpha: 0.1),
+      dayPeriodTextColor: AppColors.purple,
+      hourMinuteColor: AppColors.purple.withValues(alpha: 0.1),
+      hourMinuteTextColor: AppColors.purple,
+      dialHandColor: AppColors.purple,
+      dialBackgroundColor: Colors.black.withValues(alpha: 0.05),
+      entryModeIconColor: AppColors.purple,
+      helpTextStyle: TextStyle(
+        color: AppColors.grey,
+        fontFamily: "Montserrat",
+        fontSize: 16,
+        fontWeight: FontWeight.normal,
+      ),
+      hourMinuteTextStyle: const TextStyle(
+        fontFamily: "Montserrat",
+        fontSize: 40,
+        fontWeight: FontWeight.bold,
+      ),
+      dayPeriodTextStyle: const TextStyle(
+        fontFamily: "Montserrat",
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+      ),
+      dialTextStyle: const TextStyle(
+        fontFamily: "Montserrat",
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+      ),
+
+      cancelButtonStyle: ButtonStyle(
+        textStyle: WidgetStatePropertyAll(
+          TextStyle(fontFamily: "Montserrat", fontWeight: FontWeight.w600),
+        ),
+        foregroundColor: WidgetStatePropertyAll(
+          AppColors.purple.withValues(alpha: 0.7),
+        ),
+      ),
+      confirmButtonStyle: const ButtonStyle(
+        textStyle: WidgetStatePropertyAll(
+          TextStyle(fontFamily: "Montserrat", fontWeight: FontWeight.bold),
+        ),
+        foregroundColor: WidgetStatePropertyAll(AppColors.purple),
+      ),
+    ),
+
+    snackBarTheme: const SnackBarThemeData(
       contentTextStyle: TextStyle(
         fontSize: 16,
         fontWeight: FontWeight.normal,
@@ -29,8 +131,8 @@ ThemeData createLightTheme() {
     listTileTheme: ListTileThemeData(
       tileColor: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadiusGeometry.circular(10)
-      )
+        borderRadius: BorderRadius.circular(baseBorderRadius),
+      ),
     ),
 
     inputDecorationTheme: InputDecorationThemeData(
@@ -44,7 +146,7 @@ ThemeData createLightTheme() {
       focusedBorder: InputBorder.none,
     ),
 
-    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData(
       backgroundColor: Colors.white,
       selectedItemColor: Colors.white,
       selectedIconTheme: IconThemeData(color: Colors.white, size: 36),
@@ -57,7 +159,6 @@ ThemeData createLightTheme() {
         fontWeight: FontWeight.w600,
         letterSpacing: 0,
       ),
-
       unselectedLabelStyle: TextStyle(
         height: 1,
         color: AppColors.purple,
@@ -66,19 +167,23 @@ ThemeData createLightTheme() {
         letterSpacing: 0,
       ),
     ),
+
     floatingActionButtonTheme: FloatingActionButtonThemeData(
       backgroundColor: Colors.white,
       iconSize: 44,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      sizeConstraints: BoxConstraints.tightFor(width: 68, height: 68),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(baseBorderRadius),
+      ),
+      sizeConstraints: const BoxConstraints.tightFor(width: 68, height: 68),
       foregroundColor: AppColors.purple,
       elevation: 3,
     ),
 
-    // CircularProgressIndicator
-    progressIndicatorTheme: ProgressIndicatorThemeData(color: Colors.white),
+    progressIndicatorTheme: const ProgressIndicatorThemeData(
+      color: Colors.white,
+    ),
 
-    iconButtonTheme: IconButtonThemeData(
+    iconButtonTheme: const IconButtonThemeData(
       style: ButtonStyle(
         iconSize: WidgetStatePropertyAll(36),
         iconColor: WidgetStatePropertyAll(Colors.white),
@@ -114,12 +219,12 @@ ThemeData createLightTheme() {
     dialogTheme: DialogThemeData(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(theme.cardBorderRadius),
+        borderRadius: BorderRadius.circular(baseBorderRadius),
       ),
     ),
 
     extensions: [
-      AppInputTheme(
+      const AppInputTheme(
         textFieldStyleText: TextStyle(
           fontWeight: FontWeight.normal,
           fontSize: 20,
@@ -129,14 +234,14 @@ ThemeData createLightTheme() {
       ),
       SkeletonizerConfigData(
         effect: ShimmerEffect(
-          duration: Duration(seconds: 1),
+          duration: const Duration(seconds: 1),
           baseColor: Colors.white.withValues(alpha: 0.4),
           highlightColor: Colors.white.withValues(alpha: 0.5),
         ),
       ),
     ],
 
-    textTheme: TextTheme(
+    textTheme: const TextTheme(
       bodyLarge: TextStyle(
         fontSize: 40,
         fontWeight: FontWeight.bold,
@@ -155,7 +260,6 @@ ThemeData createLightTheme() {
         color: AppColors.grey,
         letterSpacing: 0,
       ),
-
       labelLarge: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.normal,
@@ -174,7 +278,6 @@ ThemeData createLightTheme() {
         color: AppColors.grey,
         letterSpacing: 0,
       ),
-
       titleLarge: TextStyle(
         fontSize: 40,
         fontWeight: FontWeight.bold,
@@ -193,7 +296,6 @@ ThemeData createLightTheme() {
         color: Colors.white,
         letterSpacing: 0,
       ),
-
       displayLarge: TextStyle(
         fontSize: 24,
         fontWeight: FontWeight.normal,
@@ -250,13 +352,10 @@ extension ThemeValueExtension on ThemeData {
   ];
 
   List<BoxShadow> get cardBoxShadow => [
-    BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.1), blurRadius: 12),
+    const BoxShadow(color: Color.fromRGBO(0, 0, 0, 0.1), blurRadius: 12),
   ];
 }
 
-///
-/// Extra text themes
-///
 extension ThemeAppInputExtension on ThemeData {
   TextStyle get textFieldStyleText =>
       extension<AppInputTheme>()!.textFieldStyleText!;
