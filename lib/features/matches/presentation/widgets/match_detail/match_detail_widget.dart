@@ -29,7 +29,7 @@ class MatchDetailWidget extends ConsumerWidget {
           onEditPressed: () {
             context.router.push(
               EditMatchRoute(
-                title: "редактирование",
+                title: "Редактирование",
                 confirmButtonText: "Сохранить",
                 initialData: EditMatchScreenInitial(
                   id: match.id,

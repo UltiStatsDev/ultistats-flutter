@@ -132,9 +132,6 @@ class _TeamSearchField extends StatelessWidget {
                 style: theme.textFieldStyleText,
                 decoration: const InputDecoration(
                   hintText: "Начните вводить название...",
-                  border: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  focusedBorder: InputBorder.none,
                   isDense: true,
                   contentPadding: EdgeInsets.symmetric(vertical: 10),
                 ),
