@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
+import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/photo_widget.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
 import 'package:ultistats/features/matches/presentation/providers/match_detail_notifier.dart';
@@ -20,7 +21,9 @@ class MatchDetailWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final match = state.match;
-    final dateFormat = DateFormat('dd MMMM, HH:mm');
+    final locale = Localizations.localeOf(context);
+
+    final dateFormat = DateFormat('dd MMMM, HH:mm', locale.countryCode);
 
     return Column(
       children: [
@@ -69,40 +72,22 @@ class MatchDetailWidget extends ConsumerWidget {
             value: dateFormat.format(match.endedAt!),
           ),
 
-        Spacer(),
+        const Spacer(),
 
         if (match.status == MatchStatus.planned)
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton.icon(
-              onPressed: state.isStarting
-                  ? null
-                  : () => ref
-                        .read(matchDetailProvider(match.id).notifier)
-                        .startMatch(),
-              icon: state.isStarting
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    )
-                  : const Icon(Icons.play_arrow_rounded),
-              label: const Text("Начать матч"),
-            ),
+          ConfirmEditButton(
+            confirmButtonText: "Начать матч",
+            onTap: () =>
+                context.router.push(MatchPreparationRoute(matchId: match.id)),
           ),
 
         if (match.status == MatchStatus.inProgress)
-          SizedBox(
-            width: double.infinity,
-            child: FilledButton(
-              onPressed: () => context.router.push(const MatchRoute()),
-              child: const Text("К игровому полю"),
-            ),
+          ConfirmEditButton(
+            confirmButtonText: "К игровому полю",
+            onTap: () => context.router.push(const MatchRoute()),
           ),
-        const SizedBox(height: 32),
+
+        const SizedBox(height: 12),
       ],
     );
   }

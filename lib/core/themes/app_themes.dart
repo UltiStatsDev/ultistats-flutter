@@ -343,6 +343,9 @@ extension ThemeValueExtension on ThemeData {
 
   double get textFieldBorderRadius => 10;
 
+  Color get avatarBackgroundColor => colorScheme.surfaceContainerHigh;
+  Color get avatarIconColor => colorScheme.onSurface.withValues(alpha: 0.4);
+
   List<BoxShadow> get bottomNavigationBarBoxShadow => [
     BoxShadow(
       color: Colors.black.withValues(alpha: 0.2),

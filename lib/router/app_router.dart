@@ -28,6 +28,12 @@ class AppRouter extends RootStackRouter {
               path: "match_detail/:matchId",
               duration: Duration(seconds: 0),
               reverseDuration: Duration(seconds: 0),
+            ),
+            CustomRoute(
+              page: MatchPreparationRoute.page,
+              path: "preparation/:matchId",
+              duration: Duration(seconds: 0),
+              reverseDuration: Duration(seconds: 0),
             )
           ],
         ),

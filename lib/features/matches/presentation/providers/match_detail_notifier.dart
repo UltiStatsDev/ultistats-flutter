@@ -31,26 +31,6 @@ class MatchDetailNotifier extends _$MatchDetailNotifier {
     }
   }
 
-  Future<void> startMatch() async {
-    final currentState = state;
-    if (currentState is! MatchDetailLoaded) return;
-
-    state = currentState.copyWith(isStarting: true);
-    try {
-      final repository = ref.read(matchesRepositoryProvider);
-      final updatedMatch = await repository.startMatch(id, DateTime.now());
-      state = MatchDetailLoaded(updatedMatch);
-    } catch (e, st) {
-      log(
-        "Error while startMatch",
-        error: e,
-        stackTrace: st,
-        name: runtimeType.toString(),
-      );
-      state = MatchDetailError(e, st);
-    }
-  }
-
   Future<void> refresh() async {
     await _loadMatch(id);
   }
