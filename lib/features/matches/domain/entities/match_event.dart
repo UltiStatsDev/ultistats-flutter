@@ -18,14 +18,56 @@ enum EventType {
 
 class Event {
   final DateTime occurredAt;
-  final int sequenceNumber;
-  final String id;
+  final String participantId;
   final EventType? type;
 
-  const Event({
-    required this.occurredAt,
-    required this.sequenceNumber,
-    required this.id,
+  // Главный конструктор. Если occurredAt не передан, берем текущее время.
+  Event({
+    DateTime? occurredAt,
+    required this.participantId,
     this.type,
-  });
+  }) : occurredAt = occurredAt ?? DateTime.now();
+
+  // Именованные конструкторы для основных игровых действий
+  Event.pass({DateTime? occurredAt, required String participantId})
+      : this(
+    occurredAt: occurredAt,
+    participantId: participantId,
+    type: EventType.PASS,
+  );
+
+  Event.goal({DateTime? occurredAt, required String participantId})
+      : this(
+    occurredAt: occurredAt,
+    participantId: participantId,
+    type: EventType.GOAL,
+  );
+
+  Event.drop({DateTime? occurredAt, required String participantId})
+      : this(
+    occurredAt: occurredAt,
+    participantId: participantId,
+    type: EventType.DROP,
+  );
+
+  Event.pull({DateTime? occurredAt, required String participantId})
+      : this(
+    occurredAt: occurredAt,
+    participantId: participantId,
+    type: EventType.PULL,
+  );
+
+  Event.turnover({DateTime? occurredAt, required String participantId})
+      : this(
+    occurredAt: occurredAt,
+    participantId: participantId,
+    type: EventType.TURNOVER,
+  );
+
+  Event.block({DateTime? occurredAt, required String participantId})
+      : this(
+    occurredAt: occurredAt,
+    participantId: participantId,
+    type: EventType.BLOCK_FIELD,
+  );
 }

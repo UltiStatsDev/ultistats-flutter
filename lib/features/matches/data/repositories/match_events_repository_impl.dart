@@ -1,4 +1,4 @@
-import 'package:ultistats/features/matches/data/models/create_event_request.dart';
+import 'package:ultistats/features/matches/data/models/event_model.dart';
 import 'package:ultistats/features/matches/data/models/update_event_request.dart';
 import 'package:ultistats/features/matches/data/sources/match_events_api.dart';
 import 'package:ultistats/features/matches/domain/entities/match_event.dart';
@@ -19,8 +19,7 @@ class MatchEventsRepositoryImpl implements MatchEventsRepository {
 
   @override
   Future<void> addEvent(CreateEventParams params) async {
-    final request = CreateEventRequest.fromParams(params);
-    await _api.createEvent(params.matchId, request);
+    await _api.createEvent(params.matchId, EventModel.fromEntity(params.event));
   }
 
   @override

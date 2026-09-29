@@ -1,6 +1,8 @@
+import 'package:ultistats/features/matches/domain/entities/match_event.dart';
+
 class CreateEventParams {
   final String matchId;
-  final DateTime occurredAt;
+  final Event event;
 
-  const CreateEventParams({required this.matchId, required this.occurredAt});
+  const CreateEventParams({required this.matchId, required this.event});
 }

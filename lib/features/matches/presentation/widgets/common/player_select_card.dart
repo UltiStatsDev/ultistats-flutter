@@ -27,7 +27,7 @@ class PlayerSelectCard extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
           color: isSelected
               ? theme.colorScheme.primaryContainer
@@ -43,7 +43,7 @@ class PlayerSelectCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _buildAvatar(theme),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             Text(
               player.firstName,
               style: theme.textTheme.labelSmall,
@@ -53,7 +53,9 @@ class PlayerSelectCard extends StatelessWidget {
             ),
             Text(
               "#${player.number ?? '?'}",
-              style: theme.textTheme.labelSmall,
+              style: theme.textTheme.labelSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),

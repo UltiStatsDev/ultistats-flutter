@@ -49,10 +49,7 @@ class _EventsApi implements EventsApi {
   }
 
   @override
-  Future<EventModel> createEvent(
-    String matchId,
-    CreateEventRequest body,
-  ) async {
+  Future<EventModel> createEvent(String matchId, EventModel body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};

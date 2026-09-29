@@ -77,14 +77,13 @@ class MatchDetailWidget extends ConsumerWidget {
         if (match.status == MatchStatus.planned)
           ConfirmEditButton(
             confirmButtonText: "Начать матч",
-            onTap: () =>
-                context.router.push(MatchPreparationRoute(matchId: match.id)),
+            onTap: () => context.router.push(MatchRoute(match: match)),
           ),
 
         if (match.status == MatchStatus.inProgress)
           ConfirmEditButton(
             confirmButtonText: "К игровому полю",
-            onTap: () => context.router.push(const MatchRoute()),
+            onTap: () => context.router.push(MatchRoute(match: match)),
           ),
 
         const SizedBox(height: 12),

@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:ultistats/features/matches/data/models/create_event_request.dart';
 import 'package:ultistats/features/matches/data/models/event_model.dart';
 import 'package:ultistats/features/matches/data/models/update_event_request.dart';
 
@@ -16,7 +15,7 @@ abstract class EventsApi {
   @POST('/matches/{matchId}/events')
   Future<EventModel> createEvent(
     @Path('matchId') String matchId,
-    @Body() CreateEventRequest body,
+    @Body() EventModel body,
   );
 
   @GET('/matches/{matchId}/events/{eventId}')

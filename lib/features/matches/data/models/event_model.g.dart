@@ -8,16 +8,14 @@ part of 'event_model.dart';
 
 EventModel _$EventModelFromJson(Map<String, dynamic> json) => EventModel(
   occurredAt: DateTime.parse(json['occurredAt'] as String),
-  sequenceNumber: (json['sequenceNumber'] as num).toInt(),
-  id: json['id'] as String,
+  participantId: json['participantId'] as String,
   type: $enumDecodeNullable(_$EventTypeEnumMap, json['type']),
 );
 
 Map<String, dynamic> _$EventModelToJson(EventModel instance) =>
     <String, dynamic>{
       'occurredAt': instance.occurredAt.toIso8601String(),
-      'sequenceNumber': instance.sequenceNumber,
-      'id': instance.id,
+      'participantId': instance.participantId,
       'type': _$EventTypeEnumMap[instance.type],
     };
 

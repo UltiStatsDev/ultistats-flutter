@@ -6,16 +6,22 @@ part 'event_model.g.dart';
 @JsonSerializable()
 class EventModel {
   final DateTime occurredAt;
-  final int sequenceNumber;
-  final String id;
+  final String participantId;
   final EventType? type;
 
   const EventModel({
     required this.occurredAt,
-    required this.sequenceNumber,
-    required this.id,
+    required this.participantId,
     this.type,
   });
+
+  factory EventModel.fromEntity(Event event) {
+    return EventModel(
+      occurredAt: event.occurredAt,
+      participantId: event.participantId,
+      type: event.type,
+    );
+  }
 
   factory EventModel.fromJson(Map<String, dynamic> json) =>
       _$EventModelFromJson(json);
@@ -25,9 +31,8 @@ class EventModel {
   Event toEntity() {
     return Event(
       type: type,
-      id: id,
+      participantId: participantId,
       occurredAt: occurredAt,
-      sequenceNumber: sequenceNumber
     );
   }
 }
