@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/teams/domain/params/team_filter_params.dart';
-import 'package:ultistats/features/teams/presentation/providers/teams_list_state.dart';
+import 'package:ultistats/features/teams/presentation/providers/team_list/teams_list_state.dart';
 
 class TeamsListNotifier extends Notifier<TeamsListState> {
   static const int _pageSize = 20;

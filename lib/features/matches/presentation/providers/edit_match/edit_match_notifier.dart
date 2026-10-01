@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/matches/domain/params/create_match_params.dart';
 import 'package:ultistats/features/matches/domain/params/update_match_params.dart';
-import 'package:ultistats/features/matches/presentation/providers/match_detail_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/matches_list_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_detail/match_detail_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_notifier.dart';
 
 class EditMatchState {
   final bool isLoading;

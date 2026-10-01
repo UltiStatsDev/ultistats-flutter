@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
-import 'package:ultistats/features/matches/presentation/providers/matches_list_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_notifier.dart';
 import 'package:ultistats/router/app_router.gr.dart';
 
 class NoMatchesWidget extends ConsumerWidget {

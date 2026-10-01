@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/matches/domain/entities/match_participant.dart';
 import 'package:ultistats/features/matches/domain/entities/match_team.dart';
-import 'package:ultistats/features/matches/presentation/providers/game/match_game_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/game/match_game_state.dart';
+import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/player_select_card.dart';
 import 'package:ultistats/features/players/domain/entities/team_player.dart';
 

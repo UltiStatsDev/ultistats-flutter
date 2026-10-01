@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_colors.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/app_refreshing_indicator.dart';
-import 'package:ultistats/features/matches/presentation/providers/matches_list_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/matches_list_state.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_state.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match_list/match_card.dart';
 import 'package:ultistats/router/app_router.gr.dart';
 

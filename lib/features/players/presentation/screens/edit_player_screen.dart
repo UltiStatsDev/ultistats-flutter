@@ -7,8 +7,8 @@ import 'package:ultistats/core/widgets/add_photo_widget.dart';
 import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/form_tile.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
-import 'package:ultistats/features/players/presentation/providers/edit_player_notifier.dart';
-import 'package:ultistats/features/players/presentation/widgets/common/edit_player_app_bar.dart';
+import 'package:ultistats/features/players/presentation/providers/edit_player/edit_player_notifier.dart';
+import 'package:ultistats/features/players/presentation/widgets/edit_player/edit_player_app_bar.dart';
 
 @RoutePage()
 class EditPlayerScreen extends ConsumerStatefulWidget {

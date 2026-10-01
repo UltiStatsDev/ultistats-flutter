@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/players/domain/entities/player_list_item.dart';
-import 'package:ultistats/features/players/presentation/providers/player_search_provider.dart';
+import 'package:ultistats/features/players/presentation/providers/common/player_search_provider.dart';
 
 class AddPlayerToTeamWidget extends ConsumerStatefulWidget {
   const AddPlayerToTeamWidget({

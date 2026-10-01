@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:ultistats/features/matches/data/models/event_model.dart';
-import 'package:ultistats/features/matches/data/models/update_event_request.dart';
+import 'package:ultistats/features/matches/data/requests/update_event_request.dart';
 
 part 'match_events_api.g.dart';
 

@@ -1,26 +1,25 @@
+// ignore_for_file: constant_identifier_names
+
 enum EventType {
   PICKUP,
-  PASS, //
+  PASS,
   INCOMPLETE_PASS,
-  GOAL, //
-  BLOCK, //
+  GOAL,
+  BLOCK,
   DROP,
   PULL,
   BRICK,
   TURNOVER,
-  BLOCK_MARKER, //
-  BLOCK_FIELD, //
-  INTERCEPTION, //
-  CALLAHAN, //
+  BLOCK_MARKER,
+  BLOCK_FIELD,
+  INTERCEPTION,
+  CALLAHAN,
   TIMEOUT_START,
   TIMEOUT_END,
   HALFTIME_START,
   HALFTIME_END,
   UNKNOWN,
 }
-
-// два челика
-// PASS, GOAL, BLOCK, BLOCK_MARKER, BLOCK_FIELD, INTERCEPTION или CALLAHAN.
 
 class Event {
   final DateTime occurredAt;
@@ -93,20 +92,20 @@ class Event2 extends Event {
     required String participantId,
     required String toParticipantId,
   }) : this(
-    occurredAt: occurredAt,
-    participantId: participantId,
-    toParticipantId: toParticipantId,
-    type: EventType.PASS,
-  );
+         occurredAt: occurredAt,
+         participantId: participantId,
+         toParticipantId: toParticipantId,
+         type: EventType.PASS,
+       );
 
   Event2.block({
     DateTime? occurredAt,
     required String participantId,
     required String toParticipantId,
   }) : this(
-    occurredAt: occurredAt,
-    participantId: participantId,
-    toParticipantId: toParticipantId,
-    type: EventType.BLOCK,
-  );
+         occurredAt: occurredAt,
+         participantId: participantId,
+         toParticipantId: toParticipantId,
+         type: EventType.BLOCK,
+       );
 }

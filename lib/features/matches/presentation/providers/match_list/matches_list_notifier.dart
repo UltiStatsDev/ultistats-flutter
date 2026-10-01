@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/matches/domain/params/match_filter_params.dart';
-import 'package:ultistats/features/matches/presentation/providers/matches_list_state.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_state.dart';
 
 class MatchesListNotifier extends Notifier<MatchesListState> {
   static const int _pageSize = 20;

@@ -3,8 +3,7 @@ import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
-import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
-import 'package:ultistats/features/matches/presentation/providers/match_detail_state.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_detail/match_detail_state.dart';
 
 part 'match_detail_notifier.g.dart';
 

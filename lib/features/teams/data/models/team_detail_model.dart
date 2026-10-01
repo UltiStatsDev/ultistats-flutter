@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:ultistats/features/players/data/models/player_list_item_model.dart';
 import 'package:ultistats/features/players/data/models/team_player_model.dart';
 import 'package:ultistats/features/teams/domain/entities/team_detail.dart';
 

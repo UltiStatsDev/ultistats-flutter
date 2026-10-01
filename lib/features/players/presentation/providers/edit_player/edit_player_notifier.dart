@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/players/domain/params/create_player_params.dart';
 import 'package:ultistats/features/players/domain/params/update_player_params.dart';
-import 'package:ultistats/features/players/presentation/providers/player_detail_notifier.dart';
-import 'package:ultistats/features/players/presentation/providers/players_list_notifier.dart';
+import 'package:ultistats/features/players/presentation/providers/player_detail/player_detail_notifier.dart';
+import 'package:ultistats/features/players/presentation/providers/player_list/players_list_notifier.dart';
 
 class EditPlayerState {
   final bool isLoading;

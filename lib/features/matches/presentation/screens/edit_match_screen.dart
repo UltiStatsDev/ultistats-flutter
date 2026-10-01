@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
-import 'package:ultistats/features/matches/presentation/providers/edit_match_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/edit_match/edit_match_notifier.dart';
 import 'package:ultistats/features/matches/presentation/widgets/edit_match/edit_match_app_bar.dart';
 import 'package:ultistats/features/matches/presentation/widgets/edit_match/team_selector_tile.dart';
 import 'package:ultistats/features/teams/domain/entities/team_list_item.dart';

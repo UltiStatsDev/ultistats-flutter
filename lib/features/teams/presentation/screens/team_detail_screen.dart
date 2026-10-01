@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/widgets/error_screen.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
-import 'package:ultistats/features/teams/presentation/providers/team_detail_notifier.dart';
-import 'package:ultistats/features/teams/presentation/providers/team_detail_state.dart';
+import 'package:ultistats/features/teams/presentation/providers/team_detail/team_detail_notifier.dart';
+import 'package:ultistats/features/teams/presentation/providers/team_detail/team_detail_state.dart';
 import 'package:ultistats/features/teams/presentation/widgets/team_detail/loading_team_detail_widget.dart';
 import 'package:ultistats/features/teams/presentation/widgets/team_detail/team_detail_widget.dart';
 

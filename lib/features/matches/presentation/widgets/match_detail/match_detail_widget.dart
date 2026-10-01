@@ -1,6 +1,3 @@
-import 'dart:async';
-import 'dart:developer';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,8 +6,8 @@ import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/photo_widget.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
-import 'package:ultistats/features/matches/presentation/providers/match_detail_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/match_detail_state.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_detail/match_detail_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_detail/match_detail_state.dart';
 import 'package:ultistats/features/matches/presentation/screens/edit_match_screen.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match_detail/match_detail_app_bar.dart';
 import 'package:ultistats/router/app_router.gr.dart';

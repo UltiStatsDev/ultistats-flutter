@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
-import 'package:ultistats/features/teams/presentation/providers/teams_list_notifier.dart';
+import 'package:ultistats/features/teams/presentation/providers/team_list/teams_list_notifier.dart';
 import 'package:ultistats/features/teams/presentation/screens/edit_team_screen.dart';
 import 'package:ultistats/router/app_router.gr.dart';
 

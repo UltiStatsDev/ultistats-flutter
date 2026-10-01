@@ -1,7 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ultistats/features/players/data/models/player_membership_model.dart';
 import 'package:ultistats/features/players/domain/entities/player_detail.dart';
-import 'package:ultistats/features/teams/data/models/team_list_item_model.dart';
 
 part 'player_detail_model.g.dart';
 

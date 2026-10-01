@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/players/domain/params/player_filter_params.dart';
-import 'package:ultistats/features/players/presentation/providers/players_list_state.dart';
+import 'package:ultistats/features/players/presentation/providers/player_list/players_list_state.dart';
 
 class PlayersListNotifier extends Notifier<PlayersListState> {
   static const int _pageSize = 20;

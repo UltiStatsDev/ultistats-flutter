@@ -3,11 +3,11 @@ import 'package:retrofit/retrofit.dart';
 import 'package:ultistats/core/data/models/page_model.dart';
 import 'package:ultistats/features/players/data/models/player_list_item_model.dart';
 import 'package:ultistats/features/players/data/models/player_detail_model.dart';
-import 'package:ultistats/features/players/data/models/create_player_request.dart';
-import 'package:ultistats/features/players/data/models/update_player_request.dart';
-import 'package:ultistats/features/players/data/models/player_filter_request.dart';
+import 'package:ultistats/features/players/data/requests/create_player_request.dart';
 import 'package:ultistats/features/players/data/models/player_membership_model.dart';
 import 'package:ultistats/core/data/models/photo_url_response.dart';
+import 'package:ultistats/features/players/data/requests/player_filter_request.dart';
+import 'package:ultistats/features/players/data/requests/update_player_request.dart';
 
 part 'players_api.g.dart';
 

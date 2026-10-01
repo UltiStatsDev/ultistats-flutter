@@ -1,4 +1,3 @@
-import 'package:ultistats/features/players/domain/entities/player_list_item.dart';
 import 'package:ultistats/features/players/domain/entities/team_player.dart';
 
 class TeamDetail {

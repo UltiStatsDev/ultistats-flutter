@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/teams/domain/entities/team_list_item.dart';
-import 'package:ultistats/features/teams/presentation/providers/team_search_provider.dart';
+import 'package:ultistats/features/teams/presentation/providers/common/team_search_provider.dart';
 
 class TeamSelectorTile extends ConsumerWidget {
   const TeamSelectorTile({

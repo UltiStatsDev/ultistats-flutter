@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/photo_widget.dart';
-import 'package:ultistats/features/players/presentation/providers/player_detail_state.dart';
+import 'package:ultistats/features/players/presentation/providers/player_detail/player_detail_state.dart';
 import 'package:ultistats/features/players/presentation/screens/edit_player_screen.dart';
 import 'package:ultistats/features/players/presentation/widgets/player_detail/player_detail_app_bar.dart';
 import 'package:ultistats/features/players/presentation/widgets/player_detail/player_membership_card.dart';

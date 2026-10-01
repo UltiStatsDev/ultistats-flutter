@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:ultistats/features/matches/presentation/screens/match_screen.dart';
 import 'package:ultistats/router/app_router.gr.dart';
 
 @AutoRouterConfig(replaceInRouteName: 'Screen|Page,Route')

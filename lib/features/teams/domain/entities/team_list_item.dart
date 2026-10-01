@@ -10,10 +10,4 @@ class TeamListItem {
     this.city,
     this.photoUrl,
   });
-
-  factory TeamListItem.placeholder() => const TeamListItem(
-        id: '0',
-        name: 'Team Name',
-        city: 'Novosibirsk',
-      );
 }

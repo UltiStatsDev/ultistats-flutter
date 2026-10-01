@@ -23,6 +23,12 @@ jobs:
         with: 
           flutter-version: '3.41.6' 
           cache: true
+
+      - name: Extract version from pubspec.yaml
+        id: pubspec_version
+        run: |
+          VERSION=$(grep 'version:' pubspec.yaml | sed 's/version: //')
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
       
       - name: Install dependencies
         run: flutter pub get
@@ -37,14 +43,21 @@ jobs:
 
       - name: Build APK
         run: flutter build apk --release --flavor prod --dart-define-from-file=env/env.json
-        
+
+      - name: Rename APK
+        run: |
+          mv build/app/outputs/flutter-apk/app-prod-release.apk build/app/outputs/flutter-apk/ultistats_v${{ steps.pubspec_version.outputs.VERSION }}.apk
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with: 
-          files: build/app/outputs/flutter-apk/app-prod-release.apk
-          tag_name: v${{ github.run_number }}
-          name: Release v${{ github.run_number }}
-          body: "Автоматическая сборка. Версия Flutter: 3.41.6. Номер сборки: ${{ github.run_number }}"
+          files: build/app/outputs/flutter-apk/ultistats_v${{ steps.pubspec_version.outputs.VERSION }}.apk
+          tag_name: v${{ steps.pubspec_version.outputs.VERSION }}
+          name: Release v${{ steps.pubspec_version.outputs.VERSION }}
+          body: |
+            Автоматическая сборка из ветки main.
+            Версия: ${{ steps.pubspec_version.outputs.VERSION }}
+            Flutter: 3.41.6
           draft: false
           prerelease: false
         env:

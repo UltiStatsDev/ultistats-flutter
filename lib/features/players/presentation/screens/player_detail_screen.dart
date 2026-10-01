@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/widgets/error_screen.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
-import 'package:ultistats/features/players/presentation/providers/player_detail_notifier.dart';
-import 'package:ultistats/features/players/presentation/providers/player_detail_state.dart';
+import 'package:ultistats/features/players/presentation/providers/player_detail/player_detail_notifier.dart';
+import 'package:ultistats/features/players/presentation/providers/player_detail/player_detail_state.dart';
 import 'package:ultistats/features/players/presentation/widgets/player_detail/loading_player_detail_widget.dart';
 import 'package:ultistats/features/players/presentation/widgets/player_detail/player_detail_widget.dart';
 

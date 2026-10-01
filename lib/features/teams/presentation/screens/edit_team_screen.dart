@@ -7,8 +7,8 @@ import 'package:ultistats/core/widgets/add_photo_widget.dart';
 import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/form_tile.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
-import 'package:ultistats/features/teams/presentation/providers/edit_team_notifier.dart';
-import 'package:ultistats/features/teams/presentation/widgets/common/edit_team_app_bar.dart';
+import 'package:ultistats/features/teams/presentation/providers/edit_team/edit_team_notifier.dart';
+import 'package:ultistats/features/teams/presentation/widgets/edit_team/edit_team_app_bar.dart';
 
 @RoutePage()
 class EditTeamScreen extends ConsumerStatefulWidget {

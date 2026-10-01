@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/teams/domain/params/create_team_params.dart';
 import 'package:ultistats/features/teams/domain/params/update_team_params.dart';
-import 'package:ultistats/features/teams/presentation/providers/team_detail_notifier.dart';
-import 'package:ultistats/features/teams/presentation/providers/teams_list_notifier.dart';
+import 'package:ultistats/features/teams/presentation/providers/team_detail/team_detail_notifier.dart';
+import 'package:ultistats/features/teams/presentation/providers/team_list/teams_list_notifier.dart';
 
 class EditTeamState {
   final bool isLoading;

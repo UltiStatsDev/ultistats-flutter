@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:ultistats/core/domain/entities/page.dart';
+import 'package:ultistats/features/players/data/requests/player_filter_request.dart';
+import 'package:ultistats/features/players/data/requests/update_player_request.dart';
 import 'package:ultistats/features/players/data/sources/players_api.dart';
 import 'package:ultistats/features/players/domain/entities/player_list_item.dart';
 import 'package:ultistats/features/players/domain/entities/player_detail.dart';
@@ -7,9 +9,7 @@ import 'package:ultistats/features/players/domain/params/create_player_params.da
 import 'package:ultistats/features/players/domain/params/player_filter_params.dart';
 import 'package:ultistats/features/players/domain/params/update_player_params.dart';
 import 'package:ultistats/features/players/domain/repositories/players_repository.dart';
-import 'package:ultistats/features/players/data/models/player_filter_request.dart';
-import 'package:ultistats/features/players/data/models/create_player_request.dart';
-import 'package:ultistats/features/players/data/models/update_player_request.dart';
+import 'package:ultistats/features/players/data/requests/create_player_request.dart';
 
 class PlayersRepositoryImpl implements PlayersRepository {
   final PlayersApi _api;

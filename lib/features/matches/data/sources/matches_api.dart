@@ -3,10 +3,10 @@ import 'package:retrofit/retrofit.dart';
 import 'package:ultistats/core/data/models/page_model.dart';
 import 'package:ultistats/features/matches/data/models/match_detail_model.dart';
 import 'package:ultistats/features/matches/data/models/match_list_item_model.dart';
-import 'package:ultistats/features/matches/data/models/create_match_request.dart';
-import 'package:ultistats/features/matches/data/models/match_filter_request.dart';
-import 'package:ultistats/features/matches/data/models/match_timestamp_request.dart';
-import 'package:ultistats/features/matches/data/models/update_match_request.dart';
+import 'package:ultistats/features/matches/data/requests/create_match_request.dart';
+import 'package:ultistats/features/matches/data/requests/match_filter_request.dart';
+import 'package:ultistats/features/matches/data/requests/match_timestamp_request.dart';
+import 'package:ultistats/features/matches/data/requests/update_match_request.dart';
 
 part 'matches_api.g.dart';
 

@@ -7,8 +7,8 @@ import 'package:ultistats/features/matches/domain/entities/event.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
 import 'package:ultistats/features/matches/domain/entities/match_participant.dart';
 import 'package:ultistats/features/matches/domain/params/create_event_params.dart';
-import 'package:ultistats/features/matches/presentation/providers/match_detail_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/matches_list_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_detail/match_detail_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_notifier.dart';
 
 import 'match_game_state.dart';
 

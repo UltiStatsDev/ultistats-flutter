@@ -3,12 +3,12 @@ import 'package:retrofit/retrofit.dart';
 import 'package:ultistats/core/data/models/page_model.dart';
 import 'package:ultistats/features/teams/data/models/team_detail_model.dart';
 import 'package:ultistats/features/teams/data/models/team_list_item_model.dart';
-import 'package:ultistats/features/teams/data/models/create_team_request.dart';
-import 'package:ultistats/features/teams/data/models/update_team_request.dart';
-import 'package:ultistats/features/teams/data/models/team_filter_request.dart';
-import 'package:ultistats/features/teams/data/models/upsert_team_player_request.dart';
 import 'package:ultistats/features/players/data/models/player_membership_model.dart';
 import 'package:ultistats/core/data/models/photo_url_response.dart';
+import 'package:ultistats/features/teams/data/requests/create_team_request.dart';
+import 'package:ultistats/features/teams/data/requests/team_filter_request.dart';
+import 'package:ultistats/features/teams/data/requests/update_team_request.dart';
+import 'package:ultistats/features/teams/data/requests/upsert_team_player_request.dart';
 
 part 'teams_api.g.dart';
 

@@ -1,4 +1,8 @@
 import 'package:ultistats/core/domain/entities/page.dart';
+import 'package:ultistats/features/teams/data/requests/create_team_request.dart';
+import 'package:ultistats/features/teams/data/requests/team_filter_request.dart';
+import 'package:ultistats/features/teams/data/requests/update_team_request.dart';
+import 'package:ultistats/features/teams/data/requests/upsert_team_player_request.dart';
 import 'package:ultistats/features/teams/data/sources/teams_api.dart';
 import 'package:ultistats/features/teams/domain/entities/team_detail.dart';
 import 'package:ultistats/features/teams/domain/entities/team_list_item.dart';
@@ -6,10 +10,6 @@ import 'package:ultistats/features/teams/domain/params/create_team_params.dart';
 import 'package:ultistats/features/teams/domain/params/team_filter_params.dart';
 import 'package:ultistats/features/teams/domain/params/update_team_params.dart';
 import 'package:ultistats/features/teams/domain/repositories/teams_repository.dart';
-import 'package:ultistats/features/teams/data/models/team_filter_request.dart';
-import 'package:ultistats/features/teams/data/models/create_team_request.dart';
-import 'package:ultistats/features/teams/data/models/update_team_request.dart';
-import 'package:ultistats/features/teams/data/models/upsert_team_player_request.dart';
 import 'package:dio/dio.dart';
 
 class TeamsRepositoryImpl implements TeamsRepository {
