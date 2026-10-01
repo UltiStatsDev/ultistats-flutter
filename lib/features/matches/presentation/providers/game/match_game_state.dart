@@ -14,6 +14,8 @@ class GameStateError extends MatchGameState {
   const GameStateError(this.message, this.exception, this.stackTrace);
 }
 
+class GameStateFinished extends MatchGameState {}
+
 class GameStateLineupSelection extends MatchGameState {
   final MatchDetail match;
   final Set<String> team1SelectedIds;

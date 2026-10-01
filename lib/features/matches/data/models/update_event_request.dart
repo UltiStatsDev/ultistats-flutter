@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:ultistats/features/matches/domain/entities/match_event.dart';
+import 'package:ultistats/features/matches/domain/entities/event.dart';
 import 'package:ultistats/features/matches/domain/params/update_event_params.dart';
 
 part 'update_event_request.g.dart';

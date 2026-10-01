@@ -59,7 +59,7 @@ final class MatchDetailNotifierProvider
 }
 
 String _$matchDetailNotifierHash() =>
-    r'862af88706ee2d1774f1ee95964c7e7fc42de271';
+    r'c2c9111697baacc24bbf6677c6f3458764add203';
 
 final class MatchDetailNotifierFamily extends $Family
     with

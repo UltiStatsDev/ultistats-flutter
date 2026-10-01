@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,9 +20,12 @@ class MatchDetailWidget extends ConsumerWidget {
 
   final MatchDetailLoaded state;
 
+  void _startMatch(WidgetRef ref) {
+    ref.read(matchDetailProvider(state.match.id).notifier).startMatch();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
     final match = state.match;
     final locale = Localizations.localeOf(context);
 
@@ -47,7 +53,6 @@ class MatchDetailWidget extends ConsumerWidget {
         const SizedBox(height: 20),
         _buildScoreboard(context),
         const SizedBox(height: 32),
-
         _buildInfoSection(
           context,
           title: "Статус",
@@ -71,13 +76,11 @@ class MatchDetailWidget extends ConsumerWidget {
             title: "Завершение",
             value: dateFormat.format(match.endedAt!),
           ),
-
         const Spacer(),
-
         if (match.status == MatchStatus.planned)
           ConfirmEditButton(
             confirmButtonText: "Начать матч",
-            onTap: () => context.router.push(MatchRoute(match: match)),
+            onTap: () => _startMatch(ref),
           ),
 
         if (match.status == MatchStatus.inProgress)
@@ -85,7 +88,6 @@ class MatchDetailWidget extends ConsumerWidget {
             confirmButtonText: "К игровому полю",
             onTap: () => context.router.push(MatchRoute(match: match)),
           ),
-
         const SizedBox(height: 12),
       ],
     );

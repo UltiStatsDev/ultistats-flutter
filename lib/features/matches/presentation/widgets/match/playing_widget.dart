@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/matches/presentation/providers/game/match_game_notifier.dart';
 import 'package:ultistats/features/matches/presentation/providers/game/match_game_state.dart';
-import 'package:ultistats/features/matches/presentation/widgets/common/event_button.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/event_button.dart';
 
 class PlayingWidget extends ConsumerWidget {
   const PlayingWidget({super.key, required this.state});

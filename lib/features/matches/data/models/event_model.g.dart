@@ -6,22 +6,20 @@ part of 'event_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-EventModel _$EventModelFromJson(Map<String, dynamic> json) => EventModel(
-  occurredAt: DateTime.parse(json['occurredAt'] as String),
-  participantId: json['participantId'] as String,
-  type: $enumDecodeNullable(_$EventTypeEnumMap, json['type']),
-);
-
 Map<String, dynamic> _$EventModelToJson(EventModel instance) =>
     <String, dynamic>{
       'occurredAt': instance.occurredAt.toIso8601String(),
       'participantId': instance.participantId,
+      'toParticipantId': instance.toParticipantId,
       'type': _$EventTypeEnumMap[instance.type],
     };
 
 const _$EventTypeEnumMap = {
+  EventType.PICKUP: 'PICKUP',
   EventType.PASS: 'PASS',
+  EventType.INCOMPLETE_PASS: 'INCOMPLETE_PASS',
   EventType.GOAL: 'GOAL',
+  EventType.BLOCK: 'BLOCK',
   EventType.DROP: 'DROP',
   EventType.PULL: 'PULL',
   EventType.BRICK: 'BRICK',

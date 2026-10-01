@@ -7,6 +7,7 @@ import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
 import 'package:ultistats/features/matches/presentation/providers/game/match_game_notifier.dart';
 import 'package:ultistats/features/matches/presentation/providers/game/match_game_state.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/lineup_selection_widget.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/loading_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/playing_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/puller_selection_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/taker_selection_widget.dart';
@@ -21,21 +22,29 @@ class MatchScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(matchGameProvider(match));
 
+    ref.listen(matchGameProvider(match), (previous, next) {
+      if (next is GameStateFinished) {
+        context.router.pop();
+      }
+    });
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: ScreenWrapper(
-        child: _buildBody(state),
-      ),
+      body: ScreenWrapper(child: _buildBody(state)),
     );
   }
 
   Widget _buildBody(MatchGameState state) {
     return switch (state) {
-      GameStateError(:final exception, :final stackTrace) => ErrorScreen(exception: exception, stackTrace: stackTrace),
+      GameStateError(:final exception, :final stackTrace) => ErrorScreen(
+        exception: exception,
+        stackTrace: stackTrace,
+      ),
       GameStateLineupSelection() => LineupSelectionWidget(state: state),
       GameStatePullerSelection() => PullerSelectionWidget(state: state),
       GameStateTakerSelection() => TakerSelectionWidget(state: state),
       GameStatePlaying() => PlayingWidget(state: state),
+      GameStateFinished() => LoadingWidget(),
       _ => throw UnimplementedError(),
     };
   }

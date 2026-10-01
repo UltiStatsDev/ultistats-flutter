@@ -5,7 +5,7 @@ import 'package:ultistats/features/matches/domain/entities/match_participant.dar
 import 'package:ultistats/features/matches/domain/entities/match_team.dart';
 import 'package:ultistats/features/matches/presentation/providers/game/match_game_notifier.dart';
 import 'package:ultistats/features/matches/presentation/providers/game/match_game_state.dart';
-import 'package:ultistats/features/matches/presentation/widgets/common/player_select_card.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/player_select_card.dart';
 import 'package:ultistats/features/players/domain/entities/team_player.dart';
 
 class LineupSelectionWidget extends ConsumerWidget {
@@ -26,13 +26,14 @@ class LineupSelectionWidget extends ConsumerWidget {
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          child: Text(
-            "Выберите составы (5 на 5)",
-            style: theme.textTheme.titleMedium,
+        SizedBox(
+          width: double.infinity,
+          child: FilledButton(
+            child: Text("Окончить матч"),
+            onPressed: () => notifier.finishMatch(),
           ),
         ),
+        SizedBox(height: 8),
         Expanded(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: theme.screenPadding),

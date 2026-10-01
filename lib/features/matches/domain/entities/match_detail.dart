@@ -33,4 +33,17 @@ class MatchDetail {
     this.startedAt,
     this.endedAt,
   });
+
+  ///TODO для тестов. потом убрать
+  MatchDetail copyWithStart() {
+    return MatchDetail(
+      id: id,
+      teams: teams,
+      eventCount: eventCount,
+      status: MatchStatus.inProgress,
+      endedAt: endedAt,
+      plannedStartTimestamp: plannedStartTimestamp,
+      startedAt: startedAt,
+    );
+  }
 }

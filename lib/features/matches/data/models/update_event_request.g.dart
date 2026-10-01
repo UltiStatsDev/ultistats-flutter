@@ -13,8 +13,11 @@ Map<String, dynamic> _$UpdateEventRequestToJson(UpdateEventRequest instance) =>
     <String, dynamic>{'type': _$EventTypeEnumMap[instance.type]!};
 
 const _$EventTypeEnumMap = {
+  EventType.PICKUP: 'PICKUP',
   EventType.PASS: 'PASS',
+  EventType.INCOMPLETE_PASS: 'INCOMPLETE_PASS',
   EventType.GOAL: 'GOAL',
+  EventType.BLOCK: 'BLOCK',
   EventType.DROP: 'DROP',
   EventType.PULL: 'PULL',
   EventType.BRICK: 'BRICK',

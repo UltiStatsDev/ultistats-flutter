@@ -14,14 +14,12 @@ class MatchDetailLoading extends MatchDetailState {
 
 class MatchDetailLoaded extends MatchDetailState {
   final MatchDetail match;
-  final bool isStarting;
 
-  const MatchDetailLoaded(this.match, {this.isStarting = false});
+  const MatchDetailLoaded(this.match);
 
   MatchDetailLoaded copyWith({MatchDetail? match, bool? isStarting}) {
     return MatchDetailLoaded(
       match ?? this.match,
-      isStarting: isStarting ?? this.isStarting,
     );
   }
 }

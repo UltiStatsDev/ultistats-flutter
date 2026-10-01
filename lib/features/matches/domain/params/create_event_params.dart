@@ -1,4 +1,4 @@
-import 'package:ultistats/features/matches/domain/entities/match_event.dart';
+import 'package:ultistats/features/matches/domain/entities/event.dart';
 
 class CreateEventParams {
   final String matchId;
