@@ -139,9 +139,7 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
                       onBackPressed: () {
                         context.router.pop();
                       },
-                      onDeletePressed: () {
-                        _onDelete();
-                      },
+                      onDeletePressed: canDelete ? _onDelete : null,
                     ),
                     const SizedBox(height: 24),
                     AddPhotoWidget(

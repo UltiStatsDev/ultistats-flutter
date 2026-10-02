@@ -1,6 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/players/domain/params/create_player_params.dart';
@@ -8,26 +8,6 @@ import 'package:ultistats/features/players/domain/params/update_player_params.da
 import 'package:ultistats/features/players/presentation/providers/edit_player/edit_player_state.dart';
 import 'package:ultistats/features/players/presentation/providers/player_detail/player_detail_notifier.dart';
 import 'package:ultistats/features/players/presentation/providers/player_list/players_list_notifier.dart';
-
-// class EditPlayerState {
-//   final bool isLoading;
-//   final String? error;
-//   final bool isSuccess;
-//
-//   const EditPlayerState({
-//     this.isLoading = false,
-//     this.error,
-//     this.isSuccess = false,
-//   });
-//
-//   EditPlayerState copyWith({bool? isLoading, String? error, bool? isSuccess}) {
-//     return EditPlayerState(
-//       isLoading: isLoading ?? this.isLoading,
-//       error: error,
-//       isSuccess: isSuccess ?? this.isSuccess,
-//     );
-//   }
-// }
 
 class EditPlayerNotifier extends Notifier<EditPlayerState> {
   @override
