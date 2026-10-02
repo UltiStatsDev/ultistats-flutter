@@ -7,15 +7,18 @@ part 'update_match_request.g.dart';
 class UpdateMatchRequest {
   final List<String>? teamIds;
   final String? plannedStartTimestamp;
+  final int? playersPerTeam;
 
   const UpdateMatchRequest({
     this.teamIds,
+    this.playersPerTeam,
     this.plannedStartTimestamp,
   });
 
   factory UpdateMatchRequest.fromParams(UpdateMatchParams params) =>
       UpdateMatchRequest(
         teamIds: params.teamIds,
+        playersPerTeam: params.playersPerTeam,
         plannedStartTimestamp: params.plannedStartTimestamp?.toUtc().toIso8601String(),
       );
 

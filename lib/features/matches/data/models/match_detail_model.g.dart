@@ -13,6 +13,7 @@ MatchDetailModel _$MatchDetailModelFromJson(Map<String, dynamic> json) =>
           .map((e) => MatchTeamModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       eventCount: (json['eventCount'] as num).toInt(),
+      playersPerTeam: (json['playersPerTeam'] as num).toInt(),
       status: json['status'] as String,
       plannedStartTimestamp: json['plannedStartTimestamp'] == null
           ? null
@@ -31,6 +32,7 @@ Map<String, dynamic> _$MatchDetailModelToJson(
   'id': instance.id,
   'teams': instance.teams.map((e) => e.toJson()).toList(),
   'eventCount': instance.eventCount,
+  'playersPerTeam': instance.playersPerTeam,
   'plannedStartTimestamp': instance.plannedStartTimestamp?.toIso8601String(),
   'startedAt': instance.startedAt?.toIso8601String(),
   'endedAt': instance.endedAt?.toIso8601String(),

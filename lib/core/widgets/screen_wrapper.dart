@@ -19,6 +19,7 @@ class ScreenWrapper extends StatelessWidget {
           left: theme.screenPadding,
           right: theme.screenPadding,
           top: mediaQuery.padding.top,
+          bottom: mediaQuery.padding.bottom,
         ),
         child: child,
       ),

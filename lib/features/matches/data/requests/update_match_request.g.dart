@@ -11,6 +11,7 @@ UpdateMatchRequest _$UpdateMatchRequestFromJson(Map<String, dynamic> json) =>
       teamIds: (json['teamIds'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      playersPerTeam: (json['playersPerTeam'] as num?)?.toInt(),
       plannedStartTimestamp: json['plannedStartTimestamp'] as String?,
     );
 
@@ -18,4 +19,5 @@ Map<String, dynamic> _$UpdateMatchRequestToJson(UpdateMatchRequest instance) =>
     <String, dynamic>{
       'teamIds': ?instance.teamIds,
       'plannedStartTimestamp': ?instance.plannedStartTimestamp,
+      'playersPerTeam': ?instance.playersPerTeam,
     };

@@ -9,6 +9,7 @@ class MatchDetailModel {
   final String id;
   final List<MatchTeamModel> teams;
   final int eventCount;
+  final int playersPerTeam;
   final DateTime? plannedStartTimestamp;
   final DateTime? startedAt;
   final DateTime? endedAt;
@@ -18,6 +19,7 @@ class MatchDetailModel {
     required this.id,
     required this.teams,
     required this.eventCount,
+    required this.playersPerTeam,
     required this.status,
     this.plannedStartTimestamp,
     this.startedAt,
@@ -34,6 +36,7 @@ class MatchDetailModel {
       id: id,
       teams: teams.map((t) => t.toEntity()).toList(),
       eventCount: eventCount,
+      playersPerTeam: playersPerTeam,
       plannedStartTimestamp: plannedStartTimestamp,
       startedAt: startedAt,
       endedAt: endedAt,

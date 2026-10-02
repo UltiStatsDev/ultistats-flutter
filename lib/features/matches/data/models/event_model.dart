@@ -6,69 +6,88 @@ part 'event_model.g.dart';
 @JsonSerializable(createFactory: false)
 class EventModel {
   final DateTime occurredAt;
-  final String participantId;
+  final String? participantId;
   final String? toParticipantId;
-  final EventType? type;
+  final String? teamId;
+  final EventType type;
 
   const EventModel({
     required this.occurredAt,
-    required this.participantId,
+    this.participantId,
     this.toParticipantId,
-    this.type,
+    this.teamId,
+    required this.type,
   });
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
-    // Используем сгенерированную карту для енамов, если она доступна
-    final type = $enumDecodeNullable(_$EventTypeEnumMap, json['type']);
+    final type = $enumDecode(_$EventTypeEnumMap, json['type']);
 
     return EventModel(
       occurredAt: DateTime.parse(json['occurredAt'] as String).toLocal(),
-      participantId: (json['fromParticipantId'] ?? json['participantId']) as String,
-      toParticipantId: json['toParticipantId'] as String?,
       type: type,
+      teamId: json['teamId'] as String?,
+      participantId:
+          (json['fromParticipantId'] ?? json['participantId']) as String?,
+      toParticipantId: json['toParticipantId'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     final json = {
-      'occurredAt': occurredAt.toIso8601String(),
+      'occurredAt': occurredAt.toUtc().toIso8601String(),
       'type': _$EventTypeEnumMap[type],
     };
 
-    if (toParticipantId != null) {
-      // Логика для Event2
+    if (teamId != null) {
+      json['teamId'] = teamId;
+    } else if (toParticipantId != null) {
       json['fromParticipantId'] = participantId;
-      json['toParticipantId'] = toParticipantId!;
-    } else {
-      // Логика для обычного Event
+      json['toParticipantId'] = toParticipantId;
+    } else if (participantId != null) {
       json['participantId'] = participantId;
     }
+
     return json;
   }
 
   factory EventModel.fromEntity(Event event) {
-    return EventModel(
-      occurredAt: event.occurredAt.toUtc(),
-      participantId: event.participantId,
-      type: event.type,
-      toParticipantId: event is Event2 ? event.toParticipantId : null,
-    );
+    return switch (event) {
+      MatchEvent e => EventModel(occurredAt: e.occurredAt, type: e.type),
+      TeamEvent e => EventModel(
+        occurredAt: e.occurredAt,
+        type: e.type,
+        teamId: e.teamId,
+      ),
+      Event2 e => EventModel(
+        occurredAt: e.occurredAt,
+        type: e.type,
+        participantId: e.participantId,
+        toParticipantId: e.toParticipantId,
+      ),
+      Event1 e => EventModel(
+        occurredAt: e.occurredAt,
+        type: e.type,
+        participantId: e.participantId,
+      ),
+    };
   }
 
   Event toEntity() {
+    if (teamId != null) {
+      return TeamEvent(occurredAt: occurredAt, type: type, teamId: teamId!);
+    }
     if (toParticipantId != null) {
       return Event2(
         occurredAt: occurredAt,
-        participantId: participantId,
-        toParticipantId: toParticipantId!,
         type: type,
+        participantId: participantId!,
+        toParticipantId: toParticipantId!,
       );
     }
+    if (participantId != null) {
+      return Event1(occurredAt: occurredAt, type: type, participantId: participantId!);
+    }
 
-    return Event(
-      type: type,
-      participantId: participantId,
-      occurredAt: occurredAt,
-    );
+    return MatchEvent(occurredAt: occurredAt, type: type);
   }
 }

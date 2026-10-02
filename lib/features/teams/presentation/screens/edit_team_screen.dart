@@ -58,7 +58,9 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
 
   void _onDelete() {
     if (canDelete) {
-      ref.read(editTeamProvider.notifier).deleteTeam(id: widget.initialData.id!);
+      ref
+          .read(editTeamProvider.notifier)
+          .deleteTeam(id: widget.initialData.id!);
     }
   }
 

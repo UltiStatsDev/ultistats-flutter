@@ -35,6 +35,7 @@ class EditMatchNotifier extends Notifier<EditMatchState> {
   Future<void> saveMatch({
     String? matchId,
     required List<String> teamIds,
+    required int playersPerTeam,
     DateTime? plannedStartTime,
   }) async {
     state = EditMatchLoading();
@@ -47,6 +48,7 @@ class EditMatchNotifier extends Notifier<EditMatchState> {
           UpdateMatchParams(
             matchId: matchId,
             teamIds: teamIds,
+            playersPerTeam: playersPerTeam,
             plannedStartTimestamp: plannedStartTime,
           ),
         );
@@ -54,6 +56,7 @@ class EditMatchNotifier extends Notifier<EditMatchState> {
         await matchesRepo.createMatch(
           CreateMatchParams(
             teamIds: teamIds,
+            playersPerTeam: playersPerTeam,
             plannedStartTimestamp: plannedStartTime,
           ),
         );
