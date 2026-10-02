@@ -6,6 +6,7 @@ import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/features/matches/presentation/providers/edit_match/edit_match_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/edit_match/edit_match_state.dart';
 import 'package:ultistats/features/matches/presentation/widgets/edit_match/edit_match_app_bar.dart';
 import 'package:ultistats/features/matches/presentation/widgets/edit_match/team_selector_tile.dart';
 import 'package:ultistats/features/teams/domain/entities/team_list_item.dart';
@@ -32,6 +33,8 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
   TeamListItem? _team2;
   DateTime? _plannedStartTime;
 
+  bool get canDelete => widget.initialData.id != null;
+
   @override
   void initState() {
     super.initState();
@@ -40,14 +43,38 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
     _plannedStartTime = widget.initialData.plannedStartTime;
   }
 
+  void _onDelete() {
+    if (canDelete) {
+      ref
+          .read(editMatchProvider.notifier)
+          .deleteMatch(id: widget.initialData.id!);
+    }
+  }
+
   void _onSave() {
+    if (_team1 == null || _team2 == null) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Выберите две команды')),
+      );
+      return;
+    }
+
+    if (_plannedStartTime == null) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Выберите дату и время')),
+      );
+      return;
+    }
+
     ref
         .read(editMatchProvider.notifier)
         .saveMatch(
-          matchId: widget.initialData.id,
-          teamIds: [_team1!.id, _team2!.id],
-          plannedStartTime: _plannedStartTime,
-        );
+      matchId: widget.initialData.id,
+      teamIds: [_team1!.id, _team2!.id],
+      plannedStartTime: _plannedStartTime,
+    );
   }
 
   Future<void> _pickDateTime() async {
@@ -86,17 +113,27 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
     final dateFormat = DateFormat('dd.MM.yyyy HH:mm');
 
     ref.listen(editMatchProvider, (previous, next) {
-      if (next.isSuccess) {
+      if (next is EditMatchSaved) {
         context.router.pop();
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Матч успешно сохранен')));
       }
 
-      if (next.error != null) {
+      if (next is EditMatchDeleted) {
+        context.router.popUntilRoot();
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Матч успешно удален')));
+      }
+
+      if (next is EditMatchError) {
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(next.error!),
+            content: Text("Произошла ошибка"),
             backgroundColor: theme.colorScheme.error,
           ),
         );
@@ -104,7 +141,7 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
     });
 
     final editState = ref.watch(editMatchProvider);
-    final isLoading = editState.isLoading;
+    final isLoading = editState is EditMatchLoading;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -116,6 +153,7 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
               onBackPressed: () {
                 context.router.pop();
               },
+              onDeletePressed: canDelete ? _onDelete : null,
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -191,9 +229,9 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
               ConfirmEditButton(
                 confirmButtonText: widget.confirmButtonText,
                 onTap:
-                    (_team1 != null &&
-                        _team2 != null &&
-                        _plannedStartTime != null)
+                (_team1 != null &&
+                    _team2 != null &&
+                    _plannedStartTime != null)
                     ? _onSave
                     : null,
               ),

@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
@@ -54,21 +53,17 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
   }
 
   void _onImageDelete() {
-    /// If widget.initialData.id == null
-    /// the player is not exist
-    if (widget.initialData.id != null) {
+    if (canDelete) {
       ref.read(editPlayerProvider.notifier).deleteImage(widget.initialData.id!);
     }
   }
 
   void _onDelete() {
-    if (widget.initialData.id == null) {
-      log("Can not delete a not existing player", name: runtimeType.toString());
-      return;
+    if (canDelete) {
+      ref
+          .read(editPlayerProvider.notifier)
+          .deletePlayer(id: widget.initialData.id!);
     }
-    ref
-        .read(editPlayerProvider.notifier)
-        .deletePlayer(id: widget.initialData.id!);
   }
 
   void _onSave() {
@@ -76,6 +71,7 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
     final secondName = _secondNameTextController.text.trim();
 
     if (name.isEmpty || secondName.isEmpty) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Заполните имя и фамилию')));
@@ -99,6 +95,7 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
     ref.listen(editPlayerProvider, (previous, next) {
       if (next is EditPlayerSaved) {
         context.router.pop();
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Игрок успешно сохранен')));
@@ -106,12 +103,14 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
 
       if (next is EditPlayerDeleted) {
         context.router.popUntilRoot();
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Игрок успешно удален')));
       }
 
       if (next is EditPlayerError) {
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text("Произошла ошибка"),

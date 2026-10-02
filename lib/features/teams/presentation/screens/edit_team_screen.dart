@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
@@ -52,17 +51,15 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
   }
 
   void _onImageDelete() {
-    if (widget.initialData.id != null) {
+    if (canDelete) {
       ref.read(editTeamProvider.notifier).deletePhoto(widget.initialData.id!);
     }
   }
 
   void _onDelete() {
-    if (widget.initialData.id == null) {
-      log("Can not delete a not existing team", name: runtimeType.toString());
-      return;
+    if (canDelete) {
+      ref.read(editTeamProvider.notifier).deleteTeam(id: widget.initialData.id!);
     }
-    ref.read(editTeamProvider.notifier).deleteTeam(id: widget.initialData.id!);
   }
 
   void _onSave() {
@@ -70,6 +67,7 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
     final city = _cityTextController.text.trim();
 
     if (name.isEmpty || city.isEmpty) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Заполните название и город')),
       );
@@ -93,6 +91,7 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
     ref.listen(editTeamProvider, (previous, next) {
       if (next is EditTeamSaved) {
         context.router.pop();
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Команда успешно сохранена')),
         );
@@ -100,12 +99,14 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
 
       if (next is EditTeamDeleted) {
         context.router.popUntilRoot();
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Команда успешно удалена')),
         );
       }
 
       if (next is EditTeamError) {
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text("Произошла ошибка"),
