@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
@@ -8,6 +9,7 @@ import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/form_tile.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/features/players/presentation/providers/edit_player/edit_player_notifier.dart';
+import 'package:ultistats/features/players/presentation/providers/edit_player/edit_player_state.dart';
 import 'package:ultistats/features/players/presentation/widgets/edit_player/edit_player_app_bar.dart';
 
 @RoutePage()
@@ -32,6 +34,8 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
   late final TextEditingController _secondNameTextController;
   File? _photo;
 
+  bool get canDelete => widget.initialData.id != null;
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +59,16 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
     if (widget.initialData.id != null) {
       ref.read(editPlayerProvider.notifier).deleteImage(widget.initialData.id!);
     }
+  }
+
+  void _onDelete() {
+    if (widget.initialData.id == null) {
+      log("Can not delete a not existing player", name: runtimeType.toString());
+      return;
+    }
+    ref
+        .read(editPlayerProvider.notifier)
+        .deletePlayer(id: widget.initialData.id!);
   }
 
   void _onSave() {
@@ -83,17 +97,24 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
     final theme = Theme.of(context);
 
     ref.listen(editPlayerProvider, (previous, next) {
-      if (next.isSuccess) {
+      if (next is EditPlayerSaved) {
         context.router.pop();
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Игрок успешно сохранен')));
       }
 
-      if (next.error != null) {
+      if (next is EditPlayerDeleted) {
+        context.router.popUntilRoot();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Игрок успешно удален')));
+      }
+
+      if (next is EditPlayerError) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(next.error!),
+            content: Text("Произошла ошибка"),
             backgroundColor: theme.colorScheme.error,
           ),
         );
@@ -101,7 +122,7 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
     });
 
     final editState = ref.watch(editPlayerProvider);
-    final isLoading = editState.isLoading;
+    final isLoading = editState is EditPlayerLoading;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -117,6 +138,9 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
                       title: widget.title,
                       onBackPressed: () {
                         context.router.pop();
+                      },
+                      onDeletePressed: () {
+                        _onDelete();
                       },
                     ),
                     const SizedBox(height: 24),
