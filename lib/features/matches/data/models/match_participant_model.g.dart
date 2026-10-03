@@ -15,6 +15,7 @@ MatchParticipantModel _$MatchParticipantModelFromJson(
   lastName: json['lastName'] as String?,
   displayName: json['displayName'] as String,
   number: (json['number'] as num?)?.toInt(),
+  photoUrl: json['photoUrl'] as String?,
 );
 
 Map<String, dynamic> _$MatchParticipantModelToJson(
@@ -25,5 +26,6 @@ Map<String, dynamic> _$MatchParticipantModelToJson(
   'firstName': instance.firstName,
   'lastName': instance.lastName,
   'displayName': instance.displayName,
+  'photoUrl': instance.photoUrl,
   'number': instance.number,
 };

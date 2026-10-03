@@ -5,7 +5,6 @@ import 'package:ultistats/features/matches/domain/entities/match_team.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/common/player_select_card.dart';
-import 'package:ultistats/features/players/domain/entities/team_player.dart';
 
 class LineupSelectionWidget extends ConsumerWidget {
   const LineupSelectionWidget({super.key, required this.state});
@@ -126,7 +125,7 @@ class LineupSelectionWidget extends ConsumerWidget {
             final isSelected = selectedIds.contains(participant.participantId);
 
             return PlayerSelectCard(
-              player: _mapParticipantToTeamPlayer(participant, team.id),
+              player: participant,
               isSelected: isSelected,
               onTap: () =>
                   notifier.togglePlayer(participant.participantId, teamIndex),
@@ -144,16 +143,6 @@ class LineupSelectionWidget extends ConsumerWidget {
           ),
         ),
       ],
-    );
-  }
-
-  TeamPlayer _mapParticipantToTeamPlayer(MatchParticipant p, String teamId) {
-    return TeamPlayer(
-      teamId: teamId,
-      playerId: p.participantId,
-      firstName: p.firstName ?? p.displayName,
-      lastName: p.lastName ?? "",
-      number: p.number,
     );
   }
 }
