@@ -199,7 +199,7 @@ class _PlayersApi implements PlayersApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/players/${playerId}/photoUrl',
+            '/players/${playerId}/photo',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -228,14 +228,14 @@ class _PlayersApi implements PlayersApi {
     _data.files.add(MapEntry('multipartFile', multipartFile));
     final _options = _setStreamType<PhotoUrlResponse>(
       Options(
-            method: 'POST',
+            method: 'PUT',
             headers: _headers,
             extra: _extra,
             contentType: 'multipart/form-data',
           )
           .compose(
             _dio.options,
-            '/players/${playerId}/uploadPhoto',
+            '/players/${playerId}/photo',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -262,7 +262,7 @@ class _PlayersApi implements PlayersApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/players/${playerId}/photoUrl',
+            '/players/${playerId}/photo',
             queryParameters: queryParameters,
             data: _data,
           )

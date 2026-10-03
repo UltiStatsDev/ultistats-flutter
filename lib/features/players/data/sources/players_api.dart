@@ -36,18 +36,20 @@ abstract class PlayersApi {
   Future<void> deletePlayer(@Path('id') String id);
 
   @GET('/players/{playerId}/teams')
-  Future<List<PlayerMembershipModel>> getPlayerTeams(@Path('playerId') String playerId);
+  Future<List<PlayerMembershipModel>> getPlayerTeams(
+    @Path('playerId') String playerId,
+  );
 
-  @GET('/players/{playerId}/photoUrl')
+  @GET('/players/{playerId}/photo')
   Future<PhotoUrlResponse> getPlayerPhotoUrl(@Path('playerId') String playerId);
 
-  @POST('/players/{playerId}/uploadPhoto')
+  @PUT('/players/{playerId}/photo')
   @MultiPart()
   Future<PhotoUrlResponse> uploadPlayerPhoto(
     @Path('playerId') String playerId,
     @Part(name: 'multipartFile') MultipartFile multipartFile,
   );
 
-  @DELETE('/players/{playerId}/photoUrl')
+  @DELETE('/players/{playerId}/photo')
   Future<PhotoUrlResponse> deletePlayerPhoto(@Path('playerId') String playerId);
 }
