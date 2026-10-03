@@ -3,7 +3,9 @@ import 'package:ultistats/features/matches/domain/entities/match_participant.dar
 import 'package:ultistats/features/matches/domain/entities/match_team.dart';
 
 sealed class MatchGameState {
-  const MatchGameState();
+  const MatchGameState({required this.match});
+
+  final MatchDetail match;
 }
 
 class GameStateError extends MatchGameState {
@@ -11,18 +13,24 @@ class GameStateError extends MatchGameState {
   final Exception exception;
   final StackTrace stackTrace;
 
-  const GameStateError(this.message, this.exception, this.stackTrace);
+  const GameStateError(
+    this.message,
+    this.exception,
+    this.stackTrace,
+    MatchDetail match,
+  ) : super(match: match);
 }
 
-class GameStateFinished extends MatchGameState {}
+class GameStateFinished extends MatchGameState {
+  GameStateFinished({required super.match});
+}
 
 class GameStateLineupSelection extends MatchGameState {
-  final MatchDetail match;
   final Set<String> team1SelectedIds;
   final Set<String> team2SelectedIds;
 
   const GameStateLineupSelection({
-    required this.match,
+    required super.match,
     this.team1SelectedIds = const {},
     this.team2SelectedIds = const {},
   });
@@ -40,8 +48,6 @@ class GameStateLineupSelection extends MatchGameState {
 }
 
 abstract class GameStateWithLineup extends MatchGameState {
-  final MatchDetail match;
-
   final MatchTeam activeTeam;
   final List<MatchParticipant> activeTeamLineup;
 
@@ -49,7 +55,7 @@ abstract class GameStateWithLineup extends MatchGameState {
   final List<MatchParticipant> opponentTeamLineup;
 
   const GameStateWithLineup({
-    required this.match,
+    required super.match,
     required this.activeTeam,
     required this.activeTeamLineup,
     required this.opponentTeam,

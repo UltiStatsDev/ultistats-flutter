@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/matches/domain/entities/match_participant.dart';
 import 'package:ultistats/features/matches/domain/entities/match_team.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
-import 'package:ultistats/features/matches/presentation/widgets/match/player_select_card.dart';
-import 'package:ultistats/features/players/domain/entities/team_player.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/common/player_select_card.dart';
 
 class LineupSelectionWidget extends ConsumerWidget {
   const LineupSelectionWidget({super.key, required this.state});
@@ -17,12 +15,14 @@ class LineupSelectionWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final notifier = ref.read(matchGameProvider(state.match).notifier);
+    final playersPerTeam = notifier.match.playersPerTeam;
 
     final team1 = state.match.teams[0];
     final team2 = state.match.teams[1];
 
     final isBothLineupsReady =
-        state.team1SelectedIds.length == 5 && state.team2SelectedIds.length == 5;
+        state.team1SelectedIds.length == playersPerTeam &&
+        state.team2SelectedIds.length == playersPerTeam;
 
     return Column(
       children: [
@@ -36,7 +36,6 @@ class LineupSelectionWidget extends ConsumerWidget {
         SizedBox(height: 8),
         Expanded(
           child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(horizontal: theme.screenPadding),
             child: Column(
               children: [
                 _buildTeamLineup(
@@ -74,7 +73,8 @@ class LineupSelectionWidget extends ConsumerWidget {
     required bool isBothReady,
   }) {
     final theme = Theme.of(context);
-    final isCountValid = selectedIds.length == 5;
+    final playersPerTeam = notifier.match.playersPerTeam;
+    final isCountValid = selectedIds.length == playersPerTeam;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +98,7 @@ class LineupSelectionWidget extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                "${selectedIds.length} / 5",
+                "${selectedIds.length} / $playersPerTeam",
                 style: theme.textTheme.displayMedium?.copyWith(
                   color: isCountValid ? Colors.greenAccent : null,
                 ),
@@ -108,48 +108,41 @@ class LineupSelectionWidget extends ConsumerWidget {
         ),
         const SizedBox(height: 8),
         GridView.builder(
+          padding: EdgeInsets.zero,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          itemCount: team.participants.length - 2, /// Костыль чтобы не отображались последние 2 игрока
+          itemCount: team.participants.length - 2,
+
+          /// Костыль чтобы не отображались последние 2 игрока
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
             maxCrossAxisExtent: 110,
             mainAxisExtent: 100,
-            mainAxisSpacing: 12,
-            crossAxisSpacing: 12,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
           ),
           itemBuilder: (context, index) {
             final participant = team.participants[index];
             final isSelected = selectedIds.contains(participant.participantId);
 
             return PlayerSelectCard(
-              player: _mapParticipantToTeamPlayer(participant, team.id),
+              player: participant,
               isSelected: isSelected,
-              onTap: () => notifier.togglePlayer(participant.participantId, teamIndex),
+              onTap: () =>
+                  notifier.togglePlayer(participant.participantId, teamIndex),
             );
           },
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 8),
         SizedBox(
           width: double.infinity,
-          child: FilledButton.icon(
+          child: FilledButton(
             onPressed: isBothReady
                 ? () => notifier.confirmLineupAndStartPull(team.id)
                 : null,
-            icon: const Icon(Icons.play_arrow_rounded),
-            label: const Text("ПОДТВЕРДИТЬ И ПУЛ"),
+            child: const Text("PULL"),
           ),
         ),
       ],
-    );
-  }
-
-  TeamPlayer _mapParticipantToTeamPlayer(MatchParticipant p, String teamId) {
-    return TeamPlayer(
-      teamId: teamId,
-      playerId: p.participantId,
-      firstName: p.firstName ?? p.displayName,
-      lastName: p.lastName ?? "",
-      number: p.number,
     );
   }
 }

@@ -52,6 +52,11 @@ class MatchDetailWidget extends ConsumerWidget {
         const SizedBox(height: 32),
         _buildInfoSection(
           context,
+          title: "Формат",
+          value: "${match.playersPerTeam}x${match.playersPerTeam}",
+        ),
+        _buildInfoSection(
+          context,
           title: "Статус",
           value: _statusToString(match.status),
         ),

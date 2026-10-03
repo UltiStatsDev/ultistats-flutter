@@ -11,7 +11,8 @@ Map<String, dynamic> _$EventModelToJson(EventModel instance) =>
       'occurredAt': instance.occurredAt.toIso8601String(),
       'participantId': instance.participantId,
       'toParticipantId': instance.toParticipantId,
-      'type': _$EventTypeEnumMap[instance.type],
+      'teamId': instance.teamId,
+      'type': _$EventTypeEnumMap[instance.type]!,
     };
 
 const _$EventTypeEnumMap = {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ultistats/core/config/config.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
-import 'package:ultistats/features/players/domain/entities/team_player.dart';
+import 'package:ultistats/features/matches/domain/entities/match_participant.dart';
 
 class PlayerSelectCard extends StatelessWidget {
   const PlayerSelectCard({
@@ -11,7 +11,7 @@ class PlayerSelectCard extends StatelessWidget {
     required this.onTap,
   });
 
-  final TeamPlayer player;
+  final MatchParticipant player;
   final bool isSelected;
   final VoidCallback onTap;
 
@@ -22,7 +22,6 @@ class PlayerSelectCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
@@ -45,7 +44,7 @@ class PlayerSelectCard extends StatelessWidget {
             _buildAvatar(theme),
             const SizedBox(height: 4),
             Text(
-              player.firstName,
+              player.firstName ?? "---",
               style: theme.textTheme.labelSmall,
               textAlign: TextAlign.center,
               maxLines: 1,

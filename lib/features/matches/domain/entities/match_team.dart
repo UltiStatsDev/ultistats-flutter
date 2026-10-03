@@ -18,6 +18,28 @@ class MatchTeam {
     this.photoUrl,
   });
 
+  MatchTeam copyWith({
+    int? score,
+    List<MatchParticipant>? participants,
+  }) {
+    return MatchTeam(
+      id: id,
+      name: name,
+      score: score ?? this.score,
+      participants: participants ?? this.participants,
+      city: city,
+      photoUrl: photoUrl,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MatchTeam && runtimeType == other.runtimeType && id == other.id;
+
+  @override
+  int get hashCode => id.hashCode;
+
   TeamListItem toListItem() {
     return TeamListItem(
       id: id,

@@ -18,6 +18,8 @@ class MatchParticipant {
   final String? lastName;
   final String displayName;
   final int? number;
+  final String? photoUrl;
+
 
   const MatchParticipant({
     required this.participantId,
@@ -26,5 +28,6 @@ class MatchParticipant {
     required this.lastName,
     required this.displayName,
     required this.number,
+    required this.photoUrl,
   });
 }

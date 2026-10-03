@@ -8,6 +8,7 @@ import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/form_tile.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/features/teams/presentation/providers/edit_team/edit_team_notifier.dart';
+import 'package:ultistats/features/teams/presentation/providers/edit_team/edit_team_state.dart';
 import 'package:ultistats/features/teams/presentation/widgets/edit_team/edit_team_app_bar.dart';
 
 @RoutePage()
@@ -32,6 +33,8 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
   late final TextEditingController _cityTextController;
   File? _photo;
 
+  bool get canDelete => widget.initialData.id != null;
+
   @override
   void initState() {
     super.initState();
@@ -48,8 +51,16 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
   }
 
   void _onImageDelete() {
-    if (widget.initialData.id != null) {
+    if (canDelete) {
       ref.read(editTeamProvider.notifier).deletePhoto(widget.initialData.id!);
+    }
+  }
+
+  void _onDelete() {
+    if (canDelete) {
+      ref
+          .read(editTeamProvider.notifier)
+          .deleteTeam(id: widget.initialData.id!);
     }
   }
 
@@ -58,6 +69,7 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
     final city = _cityTextController.text.trim();
 
     if (name.isEmpty || city.isEmpty) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Заполните название и город')),
       );
@@ -79,17 +91,27 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
     final theme = Theme.of(context);
 
     ref.listen(editTeamProvider, (previous, next) {
-      if (next.isSuccess) {
+      if (next is EditTeamSaved) {
         context.router.pop();
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Команда успешно сохранена')),
         );
       }
 
-      if (next.error != null) {
+      if (next is EditTeamDeleted) {
+        context.router.popUntilRoot();
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Команда успешно удалена')),
+        );
+      }
+
+      if (next is EditTeamError) {
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(next.error!),
+            content: Text("Произошла ошибка"),
             backgroundColor: theme.colorScheme.error,
           ),
         );
@@ -97,7 +119,7 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
     });
 
     final editState = ref.watch(editTeamProvider);
-    final isLoading = editState.isLoading;
+    final isLoading = editState is EditTeamLoading;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -114,6 +136,7 @@ class _EditTeamScreenState extends ConsumerState<EditTeamScreen> {
                       onBackPressed: () {
                         context.router.pop();
                       },
+                      onDeletePressed: canDelete ? _onDelete : null,
                     ),
                     const SizedBox(height: 24),
                     AddPhotoWidget(

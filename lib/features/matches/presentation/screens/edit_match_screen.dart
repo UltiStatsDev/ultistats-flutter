@@ -6,6 +6,7 @@ import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/features/matches/presentation/providers/edit_match/edit_match_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/edit_match/edit_match_state.dart';
 import 'package:ultistats/features/matches/presentation/widgets/edit_match/edit_match_app_bar.dart';
 import 'package:ultistats/features/matches/presentation/widgets/edit_match/team_selector_tile.dart';
 import 'package:ultistats/features/teams/domain/entities/team_list_item.dart';
@@ -31,6 +32,9 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
   TeamListItem? _team1;
   TeamListItem? _team2;
   DateTime? _plannedStartTime;
+  int _playersPerTeam = 5;
+
+  bool get canDelete => widget.initialData.id != null;
 
   @override
   void initState() {
@@ -38,14 +42,40 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
     _team1 = widget.initialData.team1;
     _team2 = widget.initialData.team2;
     _plannedStartTime = widget.initialData.plannedStartTime;
+    _playersPerTeam = widget.initialData.playersPerTeam;
+  }
+
+  void _onDelete() {
+    if (canDelete) {
+      ref
+          .read(editMatchProvider.notifier)
+          .deleteMatch(id: widget.initialData.id!);
+    }
   }
 
   void _onSave() {
+    if (_team1 == null || _team2 == null) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Выберите две команды')));
+      return;
+    }
+
+    if (_plannedStartTime == null) {
+      ScaffoldMessenger.of(context).clearSnackBars();
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Выберите дату и время')));
+      return;
+    }
+
     ref
         .read(editMatchProvider.notifier)
         .saveMatch(
           matchId: widget.initialData.id,
           teamIds: [_team1!.id, _team2!.id],
+          playersPerTeam: _playersPerTeam,
           plannedStartTime: _plannedStartTime,
         );
   }
@@ -86,17 +116,27 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
     final dateFormat = DateFormat('dd.MM.yyyy HH:mm');
 
     ref.listen(editMatchProvider, (previous, next) {
-      if (next.isSuccess) {
+      if (next is EditMatchSaved) {
         context.router.pop();
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Матч успешно сохранен')));
       }
 
-      if (next.error != null) {
+      if (next is EditMatchDeleted) {
+        context.router.popUntilRoot();
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Матч успешно удален')));
+      }
+
+      if (next is EditMatchError) {
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(next.error!),
+            content: const Text("Произошла ошибка"),
             backgroundColor: theme.colorScheme.error,
           ),
         );
@@ -104,7 +144,7 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
     });
 
     final editState = ref.watch(editMatchProvider);
-    final isLoading = editState.isLoading;
+    final isLoading = editState is EditMatchLoading;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -116,6 +156,7 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
               onBackPressed: () {
                 context.router.pop();
               },
+              onDeletePressed: canDelete ? _onDelete : null,
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -135,6 +176,46 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
                       initialTeam: _team2,
                       excludedIds: _team1 != null ? {_team1!.id} : {},
                       onTeamSelected: (team) => setState(() => _team2 = team),
+                    ),
+                    const SizedBox(height: 24),
+                    Text("Формат матча", style: theme.textTheme.displayMedium),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      height: theme.textFieldHeight,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.primaryContainer,
+                        borderRadius: BorderRadius.circular(
+                          theme.textFieldBorderRadius,
+                        ),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<int>(
+                          value: _playersPerTeam,
+                          isExpanded: true,
+                          icon: Icon(
+                            Icons.keyboard_arrow_down,
+                            color: theme.primaryColor.withValues(alpha: 0.5),
+                          ),
+                          dropdownColor: theme.colorScheme.primaryContainer,
+                          items: [3, 4, 5, 6, 7, 8, 9].map((int value) {
+                            return DropdownMenuItem<int>(
+                              value: value,
+                              child: Text(
+                                "${value}x$value",
+                                style: theme.textFieldStyleText,
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (int? newValue) {
+                            if (newValue != null) {
+                              setState(() {
+                                _playersPerTeam = newValue;
+                              });
+                            }
+                          },
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 24),
                     Text(
@@ -181,7 +262,6 @@ class _EditMatchScreenState extends ConsumerState<EditMatchScreen> {
               ),
             ),
             const SizedBox(height: 12),
-
             if (isLoading)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: 16.0),
@@ -210,11 +290,13 @@ class EditMatchScreenInitial {
   final TeamListItem? team1;
   final TeamListItem? team2;
   final DateTime? plannedStartTime;
+  final int playersPerTeam;
 
   const EditMatchScreenInitial({
     this.id,
     this.team1,
     this.team2,
     this.plannedStartTime,
+    this.playersPerTeam = 5,
   });
 }

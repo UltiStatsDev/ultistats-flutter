@@ -21,43 +21,58 @@ enum EventType {
   UNKNOWN,
 }
 
-class Event {
+sealed class Event {
   final DateTime occurredAt;
-  final String participantId;
-  final EventType? type;
+  final EventType type;
 
-  Event({DateTime? occurredAt, required this.participantId, this.type})
+  Event({DateTime? occurredAt, required this.type})
     : occurredAt = occurredAt ?? DateTime.now();
+}
 
-  Event.incompletePass({DateTime? occurredAt, required String participantId})
+class MatchEvent extends Event {
+  MatchEvent({super.occurredAt, required super.type});
+
+  MatchEvent.halftimeStart({DateTime? occurredAt})
+    : this(occurredAt: occurredAt, type: EventType.HALFTIME_START);
+
+  MatchEvent.halftimeEnd({DateTime? occurredAt})
+    : this(occurredAt: occurredAt, type: EventType.HALFTIME_END);
+}
+
+class Event1 extends Event {
+  final String participantId;
+
+  Event1({super.occurredAt, required super.type, required this.participantId});
+
+  Event1.incompletePass({DateTime? occurredAt, required String participantId})
     : this(
         occurredAt: occurredAt,
         participantId: participantId,
         type: EventType.INCOMPLETE_PASS,
       );
 
-  Event.drop({DateTime? occurredAt, required String participantId})
+  Event1.drop({DateTime? occurredAt, required String participantId})
     : this(
         occurredAt: occurredAt,
         participantId: participantId,
         type: EventType.DROP,
       );
 
-  Event.pull({DateTime? occurredAt, required String participantId})
+  Event1.pull({DateTime? occurredAt, required String participantId})
     : this(
         occurredAt: occurredAt,
         participantId: participantId,
         type: EventType.PULL,
       );
 
-  Event.turnover({DateTime? occurredAt, required String participantId})
+  Event1.turnover({DateTime? occurredAt, required String participantId})
     : this(
         occurredAt: occurredAt,
         participantId: participantId,
         type: EventType.TURNOVER,
       );
 
-  Event.pickup({DateTime? occurredAt, required String participantId})
+  Event1.pickup({DateTime? occurredAt, required String participantId})
     : this(
         occurredAt: occurredAt,
         participantId: participantId,
@@ -65,16 +80,15 @@ class Event {
       );
 }
 
-/// поле [participantId] в [Event2] при создании json будет названо [fromParticipantId]
-class Event2 extends Event {
+class Event2 extends Event1 {
+  final String toParticipantId;
+
   Event2({
-    DateTime? occurredAt,
+    required super.occurredAt,
+    required super.type,
     required super.participantId,
-    super.type,
     required this.toParticipantId,
   });
-
-  final String toParticipantId;
 
   Event2.goal({
     DateTime? occurredAt,
@@ -108,4 +122,24 @@ class Event2 extends Event {
          toParticipantId: toParticipantId,
          type: EventType.BLOCK,
        );
+}
+
+class TeamEvent extends Event {
+  final String teamId;
+
+  TeamEvent({super.occurredAt, required super.type, required this.teamId});
+
+  TeamEvent.timeoutStart({DateTime? occurredAt, required String teamId})
+    : this(
+        occurredAt: occurredAt,
+        teamId: teamId,
+        type: EventType.TIMEOUT_START,
+      );
+
+  TeamEvent.timeoutEnd({DateTime? occurredAt, required String teamId})
+      : this(
+    occurredAt: occurredAt,
+    teamId: teamId,
+    type: EventType.TIMEOUT_END,
+  );
 }

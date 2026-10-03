@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
-import 'package:ultistats/features/matches/presentation/widgets/match/event_button.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/common/active_team_widget.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/common/event_button.dart';
 
 class TakerSelectionWidget extends ConsumerWidget {
   const TakerSelectionWidget({super.key, required this.state});
@@ -17,17 +17,14 @@ class TakerSelectionWidget extends ConsumerWidget {
 
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            "Кто принимает диск? (${state.activeTeam.name})",
-            style: theme.textTheme.titleMedium,
-            textAlign: TextAlign.center,
-          ),
+        SizedBox(
+          width: double.infinity,
+          child: ActiveTeamWidget(team: state.activeTeam),
         ),
+        SizedBox(height: 8),
         Expanded(
           child: ListView.separated(
-            padding: EdgeInsets.symmetric(horizontal: theme.screenPadding),
+            padding: EdgeInsets.zero,
             itemCount: state.activeTeamLineup.length,
             separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {
@@ -45,7 +42,7 @@ class TakerSelectionWidget extends ConsumerWidget {
                       notifier.selectTaker(player);
                     },
                     text: "TAKE",
-                  )
+                  ),
                 ],
               );
             },

@@ -55,8 +55,7 @@ jobs:
           tag_name: v${{ steps.pubspec_version.outputs.VERSION }}
           name: Release v${{ steps.pubspec_version.outputs.VERSION }}
           body: |
-            Автоматическая сборка из ветки main.
-            Версия: ${{ steps.pubspec_version.outputs.VERSION }}
+            Version: ${{ steps.pubspec_version.outputs.VERSION }}
             Flutter: 3.41.6
           draft: false
           prerelease: false

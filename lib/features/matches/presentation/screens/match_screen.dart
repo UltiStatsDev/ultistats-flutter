@@ -11,6 +11,7 @@ import 'package:ultistats/features/matches/presentation/widgets/match/loading_wi
 import 'package:ultistats/features/matches/presentation/widgets/match/playing_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/puller_selection_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/taker_selection_widget.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/timer/timer_widget.dart';
 
 @RoutePage()
 class MatchScreen extends ConsumerWidget {
@@ -20,6 +21,7 @@ class MatchScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
     final state = ref.watch(matchGameProvider(match));
 
     ref.listen(matchGameProvider(match), (previous, next) {
@@ -28,9 +30,50 @@ class MatchScreen extends ConsumerWidget {
       }
     });
 
+    final team1 = state.match.teams[0];
+    final team2 = state.match.teams[1];
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: ScreenWrapper(child: _buildBody(state)),
+      body: ScreenWrapper(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    team1.name,
+                    textAlign: TextAlign.end,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    "${team1.score}:${team2.score}",
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
+                SizedBox(width: 8),
+                Expanded(
+                  flex: 2,
+                  child: Text(
+                    team2.name,
+                    textAlign: TextAlign.start,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 4),
+            Expanded(child: _buildBody(state)),
+
+            TimerWidget(match: match),
+          ],
+        ),
+      ),
     );
   }
 

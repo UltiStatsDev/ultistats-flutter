@@ -6,7 +6,9 @@ import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/matches/domain/entities/event.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
 import 'package:ultistats/features/matches/domain/entities/match_participant.dart';
+import 'package:ultistats/features/matches/domain/entities/match_team.dart';
 import 'package:ultistats/features/matches/domain/params/create_event_params.dart';
+import 'package:ultistats/features/matches/presentation/providers/match/match_timer_notifier.dart';
 import 'package:ultistats/features/matches/presentation/providers/match_detail/match_detail_notifier.dart';
 import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_notifier.dart';
 
@@ -17,23 +19,44 @@ part 'match_game_notifier.g.dart';
 @riverpod
 class MatchGameNotifier extends _$MatchGameNotifier {
   final List<Event> _matchEvents = [];
+  Future<void>? _eventProcessingChain;
 
   @override
   MatchGameState build(MatchDetail match) {
+    final initialElapsed = match.startedAt != null
+        ? DateTime.now().difference(match.startedAt!)
+        : Duration.zero;
+
+    Future.microtask(() {
+      ref.read(matchTimerProvider(match.id).notifier).start(
+        initialDuration: initialElapsed,
+      );
+    });
+
     return GameStateLineupSelection(match: match);
   }
 
   Future<void> _recordAndSendEvent(Event event) async {
     _matchEvents.add(event);
 
+    final previousTask = _eventProcessingChain;
+    final completer = Completer<void>();
+    _eventProcessingChain = completer.future;
+
     try {
+      if (previousTask != null) {
+        await previousTask;
+      }
+
       final repository = ref.read(matchEventsRepositoryProvider);
       await repository.addEvent(
         CreateEventParams(matchId: match.id, event: event),
       );
-      log("Event sent: $event", name: runtimeType.toString());
+      log("Event sent: ${event.type}", name: runtimeType.toString());
     } catch (e) {
       log("Failed to send event: $e", name: runtimeType.toString());
+    } finally {
+      completer.complete();
     }
   }
 
@@ -51,7 +74,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       final selected = Set<String>.from(currentState.team1SelectedIds);
       if (selected.contains(participantId)) {
         selected.remove(participantId);
-      } else if (selected.length < 5) {
+      } else if (selected.length < match.playersPerTeam) {
         selected.add(participantId);
       }
       state = currentState.copyWith(team1SelectedIds: selected);
@@ -59,7 +82,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       final selected = Set<String>.from(currentState.team2SelectedIds);
       if (selected.contains(participantId)) {
         selected.remove(participantId);
-      } else if (selected.length < 5) {
+      } else if (selected.length < match.playersPerTeam) {
         selected.add(participantId);
       }
       state = currentState.copyWith(team2SelectedIds: selected);
@@ -76,10 +99,10 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       return;
     }
 
-    if (currentState.team1SelectedIds.length != 5 ||
-        currentState.team2SelectedIds.length != 5) {
+    if (currentState.team1SelectedIds.length != match.playersPerTeam ||
+        currentState.team2SelectedIds.length != match.playersPerTeam) {
       log(
-        "Invalid state, lineup is not complete (5v5 required)",
+        "Invalid state, lineup is not complete (${match.playersPerTeam} required)",
         name: runtimeType.toString(),
       );
       return;
@@ -102,21 +125,16 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       team2.participants.where((p) => p.kind == ParticipantKind.unknown),
     );
 
-    // Определяем, кто пулит (активная команда)
     final isTeam1Pulling = pullingTeamId == team1.id;
-
     final activeTeam = isTeam1Pulling ? team1 : team2;
     final opponentTeam = isTeam1Pulling ? team2 : team1;
-
-    final activeLineup = isTeam1Pulling ? team1Lineup : team2Lineup;
-    final opponentLineup = isTeam1Pulling ? team2Lineup : team1Lineup;
 
     state = GameStatePullerSelection(
       match: currentState.match,
       activeTeam: activeTeam,
-      activeTeamLineup: activeLineup,
+      activeTeamLineup: isTeam1Pulling ? team1Lineup : team2Lineup,
       opponentTeam: opponentTeam,
-      opponentTeamLineup: opponentLineup,
+      opponentTeamLineup: isTeam1Pulling ? team2Lineup : team1Lineup,
     );
   }
 
@@ -130,12 +148,11 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       return;
     }
 
-    _recordAndSendEvent(Event.pull(participantId: puller.participantId));
+    _recordAndSendEvent(Event1.pull(participantId: puller.participantId));
 
     state = GameStateTakerSelection(
       match: currentState.match,
       activeTeam: currentState.opponentTeam,
-      // Меняем команду местами
       activeTeamLineup: currentState.opponentTeamLineup,
       opponentTeam: currentState.activeTeam,
       opponentTeamLineup: currentState.activeTeamLineup,
@@ -152,7 +169,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       return;
     }
 
-    _recordAndSendEvent(Event.pickup(participantId: taker.participantId));
+    _recordAndSendEvent(Event1.pickup(participantId: taker.participantId));
 
     state = GameStatePlaying(
       match: currentState.match,
@@ -202,13 +219,14 @@ class MatchGameNotifier extends _$MatchGameNotifier {
     }
 
     _recordAndSendEvent(
-      Event.incompletePass(participantId: currentState.currentThrower.participantId),
+      Event1.incompletePass(
+        participantId: currentState.currentThrower.participantId,
+      ),
     );
 
     state = GameStateTakerSelection(
       match: currentState.match,
       activeTeam: currentState.opponentTeam,
-      // Смена владения
       activeTeamLineup: currentState.opponentTeamLineup,
       opponentTeam: currentState.activeTeam,
       opponentTeamLineup: currentState.activeTeamLineup,
@@ -232,7 +250,78 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       ),
     );
 
-    state = GameStateLineupSelection(match: currentState.match);
+    final match = currentState.match;
+    final team1Id = match.teams[0].id;
+
+    final updatedTeams = match.teams.map((team) {
+      if (team.id == currentState.activeTeam.id) {
+        return team.copyWith(score: team.score + 1);
+      }
+      return team;
+    }).toList();
+
+    final updatedMatch = match.copyWith(teams: updatedTeams);
+
+    final isTeam1Active = currentState.activeTeam.id == team1Id;
+
+    final team1Lineup = isTeam1Active
+        ? currentState.activeTeamLineup
+        : currentState.opponentTeamLineup;
+
+    final team2Lineup = isTeam1Active
+        ? currentState.opponentTeamLineup
+        : currentState.activeTeamLineup;
+
+    final team1SelectedIds = team1Lineup
+        .where((p) => p.kind == ParticipantKind.player)
+        .map((p) => p.participantId)
+        .toSet();
+
+    final team2SelectedIds = team2Lineup
+        .where((p) => p.kind == ParticipantKind.player)
+        .map((p) => p.participantId)
+        .toSet();
+
+    state = GameStateLineupSelection(
+      match: updatedMatch,
+      team1SelectedIds: team1SelectedIds,
+      team2SelectedIds: team2SelectedIds,
+    );
+  }
+
+  void startTimeout(MatchTeam team) {
+    final currentState = state;
+
+    if (currentState is! GameStatePlaying) {
+      log("Таймаут запрещен", name: runtimeType.toString());
+      return;
+    }
+
+    if (currentState.activeTeam.id != team.id) {
+      log("Таймаут запрещен: диск у соперника", name: runtimeType.toString());
+      return;
+    }
+
+    _recordAndSendEvent(TeamEvent.timeoutStart(teamId: team.id));
+  }
+
+  void endTimeout(MatchTeam team) {
+    _recordAndSendEvent(TeamEvent.timeoutEnd(teamId: team.id));
+  }
+
+  void startHalftime() {
+    if (state is! GameStateLineupSelection) {
+      log(
+        "Халфтайм возможен только между очками",
+        name: runtimeType.toString(),
+      );
+      return;
+    }
+    _recordAndSendEvent(MatchEvent.halftimeStart());
+  }
+
+  void endHalftime() {
+    _recordAndSendEvent(MatchEvent.halftimeEnd());
   }
 
   void finishMatch() async {
@@ -253,7 +342,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       ref.invalidate(matchDetailProvider);
       ref.invalidate(matchesListProvider);
 
-      state = GameStateFinished();
+      state = GameStateFinished(match: match);
     } catch (e, st) {
       log(
         "Error while finishMatch",

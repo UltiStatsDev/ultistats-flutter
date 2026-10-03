@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
-import 'package:ultistats/features/matches/presentation/widgets/match/event_button.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/common/active_team_widget.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/common/event_button.dart';
 
 class PlayingWidget extends ConsumerWidget {
   const PlayingWidget({super.key, required this.state});
@@ -17,25 +17,14 @@ class PlayingWidget extends ConsumerWidget {
 
     return Column(
       children: [
-        Column(
-          children: [
-            Text(
-              "Владение: ${state.activeTeam.name}",
-              style: theme.textTheme.titleMedium,
-            ),
-            const SizedBox(height: 4),
-            Text(
-              "Диск у: ${state.currentThrower.displayName}",
-              style: theme.textTheme.labelMedium?.copyWith(
-                color: theme.primaryColor.withValues(alpha: 0.7),
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
+        SizedBox(
+          width: double.infinity,
+          child: ActiveTeamWidget(team: state.activeTeam),
         ),
+        SizedBox(height: 8),
         Expanded(
           child: ListView.separated(
-            padding: EdgeInsets.symmetric(horizontal: theme.screenPadding),
+            padding: EdgeInsets.zero,
             itemCount: state.activeTeamLineup.length,
             separatorBuilder: (context, index) => const SizedBox(height: 12),
             itemBuilder: (context, index) {

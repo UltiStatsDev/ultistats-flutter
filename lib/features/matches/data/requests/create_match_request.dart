@@ -7,16 +7,21 @@ part 'create_match_request.g.dart';
 class CreateMatchRequest {
   final List<String> teamIds;
   final String? plannedStartTimestamp;
+  final int playersPerTeam;
 
   const CreateMatchRequest({
     required this.teamIds,
+    required this.playersPerTeam,
     this.plannedStartTimestamp,
   });
 
   factory CreateMatchRequest.fromParams(CreateMatchParams params) =>
       CreateMatchRequest(
         teamIds: params.teamIds,
-        plannedStartTimestamp: params.plannedStartTimestamp?.toUtc().toIso8601String(),
+        playersPerTeam: params.playersPerTeam,
+        plannedStartTimestamp: params.plannedStartTimestamp
+            ?.toUtc()
+            .toIso8601String(),
       );
 
   Map<String, dynamic> toJson() => _$CreateMatchRequestToJson(this);

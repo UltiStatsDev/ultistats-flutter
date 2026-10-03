@@ -8,6 +8,7 @@ import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/form_tile.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/features/players/presentation/providers/edit_player/edit_player_notifier.dart';
+import 'package:ultistats/features/players/presentation/providers/edit_player/edit_player_state.dart';
 import 'package:ultistats/features/players/presentation/widgets/edit_player/edit_player_app_bar.dart';
 
 @RoutePage()
@@ -32,6 +33,8 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
   late final TextEditingController _secondNameTextController;
   File? _photo;
 
+  bool get canDelete => widget.initialData.id != null;
+
   @override
   void initState() {
     super.initState();
@@ -50,10 +53,16 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
   }
 
   void _onImageDelete() {
-    /// If widget.initialData.id == null
-    /// the player is not exist
-    if (widget.initialData.id != null) {
+    if (canDelete) {
       ref.read(editPlayerProvider.notifier).deleteImage(widget.initialData.id!);
+    }
+  }
+
+  void _onDelete() {
+    if (canDelete) {
+      ref
+          .read(editPlayerProvider.notifier)
+          .deletePlayer(id: widget.initialData.id!);
     }
   }
 
@@ -62,6 +71,7 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
     final secondName = _secondNameTextController.text.trim();
 
     if (name.isEmpty || secondName.isEmpty) {
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Заполните имя и фамилию')));
@@ -83,17 +93,27 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
     final theme = Theme.of(context);
 
     ref.listen(editPlayerProvider, (previous, next) {
-      if (next.isSuccess) {
+      if (next is EditPlayerSaved) {
         context.router.pop();
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('Игрок успешно сохранен')));
       }
 
-      if (next.error != null) {
+      if (next is EditPlayerDeleted) {
+        context.router.popUntilRoot();
+        ScaffoldMessenger.of(context).clearSnackBars();
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('Игрок успешно удален')));
+      }
+
+      if (next is EditPlayerError) {
+        ScaffoldMessenger.of(context).clearSnackBars();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(next.error!),
+            content: Text("Произошла ошибка"),
             backgroundColor: theme.colorScheme.error,
           ),
         );
@@ -101,7 +121,7 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
     });
 
     final editState = ref.watch(editPlayerProvider);
-    final isLoading = editState.isLoading;
+    final isLoading = editState is EditPlayerLoading;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -118,6 +138,7 @@ class _EditPlayerScreenState extends ConsumerState<EditPlayerScreen> {
                       onBackPressed: () {
                         context.router.pop();
                       },
+                      onDeletePressed: canDelete ? _onDelete : null,
                     ),
                     const SizedBox(height: 24),
                     AddPhotoWidget(

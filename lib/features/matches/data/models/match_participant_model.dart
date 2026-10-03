@@ -10,6 +10,7 @@ class MatchParticipantModel {
   final String? firstName;
   final String? lastName;
   final String displayName;
+  final String? photoUrl;
   final int? number;
 
   const MatchParticipantModel({
@@ -19,6 +20,7 @@ class MatchParticipantModel {
     required this.lastName,
     required this.displayName,
     required this.number,
+    required this.photoUrl,
   });
 
   factory MatchParticipantModel.fromJson(Map<String, dynamic> json) =>
@@ -34,6 +36,7 @@ class MatchParticipantModel {
       lastName: lastName,
       displayName: displayName,
       number: number,
+      photoUrl: photoUrl
     );
   }
 }

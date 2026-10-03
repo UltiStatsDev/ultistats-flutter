@@ -3,9 +3,15 @@ import 'package:ultistats/core/themes/app_themes.dart';
 
 // TODO какойто кал со стеком мб посмотреть как сделать получше
 class EditPlayerAppBar extends StatelessWidget {
-  const EditPlayerAppBar({super.key, this.onBackPressed, required this.title});
+  const EditPlayerAppBar({
+    super.key,
+    this.onBackPressed,
+    required this.title,
+    this.onDeletePressed,
+  });
 
   final VoidCallback? onBackPressed;
+  final VoidCallback? onDeletePressed;
   final String title;
 
   @override
@@ -15,16 +21,21 @@ class EditPlayerAppBar extends StatelessWidget {
       height: theme.appBarHeight,
       child: Stack(
         children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: IconButton(
-              onPressed: onBackPressed,
-              icon: Icon(Icons.arrow_back),
-            ),
+          Row(
+            children: [
+              IconButton(
+                onPressed: onBackPressed,
+                icon: Icon(Icons.arrow_back),
+              ),
+              Spacer(),
+              if (onDeletePressed != null)
+                IconButton(
+                  onPressed: onDeletePressed,
+                  icon: Icon(Icons.delete),
+                ),
+            ],
           ),
-          Center(
-            child: Text(title, style: theme.textTheme.titleMedium),
-          ),
+          Center(child: Text(title, style: theme.textTheme.titleMedium)),
         ],
       ),
     );
