@@ -247,7 +247,7 @@ class _TeamsApi implements TeamsApi {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/teams/${teamId}/photoUrl',
+            '/teams/${teamId}/photo',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -276,14 +276,14 @@ class _TeamsApi implements TeamsApi {
     _data.files.add(MapEntry('multipartFile', multipartFile));
     final _options = _setStreamType<PhotoUrlResponse>(
       Options(
-            method: 'POST',
+            method: 'PUT',
             headers: _headers,
             extra: _extra,
             contentType: 'multipart/form-data',
           )
           .compose(
             _dio.options,
-            '/teams/${teamId}/uploadPhoto',
+            '/teams/${teamId}/photo',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -310,7 +310,7 @@ class _TeamsApi implements TeamsApi {
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/teams/${teamId}/photoUrl',
+            '/teams/${teamId}/photo',
             queryParameters: queryParameters,
             data: _data,
           )

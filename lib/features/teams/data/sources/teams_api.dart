@@ -52,16 +52,16 @@ abstract class TeamsApi {
   @GET('/teams/{teamId}/players')
   Future<List<PlayerMembershipModel>> getTeamRoster(@Path('teamId') String teamId);
 
-  @GET('/teams/{teamId}/photoUrl')
+  @GET('/teams/{teamId}/photo')
   Future<PhotoUrlResponse> getTeamPhotoUrl(@Path('teamId') String teamId);
 
-  @POST('/teams/{teamId}/uploadPhoto')
+  @PUT('/teams/{teamId}/photo')
   @MultiPart()
   Future<PhotoUrlResponse> uploadTeamPhoto(
     @Path('teamId') String teamId,
     @Part(name: 'multipartFile') MultipartFile multipartFile,
   );
 
-  @DELETE('/teams/{teamId}/photoUrl')
+  @DELETE('/teams/{teamId}/photo')
   Future<PhotoUrlResponse> deleteTeamPhoto(@Path('teamId') String teamId);
 }
