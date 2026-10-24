@@ -12,6 +12,8 @@ import 'package:ultistats/features/matches/presentation/widgets/match/playing_wi
 import 'package:ultistats/features/matches/presentation/widgets/match/puller_selection_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/taker_selection_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/timer/timer_widget.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/timer/match_break_widget.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/match_undo_bar.dart';
 
 @RoutePage()
 class MatchScreen extends ConsumerWidget {
@@ -23,9 +25,10 @@ class MatchScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final state = ref.watch(matchGameProvider(match));
+    final notifier = ref.read(matchGameProvider(match).notifier);
 
     ref.listen(matchGameProvider(match), (previous, next) {
-      if (next is GameStateFinished) {
+      if (next is GameStateFinished && previous is! GameStateFinished) {
         context.router.pop();
       }
     });
@@ -33,45 +36,55 @@ class MatchScreen extends ConsumerWidget {
     final team1 = state.match.teams[0];
     final team2 = state.match.teams[1];
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: ScreenWrapper(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    team1.name,
-                    textAlign: TextAlign.end,
-                    style: theme.textTheme.titleMedium,
+    return PopScope(
+      canPop:
+          !notifier.isBusy && (state is! GameStateBreak || notifier.needsSync),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: ScreenWrapper(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      team1.name,
+                      textAlign: TextAlign.end,
+                      style: theme.textTheme.titleMedium,
+                    ),
                   ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    "${team1.score}:${team2.score}",
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleMedium,
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      "${team1.score}:${team2.score}",
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleMedium,
+                    ),
                   ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    team2.name,
-                    textAlign: TextAlign.start,
-                    style: theme.textTheme.titleMedium,
+                  SizedBox(width: 8),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      team2.name,
+                      textAlign: TextAlign.start,
+                      style: theme.textTheme.titleMedium,
+                    ),
                   ),
+                ],
+              ),
+              SizedBox(height: 4),
+              MatchUndoBar(match: match),
+              Expanded(
+                child: AbsorbPointer(
+                  absorbing: !notifier.canInteract,
+                  child: _buildBody(state),
                 ),
-              ],
-            ),
-            SizedBox(height: 4),
-            Expanded(child: _buildBody(state)),
+              ),
 
-            TimerWidget(match: match),
-          ],
+              TimerWidget(match: match),
+            ],
+          ),
         ),
       ),
     );
@@ -87,6 +100,7 @@ class MatchScreen extends ConsumerWidget {
       GameStatePullerSelection() => PullerSelectionWidget(state: state),
       GameStateTakerSelection() => TakerSelectionWidget(state: state),
       GameStatePlaying() => PlayingWidget(state: state),
+      GameStateBreak() => MatchBreakWidget(state: state),
       GameStateFinished() => LoadingWidget(),
       _ => throw UnimplementedError(),
     };
