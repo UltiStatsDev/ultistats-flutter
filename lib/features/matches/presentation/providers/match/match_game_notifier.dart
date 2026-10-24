@@ -1,5 +1,6 @@
-import 'dart:async';
 import 'dart:developer';
+
+import 'package:dio/dio.dart';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
@@ -18,8 +19,20 @@ part 'match_game_notifier.g.dart';
 
 @riverpod
 class MatchGameNotifier extends _$MatchGameNotifier {
-  final List<Event> _matchEvents = [];
-  Future<void>? _eventProcessingChain;
+  final List<_EventSnapshot> _history = [];
+  List<Event>? _knownEvents;
+  bool _isBusy = false;
+  bool _needsSync = false;
+  String? _message;
+  _PendingUndo? _pendingUndo;
+
+  bool get isBusy => _isBusy;
+  bool get needsSync => _needsSync;
+  String? get message => _message;
+  bool get canInteract =>
+      !_isBusy && !_needsSync && state is! GameStateFinished;
+  bool get canUndo => canInteract && _history.isNotEmpty;
+  bool get canSynchronize => !_isBusy && _pendingUndo != null;
 
   @override
   MatchGameState build(MatchDetail match) {
@@ -28,39 +41,248 @@ class MatchGameNotifier extends _$MatchGameNotifier {
         : Duration.zero;
 
     Future.microtask(() {
-      ref.read(matchTimerProvider(match.id).notifier).start(
-        initialDuration: initialElapsed,
-      );
+      if (!ref.mounted) return;
+      ref
+          .read(matchTimerProvider(match.id).notifier)
+          .start(initialDuration: initialElapsed);
     });
 
     return GameStateLineupSelection(match: match);
   }
 
+  // Serialize mutations: a second tap must never overtake an unacknowledged event.
   Future<void> _recordAndSendEvent(Event event) async {
-    _matchEvents.add(event);
-
-    final previousTask = _eventProcessingChain;
-    final completer = Completer<void>();
-    _eventProcessingChain = completer.future;
-
+    final before = state;
+    var requestStarted = false;
+    final keepAlive = ref.keepAlive();
+    _isBusy = true;
+    _message = null;
+    ref.notifyListeners();
     try {
-      if (previousTask != null) {
-        await previousTask;
-      }
-
       final repository = ref.read(matchEventsRepositoryProvider);
-      await repository.addEvent(
+      _knownEvents ??= _orderedEvents(await repository.getEvents(match.id));
+      if (!ref.mounted) return;
+      requestStarted = true;
+      final stored = await repository.addEvent(
         CreateEventParams(matchId: match.id, event: event),
       );
-      log("Event sent: ${event.type}", name: runtimeType.toString());
-    } catch (e) {
-      log("Failed to send event: $e", name: runtimeType.toString());
+      if (!ref.mounted) return;
+      if (stored.id == null) {
+        _requireReopen();
+      } else {
+        _knownEvents!.add(stored);
+        _history.add(_EventSnapshot(event: stored, before: before));
+      }
+    } catch (error) {
+      if (!ref.mounted) return;
+      if (!requestStarted) {
+        state = before;
+        _updateTimer();
+        _message =
+            'Не удалось загрузить журнал. Событие не отправлено, повторите действие.';
+      } else if (error is DioException &&
+          (error.response?.statusCode == 400 ||
+              error.response?.statusCode == 404 ||
+              error.response?.statusCode == 409 ||
+              error.response?.statusCode == 422)) {
+        state = before;
+        _updateTimer();
+        _message =
+            'Событие отклонено сервером. Повторите действие после проверки матча.';
+      } else {
+        // A lost create response may already have changed the server. Do not
+        // record another event against an uncertain local state.
+        _requireReopen();
+      }
     } finally {
-      completer.complete();
+      if (ref.mounted) {
+        _isBusy = false;
+        ref.notifyListeners();
+      }
+      keepAlive.close();
     }
   }
 
+  Future<void> undoLastEvent() async {
+    if (!canUndo) return;
+    final keepAlive = ref.keepAlive();
+    _isBusy = true;
+    _message = null;
+    ref.notifyListeners();
+    final snapshot = _history.last;
+    try {
+      final repository = ref.read(matchEventsRepositoryProvider);
+      final events = await repository.getEvents(match.id);
+      if (!ref.mounted) return;
+      final ordered = _orderedEvents(events);
+      if (ordered.isEmpty ||
+          ordered.last.id != snapshot.event.id ||
+          !_sameEvents(ordered, _knownEvents!)) {
+        _requireReopen();
+        return;
+      }
+      _pendingUndo = _PendingUndo(snapshot: snapshot, events: ordered);
+      try {
+        // Non-idempotent: never automatically retry this POST.
+        final removed = await repository.undoLastEvent(match.id);
+        if (!ref.mounted) return;
+        if (removed.id == snapshot.event.id) {
+          _restore(snapshot);
+          _pendingUndo = null;
+        } else {
+          _pendingUndo = null;
+          _requireReopen();
+        }
+      } catch (error) {
+        if (!ref.mounted) return;
+        _message = _undoErrorMessage(error);
+        _pendingUndo!.errorMessage = _message;
+        await _reconcileUndo();
+      }
+    } catch (error) {
+      if (ref.mounted) {
+        // No POST was sent if the initial journal read failed.
+        _message = 'Не удалось проверить журнал событий. Попробуйте ещё раз.';
+      }
+    } finally {
+      if (ref.mounted) {
+        _isBusy = false;
+        ref.notifyListeners();
+      }
+      keepAlive.close();
+    }
+  }
+
+  /// Retry only the read after an ambiguous response, never the undo request.
+  Future<void> synchronize() async {
+    if (!canSynchronize) return;
+    final keepAlive = ref.keepAlive();
+    _isBusy = true;
+    ref.notifyListeners();
+    try {
+      await _reconcileUndo();
+    } finally {
+      if (ref.mounted) {
+        _isBusy = false;
+        ref.notifyListeners();
+      }
+      keepAlive.close();
+    }
+  }
+
+  Future<void> _reconcileUndo() async {
+    final pending = _pendingUndo!;
+    try {
+      final events = await ref
+          .read(matchEventsRepositoryProvider)
+          .getEvents(match.id);
+      if (!ref.mounted) return;
+      final ordered = _orderedEvents(events);
+      if (_sameEvents(
+        ordered,
+        pending.events.sublist(0, pending.events.length - 1),
+      )) {
+        _restore(pending.snapshot);
+        _message =
+            'Последнее событие отменено. Состояние проверено на сервере.';
+        _needsSync = false;
+        _pendingUndo = null;
+      } else if (_sameEvents(ordered, pending.events)) {
+        _needsSync = false;
+        _pendingUndo = null;
+        _message =
+            pending.errorMessage ??
+            'Событие не отменено. Можно повторить отмену.';
+      } else {
+        _pendingUndo = null;
+        _requireReopen();
+      }
+    } catch (_) {
+      if (!ref.mounted) return;
+      _needsSync = true;
+      _message =
+          'Не удалось проверить результат отмены. Обновите состояние перед продолжением.';
+    }
+  }
+
+  List<Event> _orderedEvents(List<Event> events) {
+    final ordered = List<Event>.of(
+      events,
+    )..sort((a, b) => (a.sequenceNumber ?? 0).compareTo(b.sequenceNumber ?? 0));
+    if (ordered.any(
+      (event) => event.id == null || event.sequenceNumber == null,
+    )) {
+      throw StateError('Server event identity is missing');
+    }
+    return ordered;
+  }
+
+  bool _sameEvents(List<Event> a, List<Event> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      final left = a[i];
+      final right = b[i];
+      if (left.id != right.id ||
+          left.sequenceNumber != right.sequenceNumber ||
+          left.type != right.type ||
+          !left.occurredAt.isAtSameMomentAs(right.occurredAt) ||
+          _participants(left) != _participants(right)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  (String?, String?, String?) _participants(Event event) => switch (event) {
+    Event2 e => (e.participantId, e.toParticipantId, null),
+    Event1 e => (e.participantId, null, null),
+    TeamEvent e => (null, null, e.teamId),
+    MatchEvent() => (null, null, null),
+  };
+
+  void _restore(_EventSnapshot snapshot) {
+    _history.removeLast();
+    _knownEvents!.removeLast();
+    state = snapshot.before;
+    _updateTimer();
+    _invalidateMatch();
+  }
+
+  void _requireReopen() {
+    _needsSync = true;
+    _message =
+        'Журнал матча изменился или результат запроса неизвестен. Вернитесь к карточке матча и откройте его заново.';
+    _invalidateMatch();
+  }
+
+  void _invalidateMatch() {
+    ref.invalidate(matchDetailProvider);
+    ref.invalidate(matchesListProvider);
+  }
+
+  void _updateTimer() {
+    final timer = ref.read(matchTimerProvider(match.id).notifier);
+    if (state is GameStateBreak || state is GameStateFinished) {
+      timer.pause();
+    } else {
+      timer.start();
+    }
+  }
+
+  String _undoErrorMessage(Object error) {
+    if (error is DioException) {
+      switch (error.response?.statusCode) {
+        case 404:
+          return 'Нет событий для отмены или матч недоступен.';
+        case 409:
+          return 'Отмена невозможна в текущем состоянии матча.';
+      }
+    }
+    return 'Ответ на отмену не получен. Проверяем журнал событий.';
+  }
+
   void togglePlayer(String participantId, int teamIndex) {
+    if (!canInteract) return;
     final currentState = state;
     if (currentState is! GameStateLineupSelection) {
       log(
@@ -90,6 +312,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
   }
 
   void confirmLineupAndStartPull(String pullingTeamId) {
+    if (!canInteract) return;
     final currentState = state;
     if (currentState is! GameStateLineupSelection) {
       log(
@@ -139,6 +362,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
   }
 
   void selectPuller(MatchParticipant puller) {
+    if (!canInteract) return;
     final currentState = state;
     if (currentState is! GameStatePullerSelection) {
       log(
@@ -160,6 +384,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
   }
 
   void selectTaker(MatchParticipant taker) {
+    if (!canInteract) return;
     final currentState = state;
     if (currentState is! GameStateTakerSelection) {
       log(
@@ -182,6 +407,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
   }
 
   void passTo(MatchParticipant receiver) {
+    if (!canInteract) return;
     final currentState = state;
     if (currentState is! GameStatePlaying) {
       log(
@@ -209,6 +435,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
   }
 
   void turnover() {
+    if (!canInteract) return;
     final currentState = state;
     if (currentState is! GameStatePlaying) {
       log(
@@ -234,6 +461,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
   }
 
   void scoreGoal(MatchParticipant scorer) {
+    if (!canInteract) return;
     final currentState = state;
     if (currentState is! GameStatePlaying) {
       log(
@@ -290,41 +518,48 @@ class MatchGameNotifier extends _$MatchGameNotifier {
   }
 
   void startTimeout(MatchTeam team) {
-    final currentState = state;
-
-    if (currentState is! GameStatePlaying) {
-      log("Таймаут запрещен", name: runtimeType.toString());
+    if (!canInteract) return;
+    final current = state;
+    if (current is! GameStatePlaying || current.activeTeam.id != team.id) {
       return;
     }
-
-    if (currentState.activeTeam.id != team.id) {
-      log("Таймаут запрещен: диск у соперника", name: runtimeType.toString());
-      return;
-    }
-
     _recordAndSendEvent(TeamEvent.timeoutStart(teamId: team.id));
+    state = GameStateBreak(
+      previousState: current,
+      team: team,
+      startedAt: DateTime.now(),
+    );
+    _updateTimer();
   }
 
   void endTimeout(MatchTeam team) {
+    if (!canInteract) return;
+    final current = state;
+    if (current is! GameStateBreak || current.team?.id != team.id) return;
     _recordAndSendEvent(TeamEvent.timeoutEnd(teamId: team.id));
+    state = current.previousState;
+    _updateTimer();
   }
 
   void startHalftime() {
-    if (state is! GameStateLineupSelection) {
-      log(
-        "Халфтайм возможен только между очками",
-        name: runtimeType.toString(),
-      );
-      return;
-    }
+    if (!canInteract || state is! GameStateLineupSelection) return;
+    final current = state;
     _recordAndSendEvent(MatchEvent.halftimeStart());
+    state = GameStateBreak(previousState: current, startedAt: DateTime.now());
+    _updateTimer();
   }
 
   void endHalftime() {
+    if (!canInteract) return;
+    final current = state;
+    if (current is! GameStateBreak || current.team != null) return;
     _recordAndSendEvent(MatchEvent.halftimeEnd());
+    state = current.previousState;
+    _updateTimer();
   }
 
   void finishMatch() async {
+    if (!canInteract) return;
     final currentState = state;
     if (currentState is! GameStateLineupSelection) {
       log(
@@ -334,22 +569,47 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       return;
     }
 
+    final keepAlive = ref.keepAlive();
+    _isBusy = true;
+    ref.notifyListeners();
     try {
       await ref
           .read(matchesRepositoryProvider)
           .endMatch(currentState.match.id, DateTime.now());
 
-      ref.invalidate(matchDetailProvider);
-      ref.invalidate(matchesListProvider);
-
-      state = GameStateFinished(match: match);
+      if (!ref.mounted) return;
+      _invalidateMatch();
+      _history.clear();
+      state = GameStateFinished(match: currentState.match);
+      _updateTimer();
     } catch (e, st) {
+      if (!ref.mounted) return;
+      _message = 'Не удалось завершить матч. Попробуйте ещё раз.';
       log(
         "Error while finishMatch",
         error: e,
         stackTrace: st,
         name: runtimeType.toString(),
       );
+    } finally {
+      if (ref.mounted) {
+        _isBusy = false;
+        ref.notifyListeners();
+      }
+      keepAlive.close();
     }
   }
+}
+
+class _EventSnapshot {
+  const _EventSnapshot({required this.event, required this.before});
+  final Event event;
+  final MatchGameState before;
+}
+
+class _PendingUndo {
+  _PendingUndo({required this.snapshot, required this.events});
+  final _EventSnapshot snapshot;
+  final List<Event> events;
+  String? errorMessage;
 }

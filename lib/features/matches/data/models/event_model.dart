@@ -5,6 +5,10 @@ part 'event_model.g.dart';
 
 @JsonSerializable(createFactory: false)
 class EventModel {
+  @JsonKey(includeToJson: false)
+  final String? id;
+  @JsonKey(includeToJson: false)
+  final int? sequenceNumber;
   final DateTime occurredAt;
   final String? participantId;
   final String? toParticipantId;
@@ -12,6 +16,8 @@ class EventModel {
   final EventType type;
 
   const EventModel({
+    this.id,
+    this.sequenceNumber,
     required this.occurredAt,
     this.participantId,
     this.toParticipantId,
@@ -23,6 +29,8 @@ class EventModel {
     final type = $enumDecode(_$EventTypeEnumMap, json['type']);
 
     return EventModel(
+      id: json['id'] as String?,
+      sequenceNumber: (json['sequenceNumber'] as num?)?.toInt(),
       occurredAt: DateTime.parse(json['occurredAt'] as String).toLocal(),
       type: type,
       teamId: json['teamId'] as String?,
@@ -74,10 +82,18 @@ class EventModel {
 
   Event toEntity() {
     if (teamId != null) {
-      return TeamEvent(occurredAt: occurredAt, type: type, teamId: teamId!);
+      return TeamEvent(
+        id: id,
+        sequenceNumber: sequenceNumber,
+        occurredAt: occurredAt,
+        type: type,
+        teamId: teamId!,
+      );
     }
     if (toParticipantId != null) {
       return Event2(
+        id: id,
+        sequenceNumber: sequenceNumber,
         occurredAt: occurredAt,
         type: type,
         participantId: participantId!,
@@ -85,9 +101,20 @@ class EventModel {
       );
     }
     if (participantId != null) {
-      return Event1(occurredAt: occurredAt, type: type, participantId: participantId!);
+      return Event1(
+        id: id,
+        sequenceNumber: sequenceNumber,
+        occurredAt: occurredAt,
+        type: type,
+        participantId: participantId!,
+      );
     }
 
-    return MatchEvent(occurredAt: occurredAt, type: type);
+    return MatchEvent(
+      id: id,
+      sequenceNumber: sequenceNumber,
+      occurredAt: occurredAt,
+      type: type,
+    );
   }
 }

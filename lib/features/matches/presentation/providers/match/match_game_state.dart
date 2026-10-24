@@ -95,3 +95,16 @@ class GameStatePlaying extends GameStateWithLineup {
     required this.currentThrower,
   });
 }
+
+/// A break keeps the exact gameplay state to resume (or restore through undo).
+class GameStateBreak extends MatchGameState {
+  final MatchGameState previousState;
+  final MatchTeam? team;
+  final DateTime startedAt;
+
+  GameStateBreak({
+    required this.previousState,
+    this.team,
+    required this.startedAt,
+  }) : super(match: previousState.match);
+}

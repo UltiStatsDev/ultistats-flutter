@@ -18,10 +18,11 @@ class MatchDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     ref.listen(matchDetailProvider(matchId), (previous, next) {
       if (next is MatchDetailLoaded &&
-          next.match.status == MatchStatus.inProgress) {
+          next.match.status == MatchStatus.inProgress &&
+          ModalRoute.of(context)?.isCurrent == true &&
+          context.router.root.topRoute.name == MatchDetailRoute.name) {
         context.router.push(MatchRoute(match: next.match));
       }
     });
@@ -36,18 +37,18 @@ class MatchDetailScreen extends ConsumerWidget {
           child: switch (state) {
             MatchDetailInitial() || MatchDetailLoading() =>
               const LoadingMatchDetailWidget(key: ValueKey(1)),
-            MatchDetailError(:final exception, :final stackTrace) => ErrorScreen(
+            MatchDetailError(:final exception, :final stackTrace) =>
+              ErrorScreen(
                 key: const ValueKey(2),
                 exception: exception,
                 stackTrace: stackTrace,
-                onRetry: () => ref
-                    .read(matchDetailProvider(matchId).notifier)
-                    .refresh(),
+                onRetry: () =>
+                    ref.read(matchDetailProvider(matchId).notifier).refresh(),
               ),
             MatchDetailLoaded() => MatchDetailWidget(
-                key: const ValueKey(3),
-                state: state,
-              ),
+              key: const ValueKey(3),
+              state: state,
+            ),
           },
         ),
       ),
