@@ -339,11 +339,16 @@ class MatchGameNotifier extends _$MatchGameNotifier {
           .read(matchesRepositoryProvider)
           .endMatch(currentState.match.id, DateTime.now());
 
-      ref.invalidate(matchDetailProvider);
-      ref.invalidate(matchesListProvider);
+      print('DEBUG finishMatch: endMatch done');
 
       state = GameStateFinished(match: match);
+
+      print('DEBUG finishMatch: state assigned');
+
+      ref.invalidate(matchDetailProvider);
+      ref.invalidate(matchesListProvider);
     } catch (e, st) {
+      print('DEBUG finishMatch: ERROR $e');
       log(
         "Error while finishMatch",
         error: e,
