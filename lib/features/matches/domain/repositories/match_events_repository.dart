@@ -5,7 +5,9 @@ import 'package:ultistats/features/matches/domain/params/update_event_params.dar
 abstract interface class MatchEventsRepository {
   Future<List<Event>> getEvents(String matchId);
 
-  Future<void> addEvent(CreateEventParams params);
+  Future<Event> addEvent(CreateEventParams params);
+
+  Future<Event> undoLastEvent(String matchId);
 
   Future<void> updateEvent(UpdateEventParams params);
 

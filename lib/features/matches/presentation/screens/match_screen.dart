@@ -9,6 +9,7 @@ import 'package:ultistats/features/matches/presentation/providers/match/match_ga
 import 'package:ultistats/features/matches/presentation/widgets/match/halftime_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/lineup_selection_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/loading_widget.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/match_undo_bar.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/playing_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/puller_selection_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/taker_selection_widget.dart';
@@ -25,9 +26,10 @@ class MatchScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final state = ref.watch(matchGameProvider(match));
+    final notifier = ref.read(matchGameProvider(match).notifier);
 
     ref.listen(matchGameProvider(match), (previous, next) {
-      if (next is GameStateFinished) {
+      if (next is GameStateFinished && previous is! GameStateFinished) {
         context.router.pop();
       }
     });
@@ -36,7 +38,11 @@ class MatchScreen extends ConsumerWidget {
     final team2 = state.match.teams[1];
 
     return PopScope(
-      canPop: state is! GameStateTimeout && state is! GameStateHalftime,
+      canPop:
+          state is GameStateFinished ||
+          (!notifier.isBusy &&
+              (notifier.requiresReload ||
+                  (state is! GameStateTimeout && state is! GameStateHalftime))),
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: ScreenWrapper(
@@ -72,9 +78,23 @@ class MatchScreen extends ConsumerWidget {
                 ],
               ),
               SizedBox(height: 4),
-              Expanded(child: _buildBody(state)),
-
-              TimerWidget(match: match),
+              MatchUndoBar(match: match),
+              Expanded(
+                child: ExcludeFocus(
+                  excluding: !notifier.canInteract,
+                  child: AbsorbPointer(
+                    absorbing: !notifier.canInteract,
+                    child: _buildBody(state),
+                  ),
+                ),
+              ),
+              ExcludeFocus(
+                excluding: !notifier.canInteract,
+                child: AbsorbPointer(
+                  absorbing: !notifier.canInteract,
+                  child: TimerWidget(match: match),
+                ),
+              ),
             ],
           ),
         ),

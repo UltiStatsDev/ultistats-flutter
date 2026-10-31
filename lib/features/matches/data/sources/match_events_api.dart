@@ -18,6 +18,9 @@ abstract class EventsApi {
     @Body() EventModel body,
   );
 
+  @POST('/matches/{matchId}/events/undo')
+  Future<EventModel> undoLastEvent(@Path('matchId') String matchId);
+
   @GET('/matches/{matchId}/events/{eventId}')
   Future<EventModel> getEvent(
     @Path('matchId') String matchId,

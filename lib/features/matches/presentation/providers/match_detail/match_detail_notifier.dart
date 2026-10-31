@@ -20,8 +20,10 @@ class MatchDetailNotifier extends _$MatchDetailNotifier {
     try {
       final repository = ref.read(matchesRepositoryProvider);
       final match = await repository.getById(id);
+      if (!ref.mounted) return;
       state = MatchDetailLoaded(match);
     } catch (e, st) {
+      if (!ref.mounted) return;
       log("Error while _loadMatch", error: e, stackTrace: st);
       state = MatchDetailError(e, st);
     }
