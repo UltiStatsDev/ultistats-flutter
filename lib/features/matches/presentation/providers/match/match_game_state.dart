@@ -95,3 +95,21 @@ class GameStatePlaying extends GameStateWithLineup {
     required this.currentThrower,
   });
 }
+
+class GameStateTimeout extends MatchGameState {
+  final GameStatePlaying resumeState;
+  final DateTime startedAt;
+
+  GameStateTimeout({required this.resumeState, required this.startedAt})
+    : super(match: resumeState.match);
+
+  MatchTeam get team => resumeState.activeTeam;
+}
+
+class GameStateHalftime extends MatchGameState {
+  final GameStateLineupSelection resumeState;
+  final DateTime startedAt;
+
+  GameStateHalftime({required this.resumeState, required this.startedAt})
+    : super(match: resumeState.match);
+}
