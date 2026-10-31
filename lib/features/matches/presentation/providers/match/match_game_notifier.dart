@@ -28,9 +28,9 @@ class MatchGameNotifier extends _$MatchGameNotifier {
         : Duration.zero;
 
     Future.microtask(() {
-      ref.read(matchTimerProvider(match.id).notifier).start(
-        initialDuration: initialElapsed,
-      );
+      ref
+          .read(matchTimerProvider(match.id).notifier)
+          .start(initialDuration: initialElapsed);
     });
 
     return GameStateLineupSelection(match: match);
@@ -302,26 +302,53 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       return;
     }
 
-    _recordAndSendEvent(TeamEvent.timeoutStart(teamId: team.id));
+    final event = TeamEvent.timeoutStart(teamId: team.id);
+    ref.read(matchTimerProvider(match.id).notifier).pause();
+    state = GameStateTimeout(
+      resumeState: currentState,
+      startedAt: event.occurredAt,
+    );
+    _recordAndSendEvent(event);
   }
 
   void endTimeout(MatchTeam team) {
-    _recordAndSendEvent(TeamEvent.timeoutEnd(teamId: team.id));
+    final currentState = state;
+    if (currentState is! GameStateTimeout || currentState.team.id != team.id) {
+      return;
+    }
+
+    _recordAndSendEvent(TeamEvent.timeoutEnd(teamId: currentState.team.id));
+    state = currentState.resumeState;
+    ref.read(matchTimerProvider(match.id).notifier).start();
   }
 
   void startHalftime() {
-    if (state is! GameStateLineupSelection) {
+    final currentState = state;
+    if (currentState is! GameStateLineupSelection) {
       log(
         "Халфтайм возможен только между очками",
         name: runtimeType.toString(),
       );
       return;
     }
-    _recordAndSendEvent(MatchEvent.halftimeStart());
+    final event = MatchEvent.halftimeStart();
+    ref.read(matchTimerProvider(match.id).notifier).pause();
+    state = GameStateHalftime(
+      resumeState: currentState,
+      startedAt: event.occurredAt,
+    );
+    _recordAndSendEvent(event);
   }
 
   void endHalftime() {
+    final currentState = state;
+    if (currentState is! GameStateHalftime) {
+      return;
+    }
+
     _recordAndSendEvent(MatchEvent.halftimeEnd());
+    state = currentState.resumeState;
+    ref.read(matchTimerProvider(match.id).notifier).start();
   }
 
   void finishMatch() async {

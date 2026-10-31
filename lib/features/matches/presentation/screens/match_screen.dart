@@ -6,12 +6,14 @@ import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/halftime_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/lineup_selection_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/loading_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/playing_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/puller_selection_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/taker_selection_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/timer/timer_widget.dart';
+import 'package:ultistats/features/matches/presentation/widgets/match/timeout_widget.dart';
 
 @RoutePage()
 class MatchScreen extends ConsumerWidget {
@@ -33,45 +35,48 @@ class MatchScreen extends ConsumerWidget {
     final team1 = state.match.teams[0];
     final team2 = state.match.teams[1];
 
-    return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      body: ScreenWrapper(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    team1.name,
-                    textAlign: TextAlign.end,
-                    style: theme.textTheme.titleMedium,
+    return PopScope(
+      canPop: state is! GameStateTimeout && state is! GameStateHalftime,
+      child: Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        body: ScreenWrapper(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      team1.name,
+                      textAlign: TextAlign.end,
+                      style: theme.textTheme.titleMedium,
+                    ),
                   ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    "${team1.score}:${team2.score}",
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleMedium,
+                  SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      "${team1.score}:${team2.score}",
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleMedium,
+                    ),
                   ),
-                ),
-                SizedBox(width: 8),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    team2.name,
-                    textAlign: TextAlign.start,
-                    style: theme.textTheme.titleMedium,
+                  SizedBox(width: 8),
+                  Expanded(
+                    flex: 2,
+                    child: Text(
+                      team2.name,
+                      textAlign: TextAlign.start,
+                      style: theme.textTheme.titleMedium,
+                    ),
                   ),
-                ),
-              ],
-            ),
-            SizedBox(height: 4),
-            Expanded(child: _buildBody(state)),
+                ],
+              ),
+              SizedBox(height: 4),
+              Expanded(child: _buildBody(state)),
 
-            TimerWidget(match: match),
-          ],
+              TimerWidget(match: match),
+            ],
+          ),
         ),
       ),
     );
@@ -87,6 +92,8 @@ class MatchScreen extends ConsumerWidget {
       GameStatePullerSelection() => PullerSelectionWidget(state: state),
       GameStateTakerSelection() => TakerSelectionWidget(state: state),
       GameStatePlaying() => PlayingWidget(state: state),
+      GameStateTimeout() => TimeoutWidget(state: state),
+      GameStateHalftime() => HalftimeWidget(state: state),
       GameStateFinished() => LoadingWidget(),
       _ => throw UnimplementedError(),
     };
