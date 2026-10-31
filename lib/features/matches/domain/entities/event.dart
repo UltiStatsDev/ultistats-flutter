@@ -22,15 +22,26 @@ enum EventType {
 }
 
 sealed class Event {
+  final String? id;
+  final int? sequenceNumber;
   final DateTime occurredAt;
   final EventType type;
 
-  Event({DateTime? occurredAt, required this.type})
-    : occurredAt = occurredAt ?? DateTime.now();
+  Event({
+    this.id,
+    this.sequenceNumber,
+    DateTime? occurredAt,
+    required this.type,
+  }) : occurredAt = occurredAt ?? DateTime.now();
 }
 
 class MatchEvent extends Event {
-  MatchEvent({super.occurredAt, required super.type});
+  MatchEvent({
+    super.id,
+    super.sequenceNumber,
+    super.occurredAt,
+    required super.type,
+  });
 
   MatchEvent.halftimeStart({DateTime? occurredAt})
     : this(occurredAt: occurredAt, type: EventType.HALFTIME_START);
@@ -42,7 +53,13 @@ class MatchEvent extends Event {
 class Event1 extends Event {
   final String participantId;
 
-  Event1({super.occurredAt, required super.type, required this.participantId});
+  Event1({
+    super.id,
+    super.sequenceNumber,
+    super.occurredAt,
+    required super.type,
+    required this.participantId,
+  });
 
   Event1.incompletePass({DateTime? occurredAt, required String participantId})
     : this(
@@ -84,6 +101,8 @@ class Event2 extends Event1 {
   final String toParticipantId;
 
   Event2({
+    super.id,
+    super.sequenceNumber,
     required super.occurredAt,
     required super.type,
     required super.participantId,
@@ -127,7 +146,13 @@ class Event2 extends Event1 {
 class TeamEvent extends Event {
   final String teamId;
 
-  TeamEvent({super.occurredAt, required super.type, required this.teamId});
+  TeamEvent({
+    super.id,
+    super.sequenceNumber,
+    super.occurredAt,
+    required super.type,
+    required this.teamId,
+  });
 
   TeamEvent.timeoutStart({DateTime? occurredAt, required String teamId})
     : this(
@@ -137,9 +162,5 @@ class TeamEvent extends Event {
       );
 
   TeamEvent.timeoutEnd({DateTime? occurredAt, required String teamId})
-      : this(
-    occurredAt: occurredAt,
-    teamId: teamId,
-    type: EventType.TIMEOUT_END,
-  );
+    : this(occurredAt: occurredAt, teamId: teamId, type: EventType.TIMEOUT_END);
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/features/matches/data/models/event_model.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/matches/domain/entities/event.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
@@ -18,15 +19,15 @@ import 'package:ultistats/features/matches/presentation/widgets/match/common/pau
 
 void main() {
   _testMatch(
-    'таймаут останавливает игру и возвращает прежнего владельца диска',
+    'таймаут сохраняет владельца диска и не останавливает время матча',
     (tester, fixture) async {
-      fixture.startPlaying();
+      await fixture.startPlaying(tester);
       final game = fixture.game;
       final before = fixture.state as GameStatePlaying;
       game.startTimeout(before.activeTeam);
 
       expect(fixture.state, isNot(isA<GameStatePlaying>()));
-      expect(fixture.timer.isRunning, isFalse);
+      expect(fixture.timer.isRunning, isTrue);
       final paused = fixture.state;
       final elapsed = fixture.timer.elapsed;
       game.startTimeout(before.activeTeam);
@@ -38,7 +39,7 @@ void main() {
       game.scoreGoal(before.currentThrower);
       expect(fixture.state, same(paused));
       await tester.pump(const Duration(seconds: 5));
-      expect(fixture.timer.elapsed, elapsed);
+      expect(fixture.timer.elapsed, elapsed + const Duration(seconds: 5));
 
       game.endTimeout(before.activeTeam);
       game.endTimeout(before.activeTeam);
@@ -46,7 +47,7 @@ void main() {
       expect(fixture.state, same(before));
       expect(fixture.timer.isRunning, isTrue);
       await tester.pump(const Duration(seconds: 1));
-      expect(fixture.timer.elapsed, elapsed + const Duration(seconds: 1));
+      expect(fixture.timer.elapsed, elapsed + const Duration(seconds: 6));
       expect(fixture.pauseEvents, [
         EventType.TIMEOUT_START,
         EventType.TIMEOUT_END,
@@ -56,7 +57,7 @@ void main() {
     },
   );
 
-  _testMatch('халфтайм сохраняет выбранный состав и возобновляет таймер', (
+  _testMatch('халфтайм сохраняет состав и не останавливает время матча', (
     tester,
     fixture,
   ) async {
@@ -65,7 +66,7 @@ void main() {
     final before = fixture.state;
     fixture.game.startHalftime();
     expect(fixture.state, isNot(isA<GameStateLineupSelection>()));
-    expect(fixture.timer.isRunning, isFalse);
+    expect(fixture.timer.isRunning, isTrue);
     final paused = fixture.state;
     final elapsed = fixture.timer.elapsed;
     fixture.game.startHalftime();
@@ -76,7 +77,7 @@ void main() {
     fixture.game.finishMatch();
     expect(fixture.state, same(paused));
     await tester.pump(const Duration(seconds: 5));
-    expect(fixture.timer.elapsed, elapsed);
+    expect(fixture.timer.elapsed, elapsed + const Duration(seconds: 5));
 
     fixture.game.endHalftime();
     fixture.game.endHalftime();
@@ -102,7 +103,7 @@ void main() {
     expect(fixture.pauseEvents, isEmpty);
     expect(fixture.timer.isRunning, isTrue);
 
-    fixture.startPlaying();
+    await fixture.startPlaying(tester);
     final playing = fixture.state;
     fixture.game.startTimeout(fixture.match.teams[0]);
     fixture.game.startHalftime();
@@ -115,7 +116,7 @@ void main() {
     tester,
     fixture,
   ) async {
-    fixture.startPlaying();
+    await fixture.startPlaying(tester);
     final before = fixture.state;
     await fixture.showScreen(tester);
     await tester.tap(find.text('T'));
@@ -127,7 +128,7 @@ void main() {
     expect(find.text('0:0'), findsOneWidget);
     expect(find.text('ВРЕМЯ МАТЧА'), findsOneWidget);
     expect(find.text('DROP'), findsNothing);
-    expect(fixture.timer.isRunning, isFalse);
+    expect(fixture.timer.isRunning, isTrue);
     expect(
       tester
           .widget<OutlinedButton>(find.widgetWithText(OutlinedButton, 'T'))
@@ -167,7 +168,7 @@ void main() {
     expect(find.text('Между половинами'), findsOneWidget);
     expect(find.text('0:0'), findsOneWidget);
     expect(find.text('Окончить матч'), findsNothing);
-    expect(fixture.timer.isRunning, isFalse);
+    expect(fixture.timer.isRunning, isTrue);
     expect(
       tester.widget<PopScope>(find.byType(PopScope).first).canPop,
       isFalse,
@@ -205,17 +206,18 @@ void main() {
     await navigatorKey.currentState!.maybePop();
     await tester.pumpAndSettle();
     expect(find.text('ПЕРЕРЫВ'), findsOneWidget);
-    expect(fixture.timer.isRunning, isFalse);
+    expect(fixture.timer.isRunning, isTrue);
     expect(fixture.pauseEvents, [EventType.HALFTIME_START]);
 
     fixture.game.endHalftime();
-    fixture.startPlaying();
+    await tester.pump();
+    await fixture.startPlaying(tester);
     fixture.game.startTimeout(fixture.match.teams[1]);
     await tester.pump();
     await navigatorKey.currentState!.maybePop();
     await tester.pumpAndSettle();
     expect(find.text('ТАЙМАУТ'), findsOneWidget);
-    expect(fixture.timer.isRunning, isFalse);
+    expect(fixture.timer.isRunning, isTrue);
     expect(fixture.pauseEvents, [
       EventType.HALFTIME_START,
       EventType.HALFTIME_END,
@@ -239,7 +241,7 @@ void main() {
         addTearDown(tester.view.resetPhysicalSize);
         addTearDown(tester.view.resetDevicePixelRatio);
         if (timeout) {
-          fixture.startPlaying();
+          await fixture.startPlaying(tester);
           fixture.game.startTimeout(fixture.match.teams[1]);
         } else {
           fixture.game.startHalftime();
@@ -397,7 +399,7 @@ class _Fixture {
     return fixture;
   }
 
-  void startPlaying() {
+  Future<void> startPlaying(WidgetTester tester) async {
     for (final id in ['a1', 'a2']) {
       game.togglePlayer(id, 0);
     }
@@ -406,8 +408,11 @@ class _Fixture {
     }
     game.confirmLineupAndStartPull('team1');
     game.selectPuller(match.teams[0].participants.first);
+    await tester.pump();
     game.selectTaker(match.teams[1].participants.first);
+    await tester.pump();
     game.passTo(match.teams[1].participants[1]);
+    await tester.pump();
   }
 
   Future<void> showScreen(WidgetTester tester) => tester.pumpWidget(
@@ -437,8 +442,18 @@ class _RecordingEventsRepository implements MatchEventsRepository {
   final events = <Event>[];
 
   @override
-  Future<void> addEvent(CreateEventParams params) async =>
-      events.add(params.event);
+  Future<Event> addEvent(CreateEventParams params) async {
+    final stored = EventModel.fromJson({
+      ...EventModel.fromEntity(params.event).toJson(),
+      'id': 'event-${events.length + 1}',
+      'sequenceNumber': events.length + 1,
+    }).toEntity();
+    events.add(stored);
+    return stored;
+  }
+
+  @override
+  Future<Event> undoLastEvent(String matchId) async => events.removeLast();
 
   @override
   Future<List<Event>> getEvents(String matchId) async => List.of(events);
