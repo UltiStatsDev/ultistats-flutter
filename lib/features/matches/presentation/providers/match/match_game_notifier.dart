@@ -347,7 +347,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
     state = currentState.resumeState;
   }
 
-  void finishMatch() async {
+  Future<void> finishMatch() async {
     final currentState = state;
     if (currentState is! GameStateLineupSelection) {
       log(
@@ -362,7 +362,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
           .read(matchesRepositoryProvider)
           .endMatch(currentState.match.id, DateTime.now());
 
-      state = GameStateFinished(match: match);
+      state = GameStateFinished(match: currentState.match);
 
       ref.invalidate(matchDetailProvider);
       ref.invalidate(matchesListProvider);
