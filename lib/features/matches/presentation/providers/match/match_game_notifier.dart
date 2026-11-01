@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/matches/domain/entities/event.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
-import 'package:ultistats/features/matches/domain/entities/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/game/match_game_state.dart';
 import 'package:ultistats/features/matches/domain/game/match_action.dart';
 import 'package:ultistats/features/matches/domain/game/match_game_engine.dart';
 import 'package:ultistats/features/matches/domain/params/create_event_params.dart';

@@ -4,7 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/widgets/error_screen.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
-import 'package:ultistats/features/matches/domain/entities/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/game/match_game_state.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/halftime_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/lineup_selection_widget.dart';

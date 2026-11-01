@@ -1,5 +1,5 @@
 import 'package:ultistats/features/matches/domain/entities/event.dart';
-import 'package:ultistats/features/matches/domain/entities/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/game/match_game_state.dart';
 import 'package:ultistats/features/matches/domain/entities/match_participant.dart';
 import 'package:ultistats/features/matches/domain/game/match_action.dart';
 

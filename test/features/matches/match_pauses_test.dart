@@ -11,7 +11,7 @@ import 'package:ultistats/features/matches/domain/params/create_event_params.dar
 import 'package:ultistats/features/matches/domain/params/update_event_params.dart';
 import 'package:ultistats/features/matches/domain/repositories/match_events_repository.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
-import 'package:ultistats/features/matches/domain/entities/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/game/match_game_state.dart';
 import 'package:ultistats/features/matches/domain/game/match_action.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_timer_notifier.dart';
 import 'package:ultistats/features/matches/presentation/screens/match_screen.dart';
