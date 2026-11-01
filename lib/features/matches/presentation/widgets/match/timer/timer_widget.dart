@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
+import 'package:ultistats/features/matches/domain/entities/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/game/match_action.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_timer_notifier.dart';
 
 class TimerWidget extends ConsumerWidget {
@@ -65,7 +66,9 @@ class TimerWidget extends ConsumerWidget {
             label: "T",
             onPressed: gameState is GameStatePlaying
                 ? () {
-                    gameNotifier.startTimeout(gameState.activeTeam);
+                    gameNotifier.dispatch(
+                      StartTimeoutAction(team: gameState.activeTeam),
+                    );
                   }
                 : null,
           ),
@@ -74,7 +77,7 @@ class TimerWidget extends ConsumerWidget {
             label: "HT",
             onPressed: gameState is GameStateLineupSelection
                 ? () {
-                    gameNotifier.startHalftime();
+                    gameNotifier.dispatch(const StartHalftimeAction());
                   }
                 : null,
           ),

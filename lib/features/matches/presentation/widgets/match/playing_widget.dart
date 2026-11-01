@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ultistats/features/matches/domain/entities/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/game/match_action.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/common/active_team_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/common/event_button.dart';
 
@@ -44,17 +45,20 @@ class PlayingWidget extends ConsumerWidget {
                   ),
                   if (isThrower)
                     EventButton(
-                      onPressed: () => notifier.turnover(),
+                      onPressed: () =>
+                          notifier.dispatch(const DeclareTurnoverAction()),
                       text: "DROP",
                     )
                   else ...[
                     EventButton(
-                      onPressed: () => notifier.passTo(player),
+                      onPressed: () =>
+                          notifier.dispatch(PassToAction(player)),
                       text: "PASS",
                     ),
                     const SizedBox(width: 8),
                     EventButton(
-                      onPressed: () => notifier.scoreGoal(player),
+                      onPressed: () =>
+                          notifier.dispatch(ScoreGoalAction(player)),
                       text: "GOAL",
                     ),
                   ],

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
+import 'package:ultistats/features/matches/domain/entities/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/game/match_action.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/common/active_team_widget.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/common/event_button.dart';
 
@@ -38,7 +39,7 @@ class PullerSelectionWidget extends ConsumerWidget {
                   ),
                   EventButton(
                     onPressed: () {
-                      notifier.selectPuller(player);
+                      notifier.dispatch(SelectPullerAction(player));
                     },
                     text: "PULL",
                   )

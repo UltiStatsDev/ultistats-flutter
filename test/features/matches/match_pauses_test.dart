@@ -11,7 +11,8 @@ import 'package:ultistats/features/matches/domain/params/create_event_params.dar
 import 'package:ultistats/features/matches/domain/params/update_event_params.dart';
 import 'package:ultistats/features/matches/domain/repositories/match_events_repository.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/entities/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/game/match_action.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_timer_notifier.dart';
 import 'package:ultistats/features/matches/presentation/screens/match_screen.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/common/pause_widget.dart';
@@ -23,25 +24,25 @@ void main() {
       fixture.startPlaying();
       final game = fixture.game;
       final before = fixture.state as GameStatePlaying;
-      game.startTimeout(before.activeTeam);
+      game.dispatch(StartTimeoutAction(team: before.activeTeam));
 
       expect(fixture.state, isNot(isA<GameStatePlaying>()));
       expect(fixture.timer.isRunning, isFalse);
       final paused = fixture.state;
       final elapsed = fixture.timer.elapsed;
-      game.startTimeout(before.activeTeam);
-      game.startHalftime();
-      game.endHalftime();
-      game.endTimeout(before.opponentTeam);
-      game.passTo(before.activeTeamLineup.last);
-      game.turnover();
-      game.scoreGoal(before.currentThrower);
+      game.dispatch(StartTimeoutAction(team: before.activeTeam));
+      game.dispatch(const StartHalftimeAction());
+      game.dispatch(const EndHalftimeAction());
+      game.dispatch(EndTimeoutAction(team: before.opponentTeam));
+      game.dispatch(PassToAction(before.activeTeamLineup.last));
+      game.dispatch(const DeclareTurnoverAction());
+      game.dispatch(ScoreGoalAction(before.currentThrower));
       expect(fixture.state, same(paused));
       await tester.pump(const Duration(seconds: 5));
       expect(fixture.timer.elapsed, elapsed);
 
-      game.endTimeout(before.activeTeam);
-      game.endTimeout(before.activeTeam);
+      game.dispatch(EndTimeoutAction(team: before.activeTeam));
+      game.dispatch(EndTimeoutAction(team: before.activeTeam));
       await tester.pump();
       expect(fixture.state, same(before));
       expect(fixture.timer.isRunning, isTrue);
@@ -60,26 +61,26 @@ void main() {
     tester,
     fixture,
   ) async {
-    fixture.game.togglePlayer('a1', 0);
-    fixture.game.togglePlayer('b2', 1);
+    fixture.game.dispatch(TogglePlayerAction(participantId: 'a1', teamIndex: 0));
+    fixture.game.dispatch(TogglePlayerAction(participantId: 'b2', teamIndex: 1));
     final before = fixture.state;
-    fixture.game.startHalftime();
+    fixture.game.dispatch(const StartHalftimeAction());
     expect(fixture.state, isNot(isA<GameStateLineupSelection>()));
     expect(fixture.timer.isRunning, isFalse);
     final paused = fixture.state;
     final elapsed = fixture.timer.elapsed;
-    fixture.game.startHalftime();
-    fixture.game.startTimeout(fixture.match.teams[0]);
-    fixture.game.endTimeout(fixture.match.teams[0]);
-    fixture.game.togglePlayer('a2', 0);
-    fixture.game.confirmLineupAndStartPull('team1');
+    fixture.game.dispatch(const StartHalftimeAction());
+    fixture.game.dispatch(StartTimeoutAction(team: fixture.match.teams[0]));
+    fixture.game.dispatch(EndTimeoutAction(team: fixture.match.teams[0]));
+    fixture.game.dispatch(TogglePlayerAction(participantId: 'a2', teamIndex: 0));
+    fixture.game.dispatch(ConfirmLineupAction(pullingTeamId: 'team1'));
     fixture.game.finishMatch();
     expect(fixture.state, same(paused));
     await tester.pump(const Duration(seconds: 5));
     expect(fixture.timer.elapsed, elapsed);
 
-    fixture.game.endHalftime();
-    fixture.game.endHalftime();
+    fixture.game.dispatch(const EndHalftimeAction());
+    fixture.game.dispatch(const EndHalftimeAction());
     await tester.pump();
     expect(fixture.state, same(before));
     expect(fixture.timer.isRunning, isTrue);
@@ -94,9 +95,9 @@ void main() {
     fixture,
   ) async {
     final before = fixture.state;
-    fixture.game.startTimeout(fixture.match.teams[0]);
-    fixture.game.endTimeout(fixture.match.teams[0]);
-    fixture.game.endHalftime();
+    fixture.game.dispatch(StartTimeoutAction(team: fixture.match.teams[0]));
+    fixture.game.dispatch(EndTimeoutAction(team: fixture.match.teams[0]));
+    fixture.game.dispatch(const EndHalftimeAction());
     await tester.pump();
     expect(fixture.state, same(before));
     expect(fixture.pauseEvents, isEmpty);
@@ -104,8 +105,8 @@ void main() {
 
     fixture.startPlaying();
     final playing = fixture.state;
-    fixture.game.startTimeout(fixture.match.teams[0]);
-    fixture.game.startHalftime();
+    fixture.game.dispatch(StartTimeoutAction(team: fixture.match.teams[0]));
+    fixture.game.dispatch(const StartHalftimeAction());
     await tester.pump();
     expect(fixture.state, same(playing));
     expect(fixture.pauseEvents, isEmpty);
@@ -200,7 +201,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    fixture.game.startHalftime();
+    fixture.game.dispatch(const StartHalftimeAction());
     await tester.pump();
     await navigatorKey.currentState!.maybePop();
     await tester.pumpAndSettle();
@@ -208,9 +209,9 @@ void main() {
     expect(fixture.timer.isRunning, isFalse);
     expect(fixture.pauseEvents, [EventType.HALFTIME_START]);
 
-    fixture.game.endHalftime();
+    fixture.game.dispatch(const EndHalftimeAction());
     fixture.startPlaying();
-    fixture.game.startTimeout(fixture.match.teams[1]);
+    fixture.game.dispatch(StartTimeoutAction(team: fixture.match.teams[1]));
     await tester.pump();
     await navigatorKey.currentState!.maybePop();
     await tester.pumpAndSettle();
@@ -222,7 +223,7 @@ void main() {
       EventType.TIMEOUT_START,
     ]);
 
-    fixture.game.endTimeout(fixture.match.teams[1]);
+    fixture.game.dispatch(EndTimeoutAction(team: fixture.match.teams[1]));
     await tester.pump();
     await navigatorKey.currentState!.maybePop();
     await tester.pumpAndSettle();
@@ -240,9 +241,9 @@ void main() {
         addTearDown(tester.view.resetDevicePixelRatio);
         if (timeout) {
           fixture.startPlaying();
-          fixture.game.startTimeout(fixture.match.teams[1]);
+          fixture.game.dispatch(StartTimeoutAction(team: fixture.match.teams[1]));
         } else {
-          fixture.game.startHalftime();
+          fixture.game.dispatch(const StartHalftimeAction());
         }
         await fixture.showScreen(tester);
         final finish = find.text(
@@ -399,15 +400,15 @@ class _Fixture {
 
   void startPlaying() {
     for (final id in ['a1', 'a2']) {
-      game.togglePlayer(id, 0);
+      game.dispatch(TogglePlayerAction(participantId: id, teamIndex: 0));
     }
     for (final id in ['b1', 'b2']) {
-      game.togglePlayer(id, 1);
+      game.dispatch(TogglePlayerAction(participantId: id, teamIndex: 1));
     }
-    game.confirmLineupAndStartPull('team1');
-    game.selectPuller(match.teams[0].participants.first);
-    game.selectTaker(match.teams[1].participants.first);
-    game.passTo(match.teams[1].participants[1]);
+    game.dispatch(ConfirmLineupAction(pullingTeamId: 'team1'));
+    game.dispatch(SelectPullerAction(match.teams[0].participants.first));
+    game.dispatch(SelectTakerAction(match.teams[1].participants.first));
+    game.dispatch(PassToAction(match.teams[1].participants[1]));
   }
 
   Future<void> showScreen(WidgetTester tester) => tester.pumpWidget(

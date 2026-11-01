@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ultistats/features/matches/domain/entities/match_game_state.dart';
 import 'package:ultistats/features/matches/domain/entities/match_participant.dart';
 import 'package:ultistats/features/matches/domain/entities/match_team.dart';
+import 'package:ultistats/features/matches/domain/game/match_action.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/common/player_select_card.dart';
 
 class LineupSelectionWidget extends ConsumerWidget {
@@ -127,8 +128,12 @@ class LineupSelectionWidget extends ConsumerWidget {
             return PlayerSelectCard(
               player: participant,
               isSelected: isSelected,
-              onTap: () =>
-                  notifier.togglePlayer(participant.participantId, teamIndex),
+              onTap: () => notifier.dispatch(
+                TogglePlayerAction(
+                  participantId: participant.participantId,
+                  teamIndex: teamIndex,
+                ),
+              ),
             );
           },
         ),
@@ -137,7 +142,9 @@ class LineupSelectionWidget extends ConsumerWidget {
           width: double.infinity,
           child: FilledButton(
             onPressed: isBothReady
-                ? () => notifier.confirmLineupAndStartPull(team.id)
+                ? () => notifier.dispatch(
+                    ConfirmLineupAction(pullingTeamId: team.id),
+                  )
                 : null,
             child: const Text("PULL"),
           ),

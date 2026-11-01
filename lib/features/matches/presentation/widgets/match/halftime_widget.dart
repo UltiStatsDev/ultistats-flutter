@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ultistats/features/matches/domain/entities/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/game/match_action.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match/common/pause_widget.dart';
 
 class HalftimeWidget extends ConsumerWidget {
@@ -18,7 +19,7 @@ class HalftimeWidget extends ConsumerWidget {
       title: 'ПЕРЕРЫВ',
       subtitle: 'Между половинами',
       finishLabel: 'ЗАВЕРШИТЬ ПЕРЕРЫВ',
-      onFinish: notifier.endHalftime,
+      onFinish: () => notifier.dispatch(const EndHalftimeAction()),
     );
   }
 }

@@ -15,7 +15,8 @@ import 'package:ultistats/features/matches/domain/params/update_match_params.dar
 import 'package:ultistats/features/matches/domain/repositories/match_events_repository.dart';
 import 'package:ultistats/features/matches/domain/repositories/matches_repository.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/match/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/entities/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/game/match_action.dart';
 import 'package:ultistats/features/matches/presentation/providers/match/match_timer_notifier.dart';
 
 class FakeMatchEventsRepository implements MatchEventsRepository {
@@ -161,6 +162,7 @@ void main() {
       ],
     );
     addTearDown(container.dispose);
+    container.listen(matchGameProvider(match), (_, _) {});
     return container;
   }
 
@@ -183,31 +185,31 @@ void main() {
       final state = container.read<MatchGameState>(matchGameProvider(match));
       expect(state, isA<GameStateLineupSelection>());
 
-      notifier.togglePlayer('p-1', 0);
-      notifier.togglePlayer('p-2', 0);
-      notifier.togglePlayer('p-3', 1);
-      notifier.togglePlayer('p-4', 1);
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-1', teamIndex: 0));
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-2', teamIndex: 0));
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-3', teamIndex: 1));
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-4', teamIndex: 1));
 
       final fullLineup = container.read<MatchGameState>(matchGameProvider(match)) as GameStateLineupSelection;
       expect(fullLineup.team1SelectedIds.length, 2);
       expect(fullLineup.team2SelectedIds.length, 2);
 
-      notifier.confirmLineupAndStartPull('team-1');
+      notifier.dispatch(ConfirmLineupAction(pullingTeamId: 'team-1'));
       final pullerState = container.read<MatchGameState>(matchGameProvider(match)) as GameStatePullerSelection;
       expect(pullerState.activeTeam.id, 'team-1');
 
-      notifier.selectPuller(pullerState.activeTeamLineup[0]);
+      notifier.dispatch(SelectPullerAction(pullerState.activeTeamLineup[0]));
       final takerState = container.read<MatchGameState>(matchGameProvider(match)) as GameStateTakerSelection;
       expect(takerState.activeTeam.id, 'team-2');
 
-      notifier.selectTaker(takerState.activeTeamLineup[0]);
+      notifier.dispatch(SelectTakerAction(takerState.activeTeamLineup[0]));
       final playingState = container.read<MatchGameState>(matchGameProvider(match)) as GameStatePlaying;
       expect(
         playingState.currentThrower.participantId,
         takerState.activeTeamLineup[0].participantId,
       );
 
-      notifier.scoreGoal(playingState.activeTeamLineup[0]);
+      notifier.dispatch(ScoreGoalAction(playingState.activeTeamLineup[0]));
       final afterGoal = container.read<MatchGameState>(matchGameProvider(match)) as GameStateLineupSelection;
       expect(afterGoal.match.teams[0].score, 0);
       expect(afterGoal.match.teams[1].score, 1);
@@ -220,25 +222,25 @@ void main() {
       final state = container.read<MatchGameState>(matchGameProvider(match));
       expect(state, isA<GameStateLineupSelection>());
 
-      notifier.togglePlayer('p-1', 0);
-      notifier.togglePlayer('p-2', 0);
-      notifier.togglePlayer('p-3', 1);
-      notifier.togglePlayer('p-4', 1);
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-1', teamIndex: 0));
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-2', teamIndex: 0));
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-3', teamIndex: 1));
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-4', teamIndex: 1));
 
       var lineupState = container.read<MatchGameState>(matchGameProvider(match)) as GameStateLineupSelection;
-      notifier.confirmLineupAndStartPull('team-1');
+      notifier.dispatch(ConfirmLineupAction(pullingTeamId: 'team-1'));
       var pullerState = container.read<MatchGameState>(matchGameProvider(match)) as GameStatePullerSelection;
-      notifier.selectPuller(pullerState.activeTeamLineup[0]);
+      notifier.dispatch(SelectPullerAction(pullerState.activeTeamLineup[0]));
       var takerState = container.read<MatchGameState>(matchGameProvider(match)) as GameStateTakerSelection;
-      notifier.selectTaker(takerState.activeTeamLineup[0]);
+      notifier.dispatch(SelectTakerAction(takerState.activeTeamLineup[0]));
       var playingState = container.read<MatchGameState>(matchGameProvider(match)) as GameStatePlaying;
-      notifier.scoreGoal(playingState.activeTeamLineup[0]);
+      notifier.dispatch(ScoreGoalAction(playingState.activeTeamLineup[0]));
       lineupState = container.read<MatchGameState>(matchGameProvider(match)) as GameStateLineupSelection;
 
       expect(lineupState.team1SelectedIds.length, 2);
       expect(lineupState.team2SelectedIds.length, 2);
 
-      notifier.finishMatch();
+      await notifier.finishMatch();
       await Future<void>.delayed(Duration.zero);
 
       expect(matchesRepository.endMatchId, 'match-1');
