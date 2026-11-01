@@ -42,6 +42,7 @@ class MatchDetailWidget extends ConsumerWidget {
                   team1: match.teams[0].toListItem(),
                   team2: match.teams[1].toListItem(),
                   plannedStartTime: match.plannedStartTimestamp,
+                  playersPerTeam: match.playersPerTeam,
                 ),
               ),
             );

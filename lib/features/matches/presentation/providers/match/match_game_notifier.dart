@@ -303,7 +303,6 @@ class MatchGameNotifier extends _$MatchGameNotifier {
     }
 
     final event = TeamEvent.timeoutStart(teamId: team.id);
-    //ref.read(matchTimerProvider(match.id).notifier).pause();
     state = GameStateTimeout(
       resumeState: currentState,
       startedAt: event.occurredAt,
@@ -319,7 +318,6 @@ class MatchGameNotifier extends _$MatchGameNotifier {
 
     _recordAndSendEvent(TeamEvent.timeoutEnd(teamId: currentState.team.id));
     state = currentState.resumeState;
-    //ref.read(matchTimerProvider(match.id).notifier).start();
   }
 
   void startHalftime() {
@@ -332,7 +330,6 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       return;
     }
     final event = MatchEvent.halftimeStart();
-    //ref.read(matchTimerProvider(match.id).notifier).pause();
     state = GameStateHalftime(
       resumeState: currentState,
       startedAt: event.occurredAt,
@@ -348,7 +345,6 @@ class MatchGameNotifier extends _$MatchGameNotifier {
 
     _recordAndSendEvent(MatchEvent.halftimeEnd());
     state = currentState.resumeState;
-    //ref.read(matchTimerProvider(match.id).notifier).start();
   }
 
   void finishMatch() async {
