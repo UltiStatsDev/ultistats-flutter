@@ -303,7 +303,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
     }
 
     final event = TeamEvent.timeoutStart(teamId: team.id);
-    ref.read(matchTimerProvider(match.id).notifier).pause();
+    //ref.read(matchTimerProvider(match.id).notifier).pause();
     state = GameStateTimeout(
       resumeState: currentState,
       startedAt: event.occurredAt,
@@ -319,7 +319,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
 
     _recordAndSendEvent(TeamEvent.timeoutEnd(teamId: currentState.team.id));
     state = currentState.resumeState;
-    ref.read(matchTimerProvider(match.id).notifier).start();
+    //ref.read(matchTimerProvider(match.id).notifier).start();
   }
 
   void startHalftime() {
@@ -332,7 +332,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       return;
     }
     final event = MatchEvent.halftimeStart();
-    ref.read(matchTimerProvider(match.id).notifier).pause();
+    //ref.read(matchTimerProvider(match.id).notifier).pause();
     state = GameStateHalftime(
       resumeState: currentState,
       startedAt: event.occurredAt,
@@ -348,7 +348,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
 
     _recordAndSendEvent(MatchEvent.halftimeEnd());
     state = currentState.resumeState;
-    ref.read(matchTimerProvider(match.id).notifier).start();
+    //ref.read(matchTimerProvider(match.id).notifier).start();
   }
 
   void finishMatch() async {
@@ -366,16 +366,11 @@ class MatchGameNotifier extends _$MatchGameNotifier {
           .read(matchesRepositoryProvider)
           .endMatch(currentState.match.id, DateTime.now());
 
-      print('DEBUG finishMatch: endMatch done');
-
       state = GameStateFinished(match: match);
-
-      print('DEBUG finishMatch: state assigned');
 
       ref.invalidate(matchDetailProvider);
       ref.invalidate(matchesListProvider);
     } catch (e, st) {
-      print('DEBUG finishMatch: ERROR $e');
       log(
         "Error while finishMatch",
         error: e,

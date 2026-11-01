@@ -10,13 +10,14 @@ class PlayerDetailModel {
   final String firstName;
   final String lastName;
   final String? photoUrl;
+  @JsonKey(defaultValue: <PlayerMembershipModel>[])
   final List<PlayerMembershipModel> memberships;
 
   const PlayerDetailModel({
     required this.id,
     required this.firstName,
     required this.lastName,
-    required this.memberships,
+    this.memberships = const [],
     this.photoUrl,
   });
 
