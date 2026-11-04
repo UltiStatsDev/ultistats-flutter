@@ -14,11 +14,13 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
   EditPlayerState build() => const EditPlayerInitial();
 
   Future<void> deleteImage(String playerId) async {
+    log("Deleting photo of player $playerId", name: runtimeType.toString());
     try {
       final playersRepo = ref.read(playersRepositoryProvider);
       await playersRepo.deletePlayerPhoto(playerId);
       ref.invalidate(playerDetailProvider);
       ref.invalidate(playersListProvider);
+      log("Photo of player $playerId deleted", name: runtimeType.toString());
     } catch (e, st) {
       log(
         "Error while deleting player photo",
@@ -30,6 +32,7 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
   }
 
   Future<void> deletePlayer({required String id}) async {
+    log("Deleting player $id", name: runtimeType.toString());
     state = EditPlayerLoading();
 
     try {
@@ -39,6 +42,7 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
       ref.invalidate(playerDetailProvider);
       ref.invalidate(playersListProvider);
 
+      log("Player $id deleted", name: runtimeType.toString());
       state = EditPlayerDeleted();
     } catch (e, st) {
       log(
@@ -57,6 +61,11 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
     required String lastName,
     File? photo,
   }) async {
+    final isUpdate = playerId != null;
+    log(
+      isUpdate ? "Updating player $playerId" : "Creating player",
+      name: runtimeType.toString(),
+    );
     state = EditPlayerLoading();
 
     try {
@@ -81,6 +90,11 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
       }
 
       if (photo != null) {
+        log(
+          "Uploading photo for player $finalPlayerId",
+          name: runtimeType.toString(),
+          level: AppLogLevel.debug,
+        );
         final bytes = await photo.readAsBytes();
         final filename = photo.uri.pathSegments.isNotEmpty
             ? photo.uri.pathSegments.last
@@ -91,6 +105,12 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
       ref.invalidate(playerDetailProvider);
       ref.invalidate(playersListProvider);
 
+      log(
+        isUpdate
+            ? "Player $finalPlayerId updated"
+            : "Player $finalPlayerId created",
+        name: runtimeType.toString(),
+      );
       state = EditPlayerSaved();
     } catch (e, st) {
       log(

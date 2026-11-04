@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer' as developer;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -14,7 +13,8 @@ enum AppLogLevel { debug, info, warning, error }
 ///
 /// Если [error] передан, уровень по умолчанию считается [AppLogLevel.error]
 /// и событие уходит в Sentry как исключение. Обычные сообщения попадают в
-/// Sentry как логи.
+/// Sentry как логи. Уровень [AppLogLevel.debug] остаётся только в консоли,
+/// чтобы отладочные сообщения не тратили квоту Sentry.
 ///
 /// Примеры:
 /// ```dart
@@ -33,27 +33,24 @@ void log(
       level ?? (error == null ? AppLogLevel.info : AppLogLevel.error);
   final loggerName = name ?? 'app';
 
-  // Консоль / DevTools.
-  developer.log(
-    message,
-    name: loggerName,
-    level: _developerLevel(logLevel),
-    error: error,
-    stackTrace: stackTrace,
-  );
-
+  // Один вывод в консоль: print/debugPrint видны и в `flutter run`, и в
+  // Android logcat, и в `flutter test`. developer.log здесь не используем,
+  // иначе одно и то же сообщение печатается дважды.
   if (kDebugMode) {
     final buffer = StringBuffer()
       ..write('[${logLevel.name.toUpperCase()}] [$loggerName] $message');
     if (error != null) buffer.write('\n$error');
+    if (stackTrace != null) buffer.write('\n$stackTrace');
     debugPrint(buffer.toString());
-    if (stackTrace != null) debugPrint('$stackTrace');
   }
 
   // До инициализации Sentry (или без DSN) остаёмся только локальными логами.
   if (!Sentry.isEnabled) return;
 
-  if (error != null) {
+  // Debug-логи нужны только локально.
+  if (logLevel == AppLogLevel.debug) return;
+
+  if (error != null && logLevel == AppLogLevel.error) {
     unawaited(
       Sentry.captureException(
         error,
@@ -67,17 +64,22 @@ void log(
     return;
   }
 
+  final body = error == null ? message : '$message: $error';
   final attributes = {'logger': SentryAttribute.string(loggerName)};
 
   switch (logLevel) {
     case AppLogLevel.debug:
-      Sentry.logger.debug(message, attributes: attributes);
+      // Уже отфильтровано выше.
+      break;
     case AppLogLevel.info:
-      Sentry.logger.info(message, attributes: attributes);
+      Sentry.logger.info(body, attributes: attributes);
+      break;
     case AppLogLevel.warning:
-      Sentry.logger.warn(message, attributes: attributes);
+      Sentry.logger.warn(body, attributes: attributes);
+      break;
     case AppLogLevel.error:
-      Sentry.logger.error(message, attributes: attributes);
+      Sentry.logger.error(body, attributes: attributes);
+      break;
   }
 }
 
@@ -102,13 +104,6 @@ Future<void> initLogging() async {
 
   log("Sentry initialized", name: "AppLogger");
 }
-
-int _developerLevel(AppLogLevel level) => switch (level) {
-  AppLogLevel.debug => 500,
-  AppLogLevel.info => 800,
-  AppLogLevel.warning => 900,
-  AppLogLevel.error => 1000,
-};
 
 SentryLevel _sentryLevel(AppLogLevel level) => switch (level) {
   AppLogLevel.debug => SentryLevel.debug,

@@ -46,6 +46,14 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       return;
     }
 
+    log(
+      "Action ${action.runtimeType} in ${state.runtimeType} -> "
+      "${transition.state.runtimeType}, "
+      "events: ${transition.events.map((e) => e.type.name).join(', ')}",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
+
     state = transition.state;
 
     final queue = ref.read(matchEventQueueProvider);

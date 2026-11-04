@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/core/logging/app_logger.dart';
@@ -15,11 +14,13 @@ class EditTeamNotifier extends Notifier<EditTeamState> {
   EditTeamState build() => const EditTeamInitial();
 
   Future<void> deletePhoto(String id) async {
+    log("Deleting photo of team $id", name: runtimeType.toString());
     try {
       final teamsRepo = ref.read(teamsRepositoryProvider);
       await teamsRepo.deleteTeamPhoto(id);
       ref.invalidate(teamsListProvider);
       ref.invalidate(teamDetailProvider);
+      log("Photo of team $id deleted", name: runtimeType.toString());
     } catch (e, st) {
       log(
         "Error while deleting team photo",
@@ -31,12 +32,14 @@ class EditTeamNotifier extends Notifier<EditTeamState> {
   }
 
   Future<void> deleteTeam({required String id}) async {
+    log("Deleting team $id", name: runtimeType.toString());
     state = EditTeamLoading();
 
     try {
       final teamsRepo = ref.read(teamsRepositoryProvider);
       await teamsRepo.deleteById(id);
       ref.invalidate(teamsListProvider);
+      log("Team $id deleted", name: runtimeType.toString());
       state = EditTeamDeleted();
     } catch (e, st) {
       log(
@@ -55,6 +58,11 @@ class EditTeamNotifier extends Notifier<EditTeamState> {
     required String city,
     File? photo,
   }) async {
+    final isUpdate = teamId != null;
+    log(
+      isUpdate ? "Updating team $teamId" : "Creating team \"$name\"",
+      name: runtimeType.toString(),
+    );
     state = EditTeamLoading();
 
     try {
@@ -74,6 +82,11 @@ class EditTeamNotifier extends Notifier<EditTeamState> {
       }
 
       if (photo != null) {
+        log(
+          "Uploading photo for team $finalTeamId",
+          name: runtimeType.toString(),
+          level: AppLogLevel.debug,
+        );
         final bytes = await photo.readAsBytes();
         final filename = photo.uri.pathSegments.isNotEmpty
             ? photo.uri.pathSegments.last
@@ -83,6 +96,10 @@ class EditTeamNotifier extends Notifier<EditTeamState> {
 
       ref.invalidate(teamsListProvider);
       ref.invalidate(teamDetailProvider);
+      log(
+        isUpdate ? "Team $finalTeamId updated" : "Team $finalTeamId created",
+        name: runtimeType.toString(),
+      );
       state = EditTeamSaved();
     } catch (e, st) {
       log(

@@ -16,13 +16,28 @@ class MatchDetailNotifier extends _$MatchDetailNotifier {
   }
 
   Future<void> _loadMatch(String id) async {
+    log(
+      "Loading match $id",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
     state = const MatchDetailLoading();
     try {
       final repository = ref.read(matchesRepositoryProvider);
       final match = await repository.getById(id);
+      log(
+        "Loaded match $id (status: ${match.status.name}, "
+        "events: ${match.eventCount})",
+        name: runtimeType.toString(),
+      );
       state = MatchDetailLoaded(match);
     } catch (e, st) {
-      log("Error while _loadMatch", error: e, stackTrace: st);
+      log(
+        "Error while _loadMatch",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
       state = MatchDetailError(e, st);
     }
   }

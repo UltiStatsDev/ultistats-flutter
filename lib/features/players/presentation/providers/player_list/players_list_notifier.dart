@@ -20,12 +20,23 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
 
   Future<PlayersListLoaded> _fetchPage(int page) async {
     final repository = ref.read(playersRepositoryProvider);
+    log(
+      "Loading players page $page (query: \"$_searchQuery\")",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
     final result = await repository.getList(
       PlayerFilterParams(
         page: page,
         size: _pageSize,
         name: _searchQuery.isEmpty ? null : _searchQuery,
       ),
+    );
+
+    log(
+      "Loaded ${result.content.length} players "
+      "(page ${result.currentPage + 1}/${result.totalPages})",
+      name: runtimeType.toString(),
     );
 
     return PlayersListLoaded(
@@ -54,6 +65,11 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
   void onSearchChanged(String query) {
     if (_searchQuery == query) return;
     _searchQuery = query;
+    log(
+      "Search query changed to \"$query\"",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
 
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {

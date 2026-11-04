@@ -8,7 +8,7 @@ import 'package:ultistats/features/teams/presentation/providers/team_list/teams_
 class TeamsListNotifier extends Notifier<TeamsListState> {
   static const int _pageSize = 20;
   static const double _scrollThreshold = 200.0;
-  
+
   String _searchQuery = '';
   Timer? _debounceTimer;
 
@@ -20,12 +20,23 @@ class TeamsListNotifier extends Notifier<TeamsListState> {
 
   Future<TeamsListLoaded> _fetchPage(int page) async {
     final repository = ref.read(teamsRepositoryProvider);
+    log(
+      "Loading teams page $page (query: \"$_searchQuery\")",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
     final result = await repository.getList(
       TeamFilterParams(
-        page: page, 
+        page: page,
         size: _pageSize,
         name: _searchQuery.isEmpty ? null : _searchQuery,
       ),
+    );
+
+    log(
+      "Loaded ${result.content.length} teams "
+      "(page ${result.currentPage + 1}/${result.totalPages})",
+      name: runtimeType.toString(),
     );
 
     return TeamsListLoaded(
@@ -54,7 +65,12 @@ class TeamsListNotifier extends Notifier<TeamsListState> {
   void onSearchChanged(String query) {
     if (_searchQuery == query) return;
     _searchQuery = query;
-    
+    log(
+      "Search query changed to \"$query\"",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
+
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
       _performSearch();

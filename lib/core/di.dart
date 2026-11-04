@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/config/config.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 
 import 'package:ultistats/features/players/data/sources/players_api.dart';
 import 'package:ultistats/features/teams/data/sources/teams_api.dart';
@@ -21,6 +22,8 @@ import 'package:ultistats/features/matches/data/repositories/match_events_reposi
 import 'package:ultistats/features/matches/data/repositories/match_statistics_repository_impl.dart';
 import 'package:ultistats/features/match_game/data/match_event_queue.dart';
 
+const _requestStartKey = 'requestStartedAt';
+
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
     BaseOptions(
@@ -30,6 +33,49 @@ final dioProvider = Provider<Dio>((ref) {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+      },
+    ),
+  );
+
+  dio.interceptors.add(
+    InterceptorsWrapper(
+      onRequest: (options, handler) {
+        options.extra[_requestStartKey] = DateTime.now();
+        log(
+          '→ ${options.method} ${options.uri}',
+          name: 'HTTP',
+          level: AppLogLevel.debug,
+        );
+        handler.next(options);
+      },
+      onResponse: (response, handler) {
+        final startedAt = response.requestOptions.extra[_requestStartKey];
+        final elapsed = startedAt is DateTime
+            ? DateTime.now().difference(startedAt).inMilliseconds
+            : null;
+        log(
+          '← ${response.statusCode} ${response.requestOptions.method} '
+          '${response.requestOptions.uri}'
+          '${elapsed == null ? '' : ' (${elapsed}ms)'}',
+          name: 'HTTP',
+          level: AppLogLevel.debug,
+        );
+        handler.next(response);
+      },
+      onError: (error, handler) {
+        final statusCode = error.response?.statusCode;
+        final isClientError =
+            statusCode != null && statusCode >= 400 && statusCode < 500;
+        log(
+          '✕ ${error.requestOptions.method} ${error.requestOptions.uri} '
+          'failed (${error.type.name}'
+          '${statusCode == null ? '' : ', HTTP $statusCode'})',
+          error: error,
+          stackTrace: error.stackTrace,
+          name: 'HTTP',
+          level: isClientError ? AppLogLevel.warning : AppLogLevel.error,
+        );
+        handler.next(error);
       },
     ),
   );

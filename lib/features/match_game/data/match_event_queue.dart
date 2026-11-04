@@ -37,6 +37,12 @@ class MatchEventQueue {
   /// Ставит событие в очередь. Запрос уйдёт после всех предыдущих событий
   /// этого матча.
   void enqueue(String matchId, Event event) {
+    log(
+      'Enqueued ${event.type.name} event of match $matchId',
+      name: 'MatchEventQueue',
+      level: AppLogLevel.debug,
+    );
+
     final previous = _tails[matchId] ?? Future<void>.value();
 
     final task = previous.then((_) => _sendWithRetry(matchId, event));
@@ -70,6 +76,12 @@ class MatchEventQueue {
     for (var attempt = 0; attempt < _maxAttempts; attempt++) {
       try {
         await _repository.addEvent(params);
+        log(
+          'Sent ${event.type.name} event of match $matchId '
+          '(attempt ${attempt + 1})',
+          name: 'MatchEventQueue',
+          level: AppLogLevel.debug,
+        );
         return;
       } catch (error, stackTrace) {
         final isLastAttempt = attempt == _maxAttempts - 1;
@@ -83,6 +95,12 @@ class MatchEventQueue {
           return;
         }
 
+        log(
+          'Retrying ${event.type.name} event of match $matchId '
+          '(attempt ${attempt + 1} failed): $error',
+          name: 'MatchEventQueue',
+          level: AppLogLevel.warning,
+        );
         await Future<void>.delayed(_retryDelays[attempt]);
       }
     }
