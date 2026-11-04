@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/players/presentation/providers/player_detail/player_detail_notifier.dart';
 import 'package:ultistats/features/teams/presentation/providers/team_detail/team_detail_state.dart';
 
@@ -23,6 +23,12 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
 
       state = TeamDetailLoaded(team);
     } catch (e, st) {
+      log(
+        "Error while _loadTeam",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
       state = TeamDetailError(e, st);
     }
   }
@@ -104,6 +110,12 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
         );
       }
       completer?.completeError(e, st);
+      log(
+        "Error while removePlayer",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
     }
   }
 

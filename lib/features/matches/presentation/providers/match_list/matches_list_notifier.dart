@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/matches/domain/params/match_filter_params.dart';
 import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_state.dart';
 

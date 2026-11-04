@@ -1,9 +1,9 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/teams/domain/params/create_team_params.dart';
 import 'package:ultistats/features/teams/domain/params/update_team_params.dart';
 import 'package:ultistats/features/teams/presentation/providers/edit_team/edit_team_state.dart';

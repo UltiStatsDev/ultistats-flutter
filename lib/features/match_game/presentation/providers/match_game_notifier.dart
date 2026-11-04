@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/match_game/domain/match_action.dart';
 import 'package:ultistats/features/match_game/domain/match_game_engine.dart';
 import 'package:ultistats/features/match_game/domain/match_game_state.dart';
@@ -42,6 +41,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       log(
         "Action ${action.runtimeType} is not allowed in ${state.runtimeType} state",
         name: runtimeType.toString(),
+        level: AppLogLevel.warning,
       );
       return;
     }
@@ -60,6 +60,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       log(
         "Invalid state, can not finish match in ${currentState.runtimeType} state",
         name: runtimeType.toString(),
+        level: AppLogLevel.warning,
       );
       return;
     }
@@ -67,6 +68,8 @@ class MatchGameNotifier extends _$MatchGameNotifier {
     final matchId = currentState.match.id;
     final repository = ref.read(matchesRepositoryProvider);
     final queue = ref.read(matchEventQueueProvider);
+
+    log("Finishing match $matchId", name: runtimeType.toString());
 
     // Сразу уводим экран в состояние «Завершаем матч», иначе игрок может
     // нажать «Окончить матч» ещё раз, пока очередь досылает события.
@@ -82,6 +85,8 @@ class MatchGameNotifier extends _$MatchGameNotifier {
 
       ref.invalidate(matchDetailProvider);
       ref.invalidate(matchesListProvider);
+
+      log("Match $matchId finished", name: runtimeType.toString());
 
       state = GameStateFinished(match: currentState.match);
     } catch (e, st) {

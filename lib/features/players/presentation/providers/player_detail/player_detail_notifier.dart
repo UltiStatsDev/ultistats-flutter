@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/players/presentation/providers/player_detail/player_detail_state.dart';
 
 part 'player_detail_notifier.g.dart';
@@ -25,6 +26,12 @@ class PlayerDetailNotifier extends _$PlayerDetailNotifier {
 
       state = PlayerDetailLoaded(player, teams);
     } catch (e, st) {
+      log(
+        "Error while _loadPlayer",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
       state = PlayerDetailError(e, st);
     }
   }

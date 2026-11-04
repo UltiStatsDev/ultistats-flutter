@@ -1,8 +1,8 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/players/domain/params/create_player_params.dart';
 import 'package:ultistats/features/players/domain/params/update_player_params.dart';
 import 'package:ultistats/features/players/presentation/providers/edit_player/edit_player_state.dart';

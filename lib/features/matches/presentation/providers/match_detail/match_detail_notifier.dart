@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/matches/presentation/providers/match_detail/match_detail_state.dart';
 
 part 'match_detail_notifier.g.dart';
@@ -31,11 +31,14 @@ class MatchDetailNotifier extends _$MatchDetailNotifier {
     final currentState = state;
     if (currentState is! MatchDetailLoaded) return;
 
+    log("Starting match $id", name: runtimeType.toString());
+
     state = const MatchDetailLoading();
 
     try {
       final repository = ref.read(matchesRepositoryProvider);
       final updatedMatch = await repository.startMatch(id, DateTime.now());
+      log("Match $id started", name: runtimeType.toString());
       state = MatchDetailLoaded(updatedMatch);
     } catch (e, st) {
       log(

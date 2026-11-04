@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/matches/domain/entities/event.dart';
 import 'package:ultistats/features/matches/domain/params/create_event_params.dart';
 import 'package:ultistats/features/matches/domain/repositories/match_events_repository.dart';
