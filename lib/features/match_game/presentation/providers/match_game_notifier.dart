@@ -3,14 +3,13 @@ import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/features/match_game/domain/match_action.dart';
+import 'package:ultistats/features/match_game/domain/match_game_engine.dart';
+import 'package:ultistats/features/match_game/domain/match_game_state.dart';
 import 'package:ultistats/features/matches/domain/entities/event.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
-import 'package:ultistats/features/matches/domain/game/match_game_state.dart';
-import 'package:ultistats/features/matches/domain/game/match_action.dart';
-import 'package:ultistats/features/matches/domain/game/match_game_engine.dart';
 import 'package:ultistats/features/matches/domain/params/create_event_params.dart';
-import 'package:ultistats/features/matches/presentation/providers/match_detail/match_detail_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/matches_refresh_provider.dart';
 
 import 'match_timer_notifier.dart';
 
@@ -103,8 +102,9 @@ class MatchGameNotifier extends _$MatchGameNotifier {
 
       state = GameStateFinished(match: currentState.match);
 
-      ref.invalidate(matchDetailProvider);
-      ref.invalidate(matchesListProvider);
+      ref.read(matchesRefreshProvider)
+        ..refreshDetail()
+        ..refreshList();
     } catch (e, st) {
       log(
         "Error while finishMatch",

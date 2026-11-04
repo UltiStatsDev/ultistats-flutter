@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:ultistats/features/matches/domain/game/match_game_state.dart';
+import 'package:ultistats/features/match_game/domain/match_game_state.dart';
 import 'package:ultistats/features/matches/domain/entities/match_participant.dart';
 import 'package:ultistats/features/matches/domain/entities/match_team.dart';
-import 'package:ultistats/features/matches/domain/game/match_action.dart';
-import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
-import 'package:ultistats/features/matches/presentation/widgets/match/common/player_select_card.dart';
+import 'package:ultistats/features/match_game/domain/match_action.dart';
+import 'package:ultistats/features/match_game/presentation/providers/match_game_notifier.dart';
+import 'package:ultistats/features/match_game/presentation/widgets/common/player_select_card.dart';
 
 class LineupSelectionWidget extends ConsumerWidget {
   const LineupSelectionWidget({super.key, required this.state});

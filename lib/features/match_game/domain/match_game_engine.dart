@@ -1,7 +1,7 @@
 import 'package:ultistats/features/matches/domain/entities/event.dart';
-import 'package:ultistats/features/matches/domain/game/match_game_state.dart';
+import 'package:ultistats/features/match_game/domain/match_game_state.dart';
 import 'package:ultistats/features/matches/domain/entities/match_participant.dart';
-import 'package:ultistats/features/matches/domain/game/match_action.dart';
+import 'package:ultistats/features/match_game/domain/match_action.dart';
 
 /// Результат перехода: новое состояние игры и события, которые нужно отправить.
 class MatchGameTransition {

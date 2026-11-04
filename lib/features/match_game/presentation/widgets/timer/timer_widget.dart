@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
-import 'package:ultistats/features/matches/domain/game/match_game_state.dart';
-import 'package:ultistats/features/matches/domain/game/match_action.dart';
-import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
-import 'package:ultistats/features/matches/presentation/providers/match/match_timer_notifier.dart';
+import 'package:ultistats/features/match_game/domain/match_game_state.dart';
+import 'package:ultistats/features/match_game/domain/match_action.dart';
+import 'package:ultistats/features/match_game/presentation/providers/match_game_notifier.dart';
+import 'package:ultistats/features/match_game/presentation/providers/match_timer_notifier.dart';
 
 class TimerWidget extends ConsumerWidget {
   const TimerWidget({super.key, required this.match});

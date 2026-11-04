@@ -4,16 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/widgets/error_screen.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
-import 'package:ultistats/features/matches/domain/game/match_game_state.dart';
-import 'package:ultistats/features/matches/presentation/providers/match/match_game_notifier.dart';
-import 'package:ultistats/features/matches/presentation/widgets/match/halftime_widget.dart';
-import 'package:ultistats/features/matches/presentation/widgets/match/lineup_selection_widget.dart';
-import 'package:ultistats/features/matches/presentation/widgets/match/loading_widget.dart';
-import 'package:ultistats/features/matches/presentation/widgets/match/playing_widget.dart';
-import 'package:ultistats/features/matches/presentation/widgets/match/puller_selection_widget.dart';
-import 'package:ultistats/features/matches/presentation/widgets/match/taker_selection_widget.dart';
-import 'package:ultistats/features/matches/presentation/widgets/match/timer/timer_widget.dart';
-import 'package:ultistats/features/matches/presentation/widgets/match/timeout_widget.dart';
+import 'package:ultistats/features/match_game/domain/match_game_state.dart';
+import 'package:ultistats/features/match_game/presentation/providers/match_game_notifier.dart';
+import 'package:ultistats/features/match_game/presentation/widgets/halftime_widget.dart';
+import 'package:ultistats/features/match_game/presentation/widgets/lineup_selection_widget.dart';
+import 'package:ultistats/features/match_game/presentation/widgets/loading_widget.dart';
+import 'package:ultistats/features/match_game/presentation/widgets/playing_widget.dart';
+import 'package:ultistats/features/match_game/presentation/widgets/puller_selection_widget.dart';
+import 'package:ultistats/features/match_game/presentation/widgets/taker_selection_widget.dart';
+import 'package:ultistats/features/match_game/presentation/widgets/timer/timer_widget.dart';
+import 'package:ultistats/features/match_game/presentation/widgets/timeout_widget.dart';
 
 @RoutePage()
 class MatchScreen extends ConsumerWidget {

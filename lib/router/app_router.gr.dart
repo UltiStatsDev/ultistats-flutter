@@ -13,14 +13,14 @@ import 'package:auto_route/auto_route.dart' as _i15;
 import 'package:flutter/material.dart' as _i16;
 import 'package:ultistats/features/dashboard/presentation/screens/dashboard_screen.dart'
     as _i1;
+import 'package:ultistats/features/match_game/presentation/screens/match_screen.dart'
+    as _i6;
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart'
     as _i17;
 import 'package:ultistats/features/matches/presentation/screens/edit_match_screen.dart'
     as _i2;
 import 'package:ultistats/features/matches/presentation/screens/match_detail_screen.dart'
     as _i5;
-import 'package:ultistats/features/matches/presentation/screens/match_screen.dart'
-    as _i6;
 import 'package:ultistats/features/matches/presentation/screens/matches_list_screen.dart'
     as _i7;
 import 'package:ultistats/features/matches/presentation/screens/matches_tab_screen.dart'
