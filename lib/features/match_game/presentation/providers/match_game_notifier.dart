@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -6,9 +5,8 @@ import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/match_game/domain/match_action.dart';
 import 'package:ultistats/features/match_game/domain/match_game_engine.dart';
 import 'package:ultistats/features/match_game/domain/match_game_state.dart';
-import 'package:ultistats/features/matches/domain/entities/event.dart';
+import 'package:ultistats/features/match_game/presentation/providers/match_event_queue_provider.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
-import 'package:ultistats/features/matches/domain/params/create_event_params.dart';
 import 'package:ultistats/features/matches/presentation/providers/matches_refresh_provider.dart';
 
 import 'match_timer_notifier.dart';
@@ -18,9 +16,6 @@ part 'match_game_notifier.g.dart';
 @riverpod
 class MatchGameNotifier extends _$MatchGameNotifier {
   static const _engine = MatchGameEngine();
-
-  final List<Event> _matchEvents = [];
-  Future<void>? _eventProcessingChain;
 
   @override
   MatchGameState build(MatchDetail match) {
@@ -54,32 +49,9 @@ class MatchGameNotifier extends _$MatchGameNotifier {
 
     state = transition.state;
 
+    final queue = ref.read(matchEventQueueProvider);
     for (final event in transition.events) {
-      unawaited(_recordAndSendEvent(event));
-    }
-  }
-
-  Future<void> _recordAndSendEvent(Event event) async {
-    _matchEvents.add(event);
-
-    final previousTask = _eventProcessingChain;
-    final completer = Completer<void>();
-    _eventProcessingChain = completer.future;
-
-    try {
-      if (previousTask != null) {
-        await previousTask;
-      }
-
-      final repository = ref.read(matchEventsRepositoryProvider);
-      await repository.addEvent(
-        CreateEventParams(matchId: state.match.id, event: event),
-      );
-      log("Event sent: ${event.type}", name: runtimeType.toString());
-    } catch (e) {
-      log("Failed to send event: $e", name: runtimeType.toString());
-    } finally {
-      completer.complete();
+      queue.enqueue(state.match.id, event);
     }
   }
 
@@ -93,10 +65,15 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       return;
     }
 
+    final matchId = currentState.match.id;
+    final repository = ref.read(matchesRepositoryProvider);
+    final queue = ref.read(matchEventQueueProvider);
+
     try {
-      await ref
-          .read(matchesRepositoryProvider)
-          .endMatch(currentState.match.id, DateTime.now());
+      // Сначала дожидаемся последних событий, иначе сервер посчитает
+      // статистику без них.
+      await queue.drain(matchId);
+      await repository.endMatch(matchId, DateTime.now());
 
       if (!ref.mounted) return;
 
