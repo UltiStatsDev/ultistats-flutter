@@ -97,9 +97,11 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       sent = queue.enqueue(state.match.id, event);
     }
 
-    // Любое новое действие забирает слот отмены у предыдущего, но выбор
-    // игроков состава его не занимает.
-    _undoPoint = action.isUndoable ? (state: previous, sent: sent) : null;
+    // Выбор игроков состава не занимает слот отмены и не сбрасывает его:
+    // после гола можно случайно переключить игрока и всё равно отменить гол.
+    if (action.isUndoable) {
+      _undoPoint = (state: previous, sent: sent);
+    }
   }
 
   /// Откатывает последнее действие и, если оно создало событие, удаляет это

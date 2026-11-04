@@ -386,7 +386,7 @@ void main() {
       expect(notifier.canUndo, isFalse);
     });
 
-    test('non-undoable action clears the previous undo slot', () async {
+    test('lineup change after a goal keeps the goal undoable', () async {
       final container = createContainer();
       final notifier = container.read(matchGameProvider(match).notifier);
 
@@ -401,9 +401,16 @@ void main() {
 
       notifier.dispatch(TogglePlayerAction(participantId: 'p-1', teamIndex: 0));
 
+      expect(notifier.canUndo, isTrue);
+
+      expect(await notifier.undo(), isTrue);
+
+      final afterUndo =
+          container.read<MatchGameState>(matchGameProvider(match))
+              as GameStatePlaying;
+      expect(afterUndo.match.teams[1].score, 0);
+      expect(eventsRepository.undoRequests, ['match-1']);
       expect(notifier.canUndo, isFalse);
-      expect(await notifier.undo(), isFalse);
-      expect(eventsRepository.undoRequests, isEmpty);
     });
 
     test('undo goal restores score and previous playing state', () async {
