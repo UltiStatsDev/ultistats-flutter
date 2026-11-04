@@ -320,25 +320,53 @@ void main() {
       expect(notifier.canUndo, isFalse);
     });
 
-    test('undo reverts lineup toggle without calling the server', () async {
+    test('lineup, confirm and puller choice are not undoable', () async {
       final container = createContainer();
       final notifier = container.read(matchGameProvider(match).notifier);
 
-      final before = container.read<MatchGameState>(matchGameProvider(match));
+      for (final id in ['p-1', 'p-2', 'p-3', 'p-4']) {
+        final teamIndex = id == 'p-1' || id == 'p-2' ? 0 : 1;
+        notifier.dispatch(
+          TogglePlayerAction(participantId: id, teamIndex: teamIndex),
+        );
+        expect(notifier.canUndo, isFalse);
+      }
 
-      notifier.dispatch(TogglePlayerAction(participantId: 'p-1', teamIndex: 0));
+      notifier.dispatch(ConfirmLineupAction(pullingTeamId: 'team-1'));
+      expect(notifier.canUndo, isFalse);
+
+      final pullerState =
+          container.read<MatchGameState>(matchGameProvider(match))
+              as GameStatePullerSelection;
+      notifier.dispatch(SelectPullerAction(pullerState.activeTeamLineup[0]));
+      expect(notifier.canUndo, isFalse);
+
+      expect(await notifier.undo(), isFalse);
+      expect(eventsRepository.undoRequests, isEmpty);
+      expect(
+        container.read<MatchGameState>(matchGameProvider(match)),
+        isA<GameStateTakerSelection>(),
+      );
+    });
+
+    test('non-undoable action clears the previous undo slot', () async {
+      final container = createContainer();
+      final notifier = container.read(matchGameProvider(match).notifier);
+
+      final takerState = prepareTakerSelection(container, notifier);
+      notifier.dispatch(SelectTakerAction(takerState.activeTeamLineup[0]));
+      final playingState =
+          container.read<MatchGameState>(matchGameProvider(match))
+              as GameStatePlaying;
+      notifier.dispatch(ScoreGoalAction(playingState.activeTeamLineup[0]));
 
       expect(notifier.canUndo, isTrue);
 
-      final success = await notifier.undo();
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-1', teamIndex: 0));
 
-      expect(success, isTrue);
-      expect(
-        container.read<MatchGameState>(matchGameProvider(match)),
-        same(before),
-      );
-      expect(eventsRepository.undoRequests, isEmpty);
       expect(notifier.canUndo, isFalse);
+      expect(await notifier.undo(), isFalse);
+      expect(eventsRepository.undoRequests, isEmpty);
     });
 
     test('undo goal restores score and previous playing state', () async {

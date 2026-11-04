@@ -88,7 +88,9 @@ class MatchGameNotifier extends _$MatchGameNotifier {
     );
 
     state = transition.state;
-    _previousState = previous;
+    // Подготовка к розыгрышу не отменяется, а любое новое действие всё равно
+    // забирает слот отмены у предыдущего.
+    _previousState = action.isUndoable ? previous : null;
     _lastEventSend = null;
 
     // Движок создаёт не больше одного события на действие, поэтому для

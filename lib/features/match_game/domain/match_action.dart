@@ -8,6 +8,13 @@ import 'package:ultistats/features/matches/domain/entities/match_team.dart';
 /// вычисляет [MatchGameEngine] — это чистая доменная логика.
 sealed class MatchAction {
   const MatchAction();
+
+  /// Можно ли отменить действие кнопкой отмены.
+  ///
+  /// Подготовка к розыгрышу (выбор состава, подтверждение, выбор пуллера) не
+  /// отменяется: это навигация, а не игровое событие. Всё, что происходит после
+  /// пулла, отменяется.
+  bool get isUndoable => true;
 }
 
 class TogglePlayerAction extends MatchAction {
@@ -18,18 +25,27 @@ class TogglePlayerAction extends MatchAction {
 
   final String participantId;
   final int teamIndex;
+
+  @override
+  bool get isUndoable => false;
 }
 
 class ConfirmLineupAction extends MatchAction {
   const ConfirmLineupAction({required this.pullingTeamId});
 
   final String pullingTeamId;
+
+  @override
+  bool get isUndoable => false;
 }
 
 class SelectPullerAction extends MatchAction {
   const SelectPullerAction(this.puller);
 
   final MatchParticipant puller;
+
+  @override
+  bool get isUndoable => false;
 }
 
 class SelectTakerAction extends MatchAction {
@@ -80,4 +96,7 @@ class EndHalftimeAction extends MatchAction {
 /// события на сервере выполняет `MatchGameNotifier`.
 class UndoLastAction extends MatchAction {
   const UndoLastAction();
+
+  @override
+  bool get isUndoable => false;
 }
