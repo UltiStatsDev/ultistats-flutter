@@ -68,6 +68,10 @@ class MatchGameNotifier extends _$MatchGameNotifier {
     final repository = ref.read(matchesRepositoryProvider);
     final queue = ref.read(matchEventQueueProvider);
 
+    // Сразу уводим экран в состояние «Завершаем матч», иначе игрок может
+    // нажать «Окончить матч» ещё раз, пока очередь досылает события.
+    state = GameStateFinished(match: currentState.match, isSyncing: true);
+
     try {
       // Сначала дожидаемся последних событий, иначе сервер посчитает
       // статистику без них.
@@ -76,10 +80,10 @@ class MatchGameNotifier extends _$MatchGameNotifier {
 
       if (!ref.mounted) return;
 
-      state = GameStateFinished(match: currentState.match);
-
       ref.invalidate(matchDetailProvider);
       ref.invalidate(matchesListProvider);
+
+      state = GameStateFinished(match: currentState.match);
     } catch (e, st) {
       log(
         "Error while finishMatch",
@@ -87,6 +91,11 @@ class MatchGameNotifier extends _$MatchGameNotifier {
         stackTrace: st,
         name: runtimeType.toString(),
       );
+
+      // Возвращаем экран в рабочее состояние, чтобы можно было попробовать
+      // завершить матч снова.
+      if (!ref.mounted) return;
+      state = currentState;
     }
   }
 }

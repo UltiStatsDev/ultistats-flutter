@@ -22,7 +22,11 @@ class GameStateError extends MatchGameState {
 }
 
 class GameStateFinished extends MatchGameState {
-  GameStateFinished({required super.match});
+  /// Пока идут запросы к серверу, экран показывает «Завершаем матч»
+  /// и не даёт уйти назад.
+  final bool isSyncing;
+
+  const GameStateFinished({required super.match, this.isSyncing = false});
 }
 
 class GameStateLineupSelection extends MatchGameState {

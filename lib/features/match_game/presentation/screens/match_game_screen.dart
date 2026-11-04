@@ -6,9 +6,9 @@ import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
 import 'package:ultistats/features/match_game/domain/match_game_state.dart';
 import 'package:ultistats/features/match_game/presentation/providers/match_game_notifier.dart';
+import 'package:ultistats/features/match_game/presentation/widgets/finishing_match_widget.dart';
 import 'package:ultistats/features/match_game/presentation/widgets/halftime_widget.dart';
 import 'package:ultistats/features/match_game/presentation/widgets/lineup_selection_widget.dart';
-import 'package:ultistats/features/match_game/presentation/widgets/loading_widget.dart';
 import 'package:ultistats/features/match_game/presentation/widgets/playing_widget.dart';
 import 'package:ultistats/features/match_game/presentation/widgets/puller_selection_widget.dart';
 import 'package:ultistats/features/match_game/presentation/widgets/taker_selection_widget.dart';
@@ -27,7 +27,8 @@ class MatchGameScreen extends ConsumerWidget {
     final state = ref.watch(matchGameProvider(match));
 
     ref.listen(matchGameProvider(match), (previous, next) {
-      if (next is GameStateFinished) {
+      // Уходим из матча только после того, как все события ушли на сервер.
+      if (next is GameStateFinished && !next.isSyncing) {
         context.router.pop();
       }
     });
@@ -36,7 +37,10 @@ class MatchGameScreen extends ConsumerWidget {
     final team2 = state.match.teams[1];
 
     return PopScope(
-      canPop: state is! GameStateTimeout && state is! GameStateHalftime,
+      canPop:
+          state is! GameStateTimeout &&
+          state is! GameStateHalftime &&
+          state is! GameStateFinished,
       child: Scaffold(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: ScreenWrapper(
@@ -94,7 +98,7 @@ class MatchGameScreen extends ConsumerWidget {
       GameStatePlaying() => PlayingWidget(state: state),
       GameStateTimeout() => TimeoutWidget(state: state),
       GameStateHalftime() => HalftimeWidget(state: state),
-      GameStateFinished() => LoadingWidget(),
+      GameStateFinished() => const FinishingMatchWidget(),
       _ => throw UnimplementedError(),
     };
   }

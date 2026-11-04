@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:ultistats/core/di.dart';
@@ -21,12 +23,14 @@ import 'package:ultistats/features/match_game/presentation/providers/match_timer
 
 class FakeMatchEventsRepository implements MatchEventsRepository {
   final List<CreateEventParams> addedEvents = [];
+  Completer<void>? addEventGate;
 
   @override
   Future<List<Event>> getEvents(String matchId) async => const [];
 
   @override
   Future<void> addEvent(CreateEventParams params) async {
+    await addEventGate?.future;
     addedEvents.add(params);
   }
 
@@ -46,6 +50,7 @@ class FakeMatchesRepository implements MatchesRepository {
   FakeMatchesRepository({this.endMatchResult});
 
   final Future<MatchDetail>? endMatchResult;
+  Object? endMatchError;
   String? endMatchId;
   DateTime? endMatchDate;
 
@@ -77,6 +82,9 @@ class FakeMatchesRepository implements MatchesRepository {
   Future<MatchDetail> endMatch(String matchId, DateTime date) async {
     endMatchId = matchId;
     endMatchDate = date;
+    if (endMatchError != null) {
+      throw endMatchError!;
+    }
     final result = endMatchResult!;
     return result;
   }
@@ -247,6 +255,47 @@ void main() {
       final finishedState = container.read<MatchGameState>(matchGameProvider(match));
       expect(finishedState, isA<GameStateFinished>());
       expect(finishedState.match.id, 'match-1');
+      expect((finishedState as GameStateFinished).isSyncing, isFalse);
+    });
+
+    test('finish match waits for queued events before ending it', () async {
+      final container = createContainer();
+      final notifier = container.read(matchGameProvider(match).notifier);
+
+      eventsRepository.addEventGate = Completer<void>();
+      container
+          .read(matchEventQueueProvider)
+          .enqueue('match-1', MatchEvent.halftimeStart());
+
+      final finishing = notifier.finishMatch();
+
+      final syncingState =
+          container.read<MatchGameState>(matchGameProvider(match))
+              as GameStateFinished;
+      expect(syncingState.isSyncing, isTrue);
+      expect(matchesRepository.endMatchId, isNull);
+
+      eventsRepository.addEventGate!.complete();
+      await finishing;
+
+      expect(eventsRepository.addedEvents, hasLength(1));
+      expect(matchesRepository.endMatchId, 'match-1');
+      final finishedState =
+          container.read<MatchGameState>(matchGameProvider(match))
+              as GameStateFinished;
+      expect(finishedState.isSyncing, isFalse);
+    });
+
+    test('finish match returns to lineup state when endMatch fails', () async {
+      final container = createContainer();
+      final notifier = container.read(matchGameProvider(match).notifier);
+      final before = container.read<MatchGameState>(matchGameProvider(match));
+
+      matchesRepository.endMatchError = Exception('network');
+
+      await notifier.finishMatch();
+
+      expect(container.read<MatchGameState>(matchGameProvider(match)), same(before));
     });
   });
 }
