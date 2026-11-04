@@ -20,43 +20,47 @@ class AppBottomNavigationBar extends StatelessWidget {
         borderRadius: BorderRadius.vertical(
           top: Radius.circular(theme.navBarBorderRadius),
         ),
-        child: NavigationBar(
-          height: theme.navBarHeight,
-          surfaceTintColor: Colors.transparent,
-          elevation: 0,
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-          selectedIndex: tabsRouter.activeIndex,
-          onDestinationSelected: (index) {
-            tabsRouter.setActiveIndex(index);
-          },
-          backgroundColor: theme.bottomNavigationBarTheme.backgroundColor,
-          indicatorColor: Colors.transparent,
-          indicatorShape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              theme.navBarBorderRadius,
+        // На desktop тултипы пунктов меню открываются при наведении и падают
+        // с assertion `size == theater.size` в Overlay при пуше роута
+        // (баг Flutter 3.41: RawTooltip использует OverlayPortal).
+        child: TooltipVisibility(
+          visible: false,
+          child: NavigationBar(
+            height: theme.navBarHeight,
+            surfaceTintColor: Colors.transparent,
+            elevation: 0,
+            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+            selectedIndex: tabsRouter.activeIndex,
+            onDestinationSelected: (index) {
+              tabsRouter.setActiveIndex(index);
+            },
+            backgroundColor: theme.bottomNavigationBarTheme.backgroundColor,
+            indicatorColor: Colors.transparent,
+            indicatorShape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(theme.navBarBorderRadius),
             ),
-          ),
 
-          destinations: [
-            _NavigationBarDestination(
-              activeIndex: tabsRouter.activeIndex,
-              index: 0,
-              icon: Icons.scoreboard_outlined,
-              label: "Матчи",
-            ),
-            _NavigationBarDestination(
-              activeIndex: tabsRouter.activeIndex,
-              index: 1,
-              icon: Icons.group_outlined,
-              label: "Команды",
-            ),
-            _NavigationBarDestination(
-              activeIndex: tabsRouter.activeIndex,
-              index: 2,
-              icon: Icons.person_outlined,
-              label: "Игроки",
-            ),
-          ],
+            destinations: [
+              _NavigationBarDestination(
+                activeIndex: tabsRouter.activeIndex,
+                index: 0,
+                icon: Icons.scoreboard_outlined,
+                label: "Матчи",
+              ),
+              _NavigationBarDestination(
+                activeIndex: tabsRouter.activeIndex,
+                index: 1,
+                icon: Icons.group_outlined,
+                label: "Команды",
+              ),
+              _NavigationBarDestination(
+                activeIndex: tabsRouter.activeIndex,
+                index: 2,
+                icon: Icons.person_outlined,
+                label: "Игроки",
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -105,9 +109,7 @@ class _NavigationBarDestination extends StatelessWidget {
         height: theme.navBarItemHeight,
         decoration: BoxDecoration(
           color: activeBgColor,
-          borderRadius: BorderRadius.circular(
-            theme.navBarBorderRadius,
-          ),
+          borderRadius: BorderRadius.circular(theme.navBarBorderRadius),
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
