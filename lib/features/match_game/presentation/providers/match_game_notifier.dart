@@ -34,8 +34,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
 
   /// Единственная точка изменения состояния игры.
   ///
-  /// Перевод состояния и события для сервера вычисляет [MatchGameEngine],
-  /// поэтому новые действия не разрастаются методами в этом классе.
+  /// Перевод состояния и события для сервера вычисляет [MatchGameEngine].
   void dispatch(MatchAction action) {
     final transition = _engine.apply(state, action);
 

@@ -101,8 +101,6 @@ final matchStatisticsRepositoryProvider = Provider<MatchStatisticsRepository>((
 // Сервисы
 // =============================================================================
 
-/// Очередь отправки событий живёт вне notifier-а матча, чтобы неотправленные
-/// события не терялись при пересоздании экрана.
 final matchEventQueueProvider = Provider<MatchEventQueue>((ref) {
   return MatchEventQueue(ref.read(matchEventsRepositoryProvider));
 });
