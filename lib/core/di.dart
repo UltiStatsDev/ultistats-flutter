@@ -19,6 +19,7 @@ import 'package:ultistats/features/teams/data/repositories/teams_repository_impl
 import 'package:ultistats/features/matches/data/repositories/matches_repository_impl.dart';
 import 'package:ultistats/features/matches/data/repositories/match_events_repository_impl.dart';
 import 'package:ultistats/features/matches/data/repositories/match_statistics_repository_impl.dart';
+import 'package:ultistats/features/match_game/data/match_event_queue.dart';
 
 final dioProvider = Provider<Dio>((ref) {
   final dio = Dio(
@@ -94,4 +95,14 @@ final matchStatisticsRepositoryProvider = Provider<MatchStatisticsRepository>((
 ) {
   final api = ref.watch(matchStatisticsApiProvider);
   return MatchStatisticsRepositoryImpl(api);
+});
+
+// =============================================================================
+// Сервисы
+// =============================================================================
+
+/// Очередь отправки событий живёт вне notifier-а матча, чтобы неотправленные
+/// события не терялись при пересоздании экрана.
+final matchEventQueueProvider = Provider<MatchEventQueue>((ref) {
+  return MatchEventQueue(ref.read(matchEventsRepositoryProvider));
 });

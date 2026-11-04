@@ -5,9 +5,9 @@ import 'package:ultistats/core/di.dart';
 import 'package:ultistats/features/match_game/domain/match_action.dart';
 import 'package:ultistats/features/match_game/domain/match_game_engine.dart';
 import 'package:ultistats/features/match_game/domain/match_game_state.dart';
-import 'package:ultistats/features/match_game/presentation/providers/match_event_queue_provider.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
-import 'package:ultistats/features/matches/presentation/providers/matches_refresh_provider.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_detail/match_detail_notifier.dart';
+import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_notifier.dart';
 
 import 'match_timer_notifier.dart';
 
@@ -79,9 +79,8 @@ class MatchGameNotifier extends _$MatchGameNotifier {
 
       state = GameStateFinished(match: currentState.match);
 
-      ref.read(matchesRefreshProvider)
-        ..refreshDetail()
-        ..refreshList();
+      ref.invalidate(matchDetailProvider);
+      ref.invalidate(matchesListProvider);
     } catch (e, st) {
       log(
         "Error while finishMatch",
