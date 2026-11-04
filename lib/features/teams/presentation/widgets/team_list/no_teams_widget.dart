@@ -33,6 +33,7 @@ class NoTeamsWidget extends ConsumerWidget {
           right: 19 - theme.screenPadding,
           bottom: 24,
           child: FloatingActionButton(
+            heroTag: null,
             onPressed: () {
               context.router.push(
                 EditTeamRoute(
