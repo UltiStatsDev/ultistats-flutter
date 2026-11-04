@@ -88,7 +88,9 @@ class EditPlayerNotifier extends Notifier<EditPlayerState> {
         await playersRepo.uploadPlayerPhoto(finalPlayerId, bytes, filename);
       }
 
+      ref.invalidate(playerDetailProvider);
       ref.invalidate(playersListProvider);
+
       state = EditPlayerSaved();
     } catch (e, st) {
       log(
