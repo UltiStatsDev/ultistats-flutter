@@ -135,13 +135,60 @@ void main() {
 
       await expectLater(queue.drain('match-1'), completes);
     });
+
+    test('отмена уходит после всех поставленных событий', () async {
+      final calls = <String>[];
+      final firstSend = Completer<void>();
+      final repository = _FakeEventsRepository(
+        onAdd: (params) async {
+          calls.add('event:${params.event.type.name}');
+          if (calls.length == 1) {
+            await firstSend.future;
+          }
+        },
+        onUndo: (matchId) async => calls.add('undo:$matchId'),
+      );
+      final queue = MatchEventQueue(repository);
+
+      final first = queue.enqueue(
+        'match-1',
+        Event1.pickup(participantId: 'p-1'),
+      );
+      final undo = queue.enqueueUndo('match-1');
+
+      await Future<void>.delayed(Duration.zero);
+      expect(calls, ['event:PICKUP']);
+
+      firstSend.complete();
+      expect(await first, isTrue);
+      expect(await undo, isTrue);
+      expect(calls, ['event:PICKUP', 'undo:match-1']);
+    });
+
+    test('отмена не повторяется при ошибке', () async {
+      var attempts = 0;
+      final repository = _FakeEventsRepository(
+        onUndo: (_) async {
+          attempts++;
+          throw _networkError();
+        },
+      );
+      final queue = MatchEventQueue(
+        repository,
+        retryDelays: const [Duration.zero],
+      );
+
+      expect(await queue.enqueueUndo('match-1'), isFalse);
+      expect(attempts, 1);
+    });
   });
 }
 
 class _FakeEventsRepository implements MatchEventsRepository {
-  _FakeEventsRepository({this.onAdd});
+  _FakeEventsRepository({this.onAdd, this.onUndo});
 
   final Future<void> Function(CreateEventParams params)? onAdd;
+  final Future<void> Function(String matchId)? onUndo;
   final List<CreateEventParams> added = [];
 
   @override
@@ -152,6 +199,12 @@ class _FakeEventsRepository implements MatchEventsRepository {
 
   @override
   Future<List<Event>> getEvents(String matchId) async => const [];
+
+  @override
+  Future<Event> undoLastEvent(String matchId) async {
+    await onUndo?.call(matchId);
+    return MatchEvent.halftimeStart();
+  }
 
   @override
   Future<void> updateEvent(UpdateEventParams params) async {}

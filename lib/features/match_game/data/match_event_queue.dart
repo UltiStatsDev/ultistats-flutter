@@ -12,6 +12,10 @@ import 'package:ultistats/features/matches/domain/repositories/match_events_repo
 /// очередь: следующий запрос стартует только после завершения предыдущего,
 /// поэтому ответы не могут обогнать друг друга.
 ///
+/// Отмена последнего события ставится в ту же очередь: на сервер она уходит
+/// после всех уже поставленных событий, поэтому удаляется именно последнее из
+/// них.
+///
 /// Очередь живёт в провайдере уровня приложения, поэтому переживает
 /// пересоздание notifier-а экрана матча.
 class MatchEventQueue {
@@ -36,25 +40,57 @@ class MatchEventQueue {
 
   /// Ставит событие в очередь. Запрос уйдёт после всех предыдущих событий
   /// этого матча.
-  void enqueue(String matchId, Event event) {
+  ///
+  /// Возвращает `true`, если событие в итоге ушло на сервер, и `false`, если
+  /// все попытки провалились. Это позволяет отмене понять, можно ли откатывать
+  /// событие на сервере.
+  Future<bool> enqueue(String matchId, Event event) {
     log(
       'Enqueued ${event.type.name} event of match $matchId',
       name: 'MatchEventQueue',
       level: AppLogLevel.debug,
     );
 
+    return _enqueue(matchId, () => _sendWithRetry(matchId, event));
+  }
+
+  /// Ставит в очередь удаление последнего события матча.
+  ///
+  /// Запрос уйдёт после всех уже поставленных событий этого матча, поэтому на
+  /// сервере удалится именно последнее из них.
+  ///
+  /// Повторов нет: v1 undo не идемпотентен, и повтор после потерянного ответа
+  /// удалил бы ещё одно событие. Возвращает `true`, если событие удалено.
+  Future<bool> enqueueUndo(String matchId) {
+    log(
+      'Enqueued undo of last event of match $matchId',
+      name: 'MatchEventQueue',
+      level: AppLogLevel.debug,
+    );
+
+    return _enqueue(matchId, () => _undo(matchId));
+  }
+
+  /// Добавляет задачу в хвост очереди матча и возвращает её результат.
+  ///
+  /// Хвост не пробрасывает ошибки задачи дальше: иначе одна неудачная задача
+  /// навсегда заблокировала бы все следующие.
+  Future<bool> _enqueue(String matchId, Future<bool> Function() task) {
     final previous = _tails[matchId] ?? Future<void>.value();
 
-    final task = previous.then((_) => _sendWithRetry(matchId, event));
+    final result = previous.then((_) => task());
 
     late final Future<void> tail;
-    tail = task.whenComplete(() {
-      if (identical(_tails[matchId], tail)) {
-        _tails.remove(matchId);
-      }
-    });
+    tail = result
+        .then<void>((_) {}, onError: (Object _, StackTrace __) {})
+        .whenComplete(() {
+          if (identical(_tails[matchId], tail)) {
+            _tails.remove(matchId);
+          }
+        });
 
     _tails[matchId] = tail;
+    return result;
   }
 
   /// Завершается, когда все события матча отправлены (или окончательно
@@ -70,7 +106,7 @@ class MatchEventQueue {
     } while (!identical(tail, _tails[matchId]));
   }
 
-  Future<void> _sendWithRetry(String matchId, Event event) async {
+  Future<bool> _sendWithRetry(String matchId, Event event) async {
     final params = CreateEventParams(matchId: matchId, event: event);
 
     for (var attempt = 0; attempt < _maxAttempts; attempt++) {
@@ -82,7 +118,7 @@ class MatchEventQueue {
           name: 'MatchEventQueue',
           level: AppLogLevel.debug,
         );
-        return;
+        return true;
       } catch (error, stackTrace) {
         final isLastAttempt = attempt == _maxAttempts - 1;
         if (isLastAttempt || !_isRetryable(error)) {
@@ -92,7 +128,7 @@ class MatchEventQueue {
             stackTrace: stackTrace,
             name: 'MatchEventQueue',
           );
-          return;
+          return false;
         }
 
         log(
@@ -103,6 +139,28 @@ class MatchEventQueue {
         );
         await Future<void>.delayed(_retryDelays[attempt]);
       }
+    }
+
+    return false;
+  }
+
+  Future<bool> _undo(String matchId) async {
+    try {
+      await _repository.undoLastEvent(matchId);
+      log(
+        'Undid last event of match $matchId',
+        name: 'MatchEventQueue',
+        level: AppLogLevel.debug,
+      );
+      return true;
+    } catch (error, stackTrace) {
+      log(
+        'Failed to undo last event of match $matchId',
+        error: error,
+        stackTrace: stackTrace,
+        name: 'MatchEventQueue',
+      );
+      return false;
     }
   }
 

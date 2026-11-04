@@ -32,6 +32,7 @@ class MatchGameEngine {
       EndTimeoutAction() => _endTimeout(current, action),
       StartHalftimeAction() => _startHalftime(current),
       EndHalftimeAction() => _endHalftime(current),
+      UndoLastAction() => null,
     };
   }
 

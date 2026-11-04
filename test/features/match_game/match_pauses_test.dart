@@ -449,6 +449,9 @@ class _RecordingEventsRepository implements MatchEventsRepository {
   Future<List<Event>> getEvents(String matchId) async => List.of(events);
 
   @override
+  Future<Event> undoLastEvent(String matchId) async => events.removeLast();
+
+  @override
   Future<void> updateEvent(UpdateEventParams params) =>
       throw UnimplementedError();
 

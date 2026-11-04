@@ -23,7 +23,9 @@ import 'package:ultistats/features/match_game/presentation/providers/match_timer
 
 class FakeMatchEventsRepository implements MatchEventsRepository {
   final List<CreateEventParams> addedEvents = [];
+  final List<String> undoRequests = [];
   Completer<void>? addEventGate;
+  Object? undoError;
 
   @override
   Future<List<Event>> getEvents(String matchId) async => const [];
@@ -32,6 +34,14 @@ class FakeMatchEventsRepository implements MatchEventsRepository {
   Future<void> addEvent(CreateEventParams params) async {
     await addEventGate?.future;
     addedEvents.add(params);
+  }
+
+  @override
+  Future<Event> undoLastEvent(String matchId) async {
+    undoRequests.add(matchId);
+    final error = undoError;
+    if (error != null) throw error;
+    return MatchEvent.halftimeStart();
   }
 
   @override
@@ -174,6 +184,25 @@ void main() {
     return container;
   }
 
+  GameStateTakerSelection prepareTakerSelection(
+    ProviderContainer container,
+    MatchGameNotifier notifier,
+  ) {
+    notifier.dispatch(TogglePlayerAction(participantId: 'p-1', teamIndex: 0));
+    notifier.dispatch(TogglePlayerAction(participantId: 'p-2', teamIndex: 0));
+    notifier.dispatch(TogglePlayerAction(participantId: 'p-3', teamIndex: 1));
+    notifier.dispatch(TogglePlayerAction(participantId: 'p-4', teamIndex: 1));
+    notifier.dispatch(ConfirmLineupAction(pullingTeamId: 'team-1'));
+
+    final pullerState =
+        container.read<MatchGameState>(matchGameProvider(match))
+            as GameStatePullerSelection;
+    notifier.dispatch(SelectPullerAction(pullerState.activeTeamLineup[0]));
+
+    return container.read<MatchGameState>(matchGameProvider(match))
+        as GameStateTakerSelection;
+  }
+
   group('MatchGameNotifier', () {
     test('game starts in lineup selection state', () {
       final container = createContainer();
@@ -221,6 +250,126 @@ void main() {
       final afterGoal = container.read<MatchGameState>(matchGameProvider(match)) as GameStateLineupSelection;
       expect(afterGoal.match.teams[0].score, 0);
       expect(afterGoal.match.teams[1].score, 1);
+    });
+
+    test('undo removes last server event and returns to previous state', () async {
+      final container = createContainer();
+      final notifier = container.read(matchGameProvider(match).notifier);
+
+      final takerState = prepareTakerSelection(container, notifier);
+      notifier.dispatch(SelectTakerAction(takerState.activeTeamLineup[0]));
+
+      expect(notifier.canUndo, isTrue);
+
+      final success = await notifier.undo();
+
+      expect(success, isTrue);
+      expect(eventsRepository.undoRequests, ['match-1']);
+      expect(
+        container.read<MatchGameState>(matchGameProvider(match)),
+        same(takerState),
+      );
+      expect(notifier.canUndo, isFalse);
+
+      final secondUndo = await notifier.undo();
+      expect(secondUndo, isFalse);
+      expect(eventsRepository.undoRequests, hasLength(1));
+    });
+
+    test('undo waits for the last event before removing it', () async {
+      final container = createContainer();
+      final notifier = container.read(matchGameProvider(match).notifier);
+      eventsRepository.addEventGate = Completer<void>();
+
+      final takerState = prepareTakerSelection(container, notifier);
+      notifier.dispatch(SelectTakerAction(takerState.activeTeamLineup[0]));
+
+      final undo = notifier.undo();
+      await Future<void>.delayed(Duration.zero);
+      expect(eventsRepository.undoRequests, isEmpty);
+
+      eventsRepository.addEventGate!.complete();
+      expect(await undo, isTrue);
+      expect(eventsRepository.undoRequests, ['match-1']);
+    });
+
+    test('failed undo keeps the previous state for a retry', () async {
+      final container = createContainer();
+      final notifier = container.read(matchGameProvider(match).notifier);
+      eventsRepository.undoError = Exception('server error');
+
+      final takerState = prepareTakerSelection(container, notifier);
+      notifier.dispatch(SelectTakerAction(takerState.activeTeamLineup[0]));
+      final current = container.read<MatchGameState>(matchGameProvider(match));
+
+      expect(await notifier.undo(), isFalse);
+
+      expect(
+        container.read<MatchGameState>(matchGameProvider(match)),
+        same(current),
+      );
+      expect(notifier.canUndo, isTrue);
+
+      eventsRepository.undoError = null;
+      expect(await notifier.undo(), isTrue);
+      expect(
+        container.read<MatchGameState>(matchGameProvider(match)),
+        same(takerState),
+      );
+      expect(eventsRepository.undoRequests, hasLength(2));
+      expect(notifier.canUndo, isFalse);
+    });
+
+    test('undo reverts lineup toggle without calling the server', () async {
+      final container = createContainer();
+      final notifier = container.read(matchGameProvider(match).notifier);
+
+      final before = container.read<MatchGameState>(matchGameProvider(match));
+
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-1', teamIndex: 0));
+
+      expect(notifier.canUndo, isTrue);
+
+      final success = await notifier.undo();
+
+      expect(success, isTrue);
+      expect(
+        container.read<MatchGameState>(matchGameProvider(match)),
+        same(before),
+      );
+      expect(eventsRepository.undoRequests, isEmpty);
+      expect(notifier.canUndo, isFalse);
+    });
+
+    test('undo goal restores score and previous playing state', () async {
+      final container = createContainer();
+      final notifier = container.read(matchGameProvider(match).notifier);
+
+      final takerState = prepareTakerSelection(container, notifier);
+      notifier.dispatch(SelectTakerAction(takerState.activeTeamLineup[0]));
+      final playingState =
+          container.read<MatchGameState>(matchGameProvider(match))
+              as GameStatePlaying;
+
+      notifier.dispatch(ScoreGoalAction(playingState.activeTeamLineup[0]));
+      final afterGoal =
+          container.read<MatchGameState>(matchGameProvider(match))
+              as GameStateLineupSelection;
+      expect(afterGoal.match.teams[1].score, 1);
+
+      final success = await notifier.undo();
+
+      expect(success, isTrue);
+      final afterUndo =
+          container.read<MatchGameState>(matchGameProvider(match))
+              as GameStatePlaying;
+      expect(afterUndo.match.teams[1].score, 0);
+      expect(
+        afterUndo.currentThrower.participantId,
+        playingState.currentThrower.participantId,
+      );
+      expect(eventsRepository.undoRequests, ['match-1']);
+      expect(notifier.canUndo, isFalse);
     });
 
     test('finish match ends it and transitions to finished state', () async {

@@ -117,6 +117,10 @@ class _GatedEventsRepository implements MatchEventsRepository {
   }
 
   @override
+  Future<Event> undoLastEvent(String matchId) async =>
+      MatchEvent.halftimeStart();
+
+  @override
   Future<void> updateEvent(UpdateEventParams params) async {}
 
   @override

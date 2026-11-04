@@ -73,3 +73,11 @@ class StartHalftimeAction extends MatchAction {
 class EndHalftimeAction extends MatchAction {
   const EndHalftimeAction();
 }
+
+/// Отмена последнего действия.
+///
+/// Движок это действие не обрабатывает: откат состояния и удаление последнего
+/// события на сервере выполняет `MatchGameNotifier`.
+class UndoLastAction extends MatchAction {
+  const UndoLastAction();
+}

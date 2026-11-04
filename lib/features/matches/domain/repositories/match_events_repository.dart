@@ -7,6 +7,9 @@ abstract interface class MatchEventsRepository {
 
   Future<void> addEvent(CreateEventParams params);
 
+  /// Отменяет последнее событие матча на сервере и возвращает его.
+  Future<Event> undoLastEvent(String matchId);
+
   Future<void> updateEvent(UpdateEventParams params);
 
   Future<void> deleteEvent(String matchId, String eventId);

@@ -14,6 +14,7 @@ import 'package:ultistats/features/match_game/presentation/widgets/puller_select
 import 'package:ultistats/features/match_game/presentation/widgets/taker_selection_widget.dart';
 import 'package:ultistats/features/match_game/presentation/widgets/timer/timer_widget.dart';
 import 'package:ultistats/features/match_game/presentation/widgets/timeout_widget.dart';
+import 'package:ultistats/features/match_game/presentation/widgets/common/undo_button.dart';
 
 @RoutePage()
 class MatchGameScreen extends ConsumerWidget {
@@ -53,6 +54,8 @@ class MatchGameScreen extends ConsumerWidget {
                     child: Text(
                       team1.name,
                       textAlign: TextAlign.end,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium,
                     ),
                   ),
@@ -70,9 +73,12 @@ class MatchGameScreen extends ConsumerWidget {
                     child: Text(
                       team2.name,
                       textAlign: TextAlign.start,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       style: theme.textTheme.titleMedium,
                     ),
                   ),
+                  UndoButton(match: match),
                 ],
               ),
               SizedBox(height: 4),
