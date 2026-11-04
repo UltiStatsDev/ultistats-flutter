@@ -19,7 +19,7 @@ import 'package:ultistats/features/match_game/presentation/widgets/common/pause_
 
 void main() {
   _testMatch(
-    'таймаут останавливает игру и возвращает прежнего владельца диска',
+    'таймаут блокирует игровые действия и возвращает прежнего владельца диска',
     (tester, fixture) async {
       fixture.startPlaying();
       final game = fixture.game;
@@ -27,7 +27,8 @@ void main() {
       game.dispatch(StartTimeoutAction(team: before.activeTeam));
 
       expect(fixture.state, isNot(isA<GameStatePlaying>()));
-      expect(fixture.timer.isRunning, isFalse);
+      // Таймаут имеет собственный счётчик, игровое время при этом идёт.
+      expect(fixture.timer.isRunning, isTrue);
       final paused = fixture.state;
       final elapsed = fixture.timer.elapsed;
       game.dispatch(StartTimeoutAction(team: before.activeTeam));
@@ -39,7 +40,7 @@ void main() {
       game.dispatch(ScoreGoalAction(before.currentThrower));
       expect(fixture.state, same(paused));
       await tester.pump(const Duration(seconds: 5));
-      expect(fixture.timer.elapsed, elapsed);
+      expect(fixture.timer.elapsed, elapsed + const Duration(seconds: 5));
 
       game.dispatch(EndTimeoutAction(team: before.activeTeam));
       game.dispatch(EndTimeoutAction(team: before.activeTeam));
@@ -47,7 +48,7 @@ void main() {
       expect(fixture.state, same(before));
       expect(fixture.timer.isRunning, isTrue);
       await tester.pump(const Duration(seconds: 1));
-      expect(fixture.timer.elapsed, elapsed + const Duration(seconds: 1));
+      expect(fixture.timer.elapsed, elapsed + const Duration(seconds: 6));
       expect(fixture.pauseEvents, [
         EventType.TIMEOUT_START,
         EventType.TIMEOUT_END,
@@ -57,7 +58,7 @@ void main() {
     },
   );
 
-  _testMatch('халфтайм сохраняет выбранный состав и возобновляет таймер', (
+  _testMatch('халфтайм сохраняет выбранный состав и возвращает игру', (
     tester,
     fixture,
   ) async {
@@ -66,7 +67,8 @@ void main() {
     final before = fixture.state;
     fixture.game.dispatch(const StartHalftimeAction());
     expect(fixture.state, isNot(isA<GameStateLineupSelection>()));
-    expect(fixture.timer.isRunning, isFalse);
+    // Перерыв имеет собственный счётчик, игровое время при этом идёт.
+    expect(fixture.timer.isRunning, isTrue);
     final paused = fixture.state;
     final elapsed = fixture.timer.elapsed;
     fixture.game.dispatch(const StartHalftimeAction());
@@ -77,7 +79,7 @@ void main() {
     fixture.game.finishMatch();
     expect(fixture.state, same(paused));
     await tester.pump(const Duration(seconds: 5));
-    expect(fixture.timer.elapsed, elapsed);
+    expect(fixture.timer.elapsed, elapsed + const Duration(seconds: 5));
 
     fixture.game.dispatch(const EndHalftimeAction());
     fixture.game.dispatch(const EndHalftimeAction());
@@ -128,7 +130,8 @@ void main() {
     expect(find.text('0:0'), findsOneWidget);
     expect(find.text('ВРЕМЯ МАТЧА'), findsOneWidget);
     expect(find.text('DROP'), findsNothing);
-    expect(fixture.timer.isRunning, isFalse);
+    // На таймауте игровое время продолжает идти.
+    expect(fixture.timer.isRunning, isTrue);
     expect(
       tester
           .widget<OutlinedButton>(find.widgetWithText(OutlinedButton, 'T'))
@@ -168,7 +171,8 @@ void main() {
     expect(find.text('Между половинами'), findsOneWidget);
     expect(find.text('0:0'), findsOneWidget);
     expect(find.text('Окончить матч'), findsNothing);
-    expect(fixture.timer.isRunning, isFalse);
+    // В перерыве игровое время продолжает идти.
+    expect(fixture.timer.isRunning, isTrue);
     expect(
       tester.widget<PopScope>(find.byType(PopScope).first).canPop,
       isFalse,
@@ -206,7 +210,7 @@ void main() {
     await navigatorKey.currentState!.maybePop();
     await tester.pumpAndSettle();
     expect(find.text('ПЕРЕРЫВ'), findsOneWidget);
-    expect(fixture.timer.isRunning, isFalse);
+    expect(fixture.timer.isRunning, isTrue);
     expect(fixture.pauseEvents, [EventType.HALFTIME_START]);
 
     fixture.game.dispatch(const EndHalftimeAction());
@@ -216,7 +220,7 @@ void main() {
     await navigatorKey.currentState!.maybePop();
     await tester.pumpAndSettle();
     expect(find.text('ТАЙМАУТ'), findsOneWidget);
-    expect(fixture.timer.isRunning, isFalse);
+    expect(fixture.timer.isRunning, isTrue);
     expect(fixture.pauseEvents, [
       EventType.HALFTIME_START,
       EventType.HALFTIME_END,
