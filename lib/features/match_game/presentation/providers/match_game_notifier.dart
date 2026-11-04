@@ -18,13 +18,15 @@ part 'match_game_notifier.g.dart';
 class MatchGameNotifier extends _$MatchGameNotifier {
   static const _engine = MatchGameEngine();
 
-  /// Состояние до последнего действия. Живёт только до одной отмены.
-  MatchGameState? _previousState;
+  /// Точка отмены: состояние до последнего действия и результат отправки его
+  /// события. `sent == null`, если действие не создавало событий.
+  ///
+  /// Живёт только до одной отмены.
+  ({MatchGameState state, Future<bool>? sent})? _undoPoint;
 
-  /// Результат отправки последнего события. `null`, если действие не создало
-  /// событий (например, выбор состава).
-  Future<bool>? _lastEventSend;
-
+  /// Пока отмена ждёт ответа сервера, новые действия запрещены: иначе событие
+  /// встанет в очередь между отменяемым событием и запросом отмены, и отмена
+  /// удалит уже его.
   bool _isUndoing = false;
 
   @override
@@ -44,9 +46,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
 
   /// Можно ли отменить последнее действие. Отмена доступна только один раз:
   /// после успешного отката предыдущее состояние очищается.
-  bool get canUndo => _previousState != null && !_isUndoing;
-
-  bool get isUndoing => _isUndoing;
+  bool get canUndo => _undoPoint != null && !_isUndoing;
 
   /// Единственная точка изменения состояния игры.
   ///
@@ -88,17 +88,18 @@ class MatchGameNotifier extends _$MatchGameNotifier {
     );
 
     state = transition.state;
-    // Любое новое действие забирает слот отмены у предыдущего, но выбор
-    // игроков состава его не занимает.
-    _previousState = action.isUndoable ? previous : null;
-    _lastEventSend = null;
 
     // Движок создаёт не больше одного события на действие, поэтому для
     // отмены достаточно одного undo-запроса.
     final queue = ref.read(matchEventQueueProvider);
+    Future<bool>? sent;
     for (final event in transition.events) {
-      _lastEventSend = queue.enqueue(state.match.id, event);
+      sent = queue.enqueue(state.match.id, event);
     }
+
+    // Любое новое действие забирает слот отмены у предыдущего, но выбор
+    // игроков состава его не занимает.
+    _undoPoint = action.isUndoable ? (state: previous, sent: sent) : null;
   }
 
   /// Откатывает последнее действие и, если оно создало событие, удаляет это
@@ -106,35 +107,28 @@ class MatchGameNotifier extends _$MatchGameNotifier {
   ///
   /// Возвращает `true`, если состояние удалось откатить.
   Future<bool> undo() async {
-    final previous = _previousState;
-    if (previous == null || _isUndoing) return false;
+    final point = _undoPoint;
+    if (point == null || _isUndoing) return false;
 
-    final current = state;
-    final matchId = current.match.id;
-    final lastEventSend = _lastEventSend;
+    final matchId = state.match.id;
     final queue = ref.read(matchEventQueueProvider);
 
     _isUndoing = true;
-    _previousState = null;
+    _undoPoint = null;
 
     log(
-      "Undoing ${current.runtimeType} -> ${previous.runtimeType} "
+      "Undoing ${state.runtimeType} -> ${point.state.runtimeType} "
       "for match $matchId",
       name: runtimeType.toString(),
     );
 
     try {
-      if (lastEventSend != null) {
-        // Дожидаемся отправки последнего события, иначе отмена удалит на
-        // сервере чужое (предыдущее) событие.
-        final sent = await lastEventSend;
-
-        if (sent) {
-          // Отмена встаёт в ту же очередь, что и события, поэтому на сервер
-          // она уйдёт после всех уже поставленных запросов.
-          final undone = await queue.enqueueUndo(matchId);
-
-          if (!undone) {
+      final sent = point.sent;
+      if (sent != null) {
+        // Если событие не дошло до сервера, undo удалил бы предыдущее
+        // (успешно отправленное) событие, поэтому откатываем только локально.
+        if (await sent) {
+          if (!await queue.enqueueUndo(matchId)) {
             throw StateError('Failed to undo last event of match $matchId');
           }
 
@@ -153,14 +147,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
 
       if (!ref.mounted) return false;
 
-      state = previous;
-      _lastEventSend = null;
-
-      if (lastEventSend != null) {
-        ref.invalidate(matchDetailProvider);
-        ref.invalidate(matchesListProvider);
-      }
-
+      state = point.state;
       log("Undid last action for match $matchId", name: runtimeType.toString());
       return true;
     } catch (e, st) {
@@ -172,7 +159,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       );
 
       // Оставляем возможность повторить отмену.
-      _previousState = previous;
+      _undoPoint = point;
       return false;
     } finally {
       _isUndoing = false;
@@ -202,14 +189,14 @@ class MatchGameNotifier extends _$MatchGameNotifier {
     final matchId = currentState.match.id;
     final repository = ref.read(matchesRepositoryProvider);
     final queue = ref.read(matchEventQueueProvider);
-    final previousBeforeFinish = _previousState;
+    final undoPointBeforeFinish = _undoPoint;
 
     log("Finishing match $matchId", name: runtimeType.toString());
 
     // Сразу уводим экран в состояние «Завершаем матч», иначе игрок может
     // нажать «Окончить матч» ещё раз, пока очередь досылает события.
     state = GameStateFinished(match: currentState.match, isSyncing: true);
-    _previousState = null;
+    _undoPoint = null;
 
     try {
       // Сначала дожидаемся последних событий, иначе сервер посчитает
@@ -236,7 +223,7 @@ class MatchGameNotifier extends _$MatchGameNotifier {
       // Возвращаем экран в рабочее состояние, чтобы можно было попробовать
       // завершить матч снова.
       if (!ref.mounted) return;
-      _previousState = previousBeforeFinish;
+      _undoPoint = undoPointBeforeFinish;
       state = currentState;
     }
   }
