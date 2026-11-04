@@ -49,6 +49,8 @@ class MatchGameScreen extends ConsumerWidget {
             children: [
               Row(
                 children: [
+                  // Симметрично кнопке отмены, чтобы счёт был по центру.
+                  const SizedBox(width: UndoButton.width),
                   Expanded(
                     flex: 2,
                     child: Text(

@@ -62,6 +62,24 @@ void main() {
       container.dispose();
     }
   });
+
+  testWidgets('счёт остаётся по центру экрана', (tester) async {
+    final container = _createContainer(_RecordingEventsRepository());
+    try {
+      await _showScreen(tester, container, _match());
+      await tester.pump();
+
+      final screenWidth =
+          tester.view.physicalSize.width / tester.view.devicePixelRatio;
+      expect(
+        tester.getCenter(find.text('0:0')).dx,
+        closeTo(screenWidth / 2, 0.5),
+      );
+    } finally {
+      await tester.pumpWidget(const SizedBox.shrink());
+      container.dispose();
+    }
+  });
 }
 
 IconButton _undoButton(WidgetTester tester) =>

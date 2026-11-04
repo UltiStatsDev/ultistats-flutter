@@ -10,6 +10,10 @@ import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
 class UndoButton extends ConsumerStatefulWidget {
   const UndoButton({super.key, required this.match});
 
+  /// Ширина кнопки. Экран оставляет столько же места слева, чтобы счёт был
+  /// ровно по центру.
+  static const width = 48.0;
+
   final MatchDetail match;
 
   @override
@@ -46,18 +50,23 @@ class _UndoButtonState extends ConsumerState<UndoButton> {
     final notifier = ref.read(matchGameProvider(widget.match).notifier);
     final canUndo = notifier.canUndo && !_isBusy;
 
-    return IconButton(
-      onPressed: canUndo ? _undo : null,
-      tooltip: 'Отменить последнее действие',
-      visualDensity: VisualDensity.compact,
-      icon: _isBusy
-          ? const SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            )
-          : const Icon(Icons.undo),
-      disabledColor: Theme.of(context).disabledColor,
+    return SizedBox(
+      width: UndoButton.width,
+      height: UndoButton.width,
+      child: IconButton(
+        onPressed: canUndo ? _undo : null,
+        tooltip: 'Отменить последнее действие',
+        padding: EdgeInsets.zero,
+        constraints: const BoxConstraints(),
+        icon: _isBusy
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              )
+            : const Icon(Icons.undo),
+        disabledColor: Theme.of(context).disabledColor,
+      ),
     );
   }
 }
