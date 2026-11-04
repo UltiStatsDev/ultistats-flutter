@@ -11,9 +11,9 @@ sealed class MatchAction {
 
   /// Можно ли отменить действие кнопкой отмены.
   ///
-  /// Подготовка к розыгрышу (выбор состава, подтверждение, выбор пуллера) не
-  /// отменяется: это навигация, а не игровое событие. Всё, что происходит после
-  /// пулла, отменяется.
+  /// Выбор игроков состава — черновик: его можно переключать сколько угодно до
+  /// подтверждения, поэтому слот отмены он не занимает. Остальные действия,
+  /// включая подтверждение состава и пулл, отменяются.
   bool get isUndoable => true;
 }
 
@@ -34,18 +34,12 @@ class ConfirmLineupAction extends MatchAction {
   const ConfirmLineupAction({required this.pullingTeamId});
 
   final String pullingTeamId;
-
-  @override
-  bool get isUndoable => false;
 }
 
 class SelectPullerAction extends MatchAction {
   const SelectPullerAction(this.puller);
 
   final MatchParticipant puller;
-
-  @override
-  bool get isUndoable => false;
 }
 
 class SelectTakerAction extends MatchAction {

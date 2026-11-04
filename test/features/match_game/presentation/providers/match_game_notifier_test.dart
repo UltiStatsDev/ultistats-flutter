@@ -320,7 +320,7 @@ void main() {
       expect(notifier.canUndo, isFalse);
     });
 
-    test('lineup, confirm and puller choice are not undoable', () async {
+    test('lineup toggles are not undoable', () async {
       final container = createContainer();
       final notifier = container.read(matchGameProvider(match).notifier);
 
@@ -332,21 +332,58 @@ void main() {
         expect(notifier.canUndo, isFalse);
       }
 
-      notifier.dispatch(ConfirmLineupAction(pullingTeamId: 'team-1'));
-      expect(notifier.canUndo, isFalse);
-
-      final pullerState =
-          container.read<MatchGameState>(matchGameProvider(match))
-              as GameStatePullerSelection;
-      notifier.dispatch(SelectPullerAction(pullerState.activeTeamLineup[0]));
-      expect(notifier.canUndo, isFalse);
-
       expect(await notifier.undo(), isFalse);
       expect(eventsRepository.undoRequests, isEmpty);
       expect(
         container.read<MatchGameState>(matchGameProvider(match)),
-        isA<GameStateTakerSelection>(),
+        isA<GameStateLineupSelection>(),
       );
+    });
+
+    test('confirm lineup is undone locally', () async {
+      final container = createContainer();
+      final notifier = container.read(matchGameProvider(match).notifier);
+
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-1', teamIndex: 0));
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-2', teamIndex: 0));
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-3', teamIndex: 1));
+      notifier.dispatch(TogglePlayerAction(participantId: 'p-4', teamIndex: 1));
+      final lineupState =
+          container.read<MatchGameState>(matchGameProvider(match));
+
+      notifier.dispatch(ConfirmLineupAction(pullingTeamId: 'team-1'));
+      expect(
+        container.read<MatchGameState>(matchGameProvider(match)),
+        isA<GameStatePullerSelection>(),
+      );
+      expect(notifier.canUndo, isTrue);
+
+      expect(await notifier.undo(), isTrue);
+
+      expect(
+        container.read<MatchGameState>(matchGameProvider(match)),
+        same(lineupState),
+      );
+      expect(eventsRepository.undoRequests, isEmpty);
+      expect(notifier.canUndo, isFalse);
+    });
+
+    test('pull is undone and removes the PULL event', () async {
+      final container = createContainer();
+      final notifier = container.read(matchGameProvider(match).notifier);
+
+      final takerState = prepareTakerSelection(container, notifier);
+      expect(takerState, isA<GameStateTakerSelection>());
+      expect(notifier.canUndo, isTrue);
+
+      expect(await notifier.undo(), isTrue);
+
+      expect(
+        container.read<MatchGameState>(matchGameProvider(match)),
+        isA<GameStatePullerSelection>(),
+      );
+      expect(eventsRepository.undoRequests, ['match-1']);
+      expect(notifier.canUndo, isFalse);
     });
 
     test('non-undoable action clears the previous undo slot', () async {

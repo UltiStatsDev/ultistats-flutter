@@ -88,8 +88,8 @@ class MatchGameNotifier extends _$MatchGameNotifier {
     );
 
     state = transition.state;
-    // Подготовка к розыгрышу не отменяется, а любое новое действие всё равно
-    // забирает слот отмены у предыдущего.
+    // Любое новое действие забирает слот отмены у предыдущего, но выбор
+    // игроков состава его не занимает.
     _previousState = action.isUndoable ? previous : null;
     _lastEventSend = null;
 
