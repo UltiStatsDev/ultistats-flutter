@@ -14,7 +14,7 @@ import 'package:ultistats/features/match_game/presentation/providers/match_game_
 import 'package:ultistats/features/match_game/domain/match_game_state.dart';
 import 'package:ultistats/features/match_game/domain/match_action.dart';
 import 'package:ultistats/features/match_game/presentation/providers/match_timer_notifier.dart';
-import 'package:ultistats/features/match_game/presentation/screens/match_screen.dart';
+import 'package:ultistats/features/match_game/presentation/screens/match_game_screen.dart';
 import 'package:ultistats/features/match_game/presentation/widgets/common/pause_widget.dart';
 
 void main() {
@@ -197,7 +197,7 @@ void main() {
       ),
     );
     navigatorKey.currentState!.push<void>(
-      MaterialPageRoute(builder: (_) => MatchScreen(match: fixture.match)),
+      MaterialPageRoute(builder: (_) => MatchGameScreen(match: fixture.match)),
     );
     await tester.pumpAndSettle();
 
@@ -227,7 +227,7 @@ void main() {
     await tester.pump();
     await navigatorKey.currentState!.maybePop();
     await tester.pumpAndSettle();
-    expect(find.byType(MatchScreen), findsNothing);
+    expect(find.byType(MatchGameScreen), findsNothing);
     expect(find.text('Список матчей'), findsOneWidget);
   });
 
@@ -416,7 +416,7 @@ class _Fixture {
       container: container,
       child: MaterialApp(
         theme: createLightTheme(),
-        home: MatchScreen(match: match),
+        home: MatchGameScreen(match: match),
       ),
     ),
   );

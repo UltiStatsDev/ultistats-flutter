@@ -72,6 +72,11 @@ class AppRouter extends RootStackRouter {
         ),
       ],
     ),
-    AutoRoute(page: MatchRoute.page, path: "/match"),
+    CustomRoute(
+      page: MatchGameRoute.page,
+      path: "/match",
+      duration: Duration(seconds: 0),
+      reverseDuration: Duration(seconds: 0),
+    ),
   ];
 }

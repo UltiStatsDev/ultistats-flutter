@@ -16,8 +16,8 @@ import 'package:ultistats/features/match_game/presentation/widgets/timer/timer_w
 import 'package:ultistats/features/match_game/presentation/widgets/timeout_widget.dart';
 
 @RoutePage()
-class MatchScreen extends ConsumerWidget {
-  const MatchScreen({super.key, required this.match});
+class MatchGameScreen extends ConsumerWidget {
+  const MatchGameScreen({super.key, required this.match});
 
   final MatchDetail match;
 

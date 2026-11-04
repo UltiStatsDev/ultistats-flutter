@@ -89,7 +89,7 @@ class MatchDetailWidget extends ConsumerWidget {
         if (match.status == MatchStatus.inProgress)
           ConfirmEditButton(
             confirmButtonText: "К игровому полю",
-            onTap: () => context.router.push(MatchRoute(match: match)),
+            onTap: () => context.router.push(MatchGameRoute(match: match)),
           ),
         const SizedBox(height: 12),
       ],

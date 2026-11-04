@@ -22,7 +22,7 @@ class MatchDetailScreen extends ConsumerWidget {
     ref.listen(matchDetailProvider(matchId), (previous, next) {
       if (next is MatchDetailLoaded &&
           next.match.status == MatchStatus.inProgress) {
-        context.router.push(MatchRoute(match: next.match));
+        context.router.push(MatchGameRoute(match: next.match));
       }
     });
 

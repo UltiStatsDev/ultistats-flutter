@@ -13,7 +13,7 @@ import 'package:auto_route/auto_route.dart' as _i15;
 import 'package:flutter/material.dart' as _i16;
 import 'package:ultistats/features/dashboard/presentation/screens/dashboard_screen.dart'
     as _i1;
-import 'package:ultistats/features/match_game/presentation/screens/match_screen.dart'
+import 'package:ultistats/features/match_game/presentation/screens/match_game_screen.dart'
     as _i6;
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart'
     as _i17;
@@ -332,31 +332,31 @@ class MatchDetailRouteArgs {
 }
 
 /// generated route for
-/// [_i6.MatchScreen]
-class MatchRoute extends _i15.PageRouteInfo<MatchRouteArgs> {
-  MatchRoute({
+/// [_i6.MatchGameScreen]
+class MatchGameRoute extends _i15.PageRouteInfo<MatchGameRouteArgs> {
+  MatchGameRoute({
     _i16.Key? key,
     required _i17.MatchDetail match,
     List<_i15.PageRouteInfo>? children,
   }) : super(
-         MatchRoute.name,
-         args: MatchRouteArgs(key: key, match: match),
+         MatchGameRoute.name,
+         args: MatchGameRouteArgs(key: key, match: match),
          initialChildren: children,
        );
 
-  static const String name = 'MatchRoute';
+  static const String name = 'MatchGameRoute';
 
   static _i15.PageInfo page = _i15.PageInfo(
     name,
     builder: (data) {
-      final args = data.argsAs<MatchRouteArgs>();
-      return _i6.MatchScreen(key: args.key, match: args.match);
+      final args = data.argsAs<MatchGameRouteArgs>();
+      return _i6.MatchGameScreen(key: args.key, match: args.match);
     },
   );
 }
 
-class MatchRouteArgs {
-  const MatchRouteArgs({this.key, required this.match});
+class MatchGameRouteArgs {
+  const MatchGameRouteArgs({this.key, required this.match});
 
   final _i16.Key? key;
 
@@ -364,13 +364,13 @@ class MatchRouteArgs {
 
   @override
   String toString() {
-    return 'MatchRouteArgs{key: $key, match: $match}';
+    return 'MatchGameRouteArgs{key: $key, match: $match}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    if (other is! MatchRouteArgs) return false;
+    if (other is! MatchGameRouteArgs) return false;
     return key == other.key && match == other.match;
   }
 
