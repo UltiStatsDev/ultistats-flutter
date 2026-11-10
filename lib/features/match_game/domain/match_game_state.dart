@@ -78,12 +78,17 @@ class GameStatePullerSelection extends GameStateWithLineup {
 }
 
 class GameStateTakerSelection extends GameStateWithLineup {
+  /// Игрок, выполнивший пулл, если подбор идёт сразу после пулла.
+  /// Пока поле не пустое, до подбора можно объявить brick.
+  final MatchParticipant? pullPuller;
+
   const GameStateTakerSelection({
     required super.match,
     required super.activeTeam,
     required super.activeTeamLineup,
     required super.opponentTeam,
     required super.opponentTeamLineup,
+    this.pullPuller,
   });
 }
 

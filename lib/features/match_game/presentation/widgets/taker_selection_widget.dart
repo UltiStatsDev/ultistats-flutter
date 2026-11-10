@@ -23,6 +23,24 @@ class TakerSelectionWidget extends ConsumerWidget {
           child: ActiveTeamWidget(team: state.activeTeam),
         ),
         SizedBox(height: 8),
+        if (state.pullPuller != null) ...[
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  "Брик от ${state.pullPuller!.displayName}",
+                  style: theme.textTheme.displayMedium,
+                ),
+              ),
+              const SizedBox(width: 8),
+              EventButton(
+                onPressed: () => notifier.dispatch(const DeclareBrickAction()),
+                text: "BRICK",
+              ),
+            ],
+          ),
+          SizedBox(height: 12),
+        ],
         Expanded(
           child: ListView.separated(
             padding: EdgeInsets.zero,

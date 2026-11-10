@@ -246,7 +246,7 @@ void main() {
         takerState.activeTeamLineup[0].participantId,
       );
 
-      notifier.dispatch(ScoreGoalAction(playingState.activeTeamLineup[0]));
+      notifier.dispatch(ScoreGoalAction(playingState.activeTeamLineup[1]));
       final afterGoal = container.read<MatchGameState>(matchGameProvider(match)) as GameStateLineupSelection;
       expect(afterGoal.match.teams[0].score, 0);
       expect(afterGoal.match.teams[1].score, 1);
@@ -395,7 +395,7 @@ void main() {
       final playingState =
           container.read<MatchGameState>(matchGameProvider(match))
               as GameStatePlaying;
-      notifier.dispatch(ScoreGoalAction(playingState.activeTeamLineup[0]));
+      notifier.dispatch(ScoreGoalAction(playingState.activeTeamLineup[1]));
 
       expect(notifier.canUndo, isTrue);
 
@@ -423,7 +423,7 @@ void main() {
           container.read<MatchGameState>(matchGameProvider(match))
               as GameStatePlaying;
 
-      notifier.dispatch(ScoreGoalAction(playingState.activeTeamLineup[0]));
+      notifier.dispatch(ScoreGoalAction(playingState.activeTeamLineup[1]));
       final afterGoal =
           container.read<MatchGameState>(matchGameProvider(match))
               as GameStateLineupSelection;
@@ -463,7 +463,7 @@ void main() {
       var takerState = container.read<MatchGameState>(matchGameProvider(match)) as GameStateTakerSelection;
       notifier.dispatch(SelectTakerAction(takerState.activeTeamLineup[0]));
       var playingState = container.read<MatchGameState>(matchGameProvider(match)) as GameStatePlaying;
-      notifier.dispatch(ScoreGoalAction(playingState.activeTeamLineup[0]));
+      notifier.dispatch(ScoreGoalAction(playingState.activeTeamLineup[1]));
       lineupState = container.read<MatchGameState>(matchGameProvider(match)) as GameStateLineupSelection;
 
       expect(lineupState.team1SelectedIds.length, 2);

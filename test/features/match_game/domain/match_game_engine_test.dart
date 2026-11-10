@@ -204,19 +204,6 @@ void main() {
       expect(event.toParticipantId, receiver.participantId);
     });
 
-    test('перехват переключает активную команду', () {
-      final playing = _playing(_match());
-
-      final result = _engine.apply(
-        playing,
-        const DeclareTurnoverAction(),
-      )!;
-      final next = result.state as GameStateTakerSelection;
-
-      expect(next.activeTeam.id, playing.opponentTeam.id);
-      expect(result.events.single.type, EventType.INCOMPLETE_PASS);
-    });
-
     test('гол увеличивает счёт и возвращает к выбору состава', () {
       final playing = _playing(_match());
 
@@ -231,6 +218,146 @@ void main() {
       expect(next.team1SelectedIds, {'a1', 'a2'});
       expect(next.team2SelectedIds, {'b1', 'b2'});
       expect(result.events.single.type, EventType.GOAL);
+    });
+  });
+
+  group('события защиты и потери', () {
+    test('throwaway освобождает диск и переводит подбор сопернику', () {
+      final playing = _playing(_match());
+
+      final result = _engine.apply(playing, const ThrowAwayAction())!;
+      final next = result.state as GameStateTakerSelection;
+
+      expect(next.activeTeam.id, playing.opponentTeam.id);
+      expect(next.activeTeamLineup, playing.opponentTeamLineup);
+      expect(next.pullPuller, isNull);
+      final event = result.events.single as Event1;
+      expect(event.type, EventType.INCOMPLETE_PASS);
+      expect(event.participantId, playing.currentThrower.participantId);
+    });
+
+    test('пас самому себе и сопернику недопустим', () {
+      final playing = _playing(_match());
+
+      expect(_engine.apply(playing, PassToAction(playing.currentThrower)), isNull);
+      expect(
+        _engine.apply(playing, PassToAction(playing.opponentTeamLineup.first)),
+        isNull,
+      );
+    });
+
+    test('блок создаёт событие нужного вида и освобождает диск', () {
+      final playing = _playing(_match());
+      final defender = playing.opponentTeamLineup.first;
+
+      const kinds = {
+        BlockKind.unspecified: EventType.BLOCK,
+        BlockKind.marker: EventType.BLOCK_MARKER,
+        BlockKind.field: EventType.BLOCK_FIELD,
+      };
+
+      for (final entry in kinds.entries) {
+        final result = _engine.apply(
+          playing,
+          BlockAction(blocker: defender, kind: entry.key),
+        )!;
+        final next = result.state as GameStateTakerSelection;
+
+        expect(next.activeTeam.id, playing.opponentTeam.id);
+        final event = result.events.single as Event2;
+        expect(event.type, entry.value);
+        expect(event.participantId, playing.currentThrower.participantId);
+        expect(event.toParticipantId, defender.participantId);
+      }
+    });
+
+    test('блок игроком своей команды недопустим', () {
+      final playing = _playing(_match());
+
+      expect(
+        _engine.apply(
+          playing,
+          BlockAction(blocker: playing.activeTeamLineup[1]),
+        ),
+        isNull,
+      );
+    });
+
+    test('перехват сразу передаёт владение перехватившему', () {
+      final playing = _playing(_match());
+      final defender = playing.opponentTeamLineup.first;
+
+      final result = _engine.apply(
+        playing,
+        InterceptionAction(defender),
+      )!;
+      final next = result.state as GameStatePlaying;
+
+      expect(next.activeTeam.id, playing.opponentTeam.id);
+      expect(next.currentThrower.participantId, defender.participantId);
+      final event = result.events.single as Event2;
+      expect(event.type, EventType.INTERCEPTION);
+      expect(event.participantId, playing.currentThrower.participantId);
+      expect(event.toParticipantId, defender.participantId);
+    });
+
+    test('кэллахан приносит очко защите и завершает поинт', () {
+      final playing = _playing(_match());
+      final defender = playing.opponentTeamLineup.first;
+
+      final result = _engine.apply(playing, CallahanAction(defender))!;
+      final next = result.state as GameStateLineupSelection;
+
+      expect(next.match.teams[0].score, 1);
+      expect(next.match.teams[1].score, 0);
+      expect(next.team1SelectedIds, {'a1', 'a2'});
+      expect(next.team2SelectedIds, {'b1', 'b2'});
+      expect(result.events.single.type, EventType.CALLAHAN);
+    });
+
+    test('защитное действие своим игроком недопустимо', () {
+      final playing = _playing(_match());
+      final ownPlayer = playing.activeTeamLineup[1];
+
+      expect(_engine.apply(playing, InterceptionAction(ownPlayer)), isNull);
+      expect(_engine.apply(playing, CallahanAction(ownPlayer)), isNull);
+    });
+
+    test('brick доступен только сразу после пулла и объявляется пуллером', () {
+      final match = _match();
+      final puller = _engine.apply(
+        _fullLineup(match),
+        const ConfirmLineupAction(pullingTeamId: 'team-1'),
+      )!;
+      final afterPuller = _engine.apply(
+        puller.state,
+        SelectPullerAction(
+          (puller.state as GameStatePullerSelection).activeTeamLineup.first,
+        ),
+      )!;
+      final takerSelection = afterPuller.state as GameStateTakerSelection;
+
+      expect(takerSelection.pullPuller, isNotNull);
+
+      final result = _engine.apply(
+        takerSelection,
+        const DeclareBrickAction(),
+      )!;
+      final next = result.state as GameStateTakerSelection;
+
+      expect(next.pullPuller, isNull);
+      final event = result.events.single as Event1;
+      expect(event.type, EventType.BRICK);
+      expect(event.participantId, takerSelection.pullPuller!.participantId);
+
+      expect(
+        _engine.apply(next, const DeclareBrickAction()),
+        isNull,
+      );
+      expect(
+        _engine.apply(_playing(match), const DeclareBrickAction()),
+        isNull,
+      );
     });
   });
 

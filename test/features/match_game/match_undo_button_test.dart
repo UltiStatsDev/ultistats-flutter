@@ -29,7 +29,7 @@ void main() {
         matchGameProvider(match),
       );
 
-      game.dispatch(PassToAction(match.teams[1].participants.last));
+      game.dispatch(PassToAction(match.teams[1].participants[2]));
       await _showScreen(tester, container, match);
       await tester.pump();
 

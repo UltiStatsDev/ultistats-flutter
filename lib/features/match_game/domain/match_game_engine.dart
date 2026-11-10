@@ -1,6 +1,8 @@
 import 'package:ultistats/features/matches/domain/entities/event.dart';
 import 'package:ultistats/features/match_game/domain/match_game_state.dart';
+import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
 import 'package:ultistats/features/matches/domain/entities/match_participant.dart';
+import 'package:ultistats/features/matches/domain/entities/match_team.dart';
 import 'package:ultistats/features/match_game/domain/match_action.dart';
 
 /// Результат перехода: новое состояние игры и события, которые нужно отправить.
@@ -25,8 +27,12 @@ class MatchGameEngine {
       ConfirmLineupAction() => _confirmLineup(current, action),
       SelectPullerAction() => _selectPuller(current, action),
       SelectTakerAction() => _selectTaker(current, action),
+      DeclareBrickAction() => _declareBrick(current),
       PassToAction() => _passTo(current, action),
-      DeclareTurnoverAction() => _declareTurnover(current),
+      ThrowAwayAction() => _throwAway(current),
+      BlockAction() => _block(current, action),
+      InterceptionAction() => _interception(current, action),
+      CallahanAction() => _callahan(current, action),
       ScoreGoalAction() => _scoreGoal(current, action),
       StartTimeoutAction() => _startTimeout(current, action),
       EndTimeoutAction() => _endTimeout(current, action),
@@ -115,6 +121,7 @@ class MatchGameEngine {
         activeTeamLineup: current.opponentTeamLineup,
         opponentTeam: current.activeTeam,
         opponentTeamLineup: current.activeTeamLineup,
+        pullPuller: action.puller,
       ),
       events: [Event1.pull(participantId: action.puller.participantId)],
     );
@@ -125,6 +132,12 @@ class MatchGameEngine {
     SelectTakerAction action,
   ) {
     if (current is! GameStateTakerSelection) return null;
+    if (!_containsParticipant(
+      current.activeTeamLineup,
+      action.taker.participantId,
+    )) {
+      return null;
+    }
 
     return MatchGameTransition(
       state: GameStatePlaying(
@@ -139,8 +152,27 @@ class MatchGameEngine {
     );
   }
 
+  MatchGameTransition? _declareBrick(MatchGameState current) {
+    if (current is! GameStateTakerSelection) return null;
+
+    final puller = current.pullPuller;
+    if (puller == null) return null;
+
+    return MatchGameTransition(
+      state: GameStateTakerSelection(
+        match: current.match,
+        activeTeam: current.activeTeam,
+        activeTeamLineup: current.activeTeamLineup,
+        opponentTeam: current.opponentTeam,
+        opponentTeamLineup: current.opponentTeamLineup,
+      ),
+      events: [Event1.brick(participantId: puller.participantId)],
+    );
+  }
+
   MatchGameTransition? _passTo(MatchGameState current, PassToAction action) {
     if (current is! GameStatePlaying) return null;
+    if (!_canReceive(current, action.receiver.participantId)) return null;
 
     return MatchGameTransition(
       state: GameStatePlaying(
@@ -160,20 +192,95 @@ class MatchGameEngine {
     );
   }
 
-  MatchGameTransition? _declareTurnover(MatchGameState current) {
+  MatchGameTransition? _throwAway(MatchGameState current) {
     if (current is! GameStatePlaying) return null;
 
     return MatchGameTransition(
-      state: GameStateTakerSelection(
+      state: _pickupState(current.opponentTeam, current),
+      events: [
+        Event1.incompletePass(
+          participantId: current.currentThrower.participantId,
+        ),
+      ],
+    );
+  }
+
+  MatchGameTransition? _block(
+    MatchGameState current,
+    BlockAction action,
+  ) {
+    if (current is! GameStatePlaying) return null;
+    if (!_isOpponentPlayer(current, action.blocker.participantId)) {
+      return null;
+    }
+
+    final fromId = current.currentThrower.participantId;
+    final toId = action.blocker.participantId;
+    final event = switch (action.kind) {
+      BlockKind.unspecified => Event2.block(
+        participantId: fromId,
+        toParticipantId: toId,
+      ),
+      BlockKind.marker => Event2.blockMarker(
+        participantId: fromId,
+        toParticipantId: toId,
+      ),
+      BlockKind.field => Event2.blockField(
+        participantId: fromId,
+        toParticipantId: toId,
+      ),
+    };
+
+    return MatchGameTransition(
+      state: _pickupState(current.opponentTeam, current),
+      events: [event],
+    );
+  }
+
+  MatchGameTransition? _interception(
+    MatchGameState current,
+    InterceptionAction action,
+  ) {
+    if (current is! GameStatePlaying) return null;
+    if (!_isOpponentPlayer(current, action.interceptor.participantId)) {
+      return null;
+    }
+
+    return MatchGameTransition(
+      state: GameStatePlaying(
         match: current.match,
         activeTeam: current.opponentTeam,
         activeTeamLineup: current.opponentTeamLineup,
         opponentTeam: current.activeTeam,
         opponentTeamLineup: current.activeTeamLineup,
+        currentThrower: action.interceptor,
       ),
       events: [
-        Event1.incompletePass(
+        Event2.interception(
           participantId: current.currentThrower.participantId,
+          toParticipantId: action.interceptor.participantId,
+        ),
+      ],
+    );
+  }
+
+  MatchGameTransition? _callahan(
+    MatchGameState current,
+    CallahanAction action,
+  ) {
+    if (current is! GameStatePlaying) return null;
+    if (!_isOpponentPlayer(current, action.interceptor.participantId)) {
+      return null;
+    }
+
+    final updatedMatch = _addPoint(current.match, current.opponentTeam.id);
+
+    return MatchGameTransition(
+      state: _nextPointState(current, updatedMatch),
+      events: [
+        Event2.callahan(
+          participantId: current.currentThrower.participantId,
+          toParticipantId: action.interceptor.participantId,
         ),
       ],
     );
@@ -184,34 +291,12 @@ class MatchGameEngine {
     ScoreGoalAction action,
   ) {
     if (current is! GameStatePlaying) return null;
+    if (!_canReceive(current, action.scorer.participantId)) return null;
 
-    final match = current.match;
-    final team1Id = match.teams[0].id;
-
-    final updatedTeams = match.teams.map((team) {
-      if (team.id == current.activeTeam.id) {
-        return team.copyWith(score: team.score + 1);
-      }
-      return team;
-    }).toList();
-
-    final updatedMatch = match.copyWith(teams: updatedTeams);
-
-    final isTeam1Active = current.activeTeam.id == team1Id;
-
-    final team1Lineup = isTeam1Active
-        ? current.activeTeamLineup
-        : current.opponentTeamLineup;
-    final team2Lineup = isTeam1Active
-        ? current.opponentTeamLineup
-        : current.activeTeamLineup;
+    final updatedMatch = _addPoint(current.match, current.activeTeam.id);
 
     return MatchGameTransition(
-      state: GameStateLineupSelection(
-        match: updatedMatch,
-        team1SelectedIds: _playerIds(team1Lineup),
-        team2SelectedIds: _playerIds(team2Lineup),
-      ),
+      state: _nextPointState(current, updatedMatch),
       events: [
         Event2.goal(
           participantId: current.currentThrower.participantId,
@@ -280,4 +365,72 @@ class MatchGameEngine {
       .where((p) => p.kind == ParticipantKind.player)
       .map((p) => p.participantId)
       .toSet();
+
+  bool _containsParticipant(List<MatchParticipant> lineup, String id) =>
+      lineup.any((p) => p.participantId == id);
+
+  /// Принимать пас или забивать может только партнёр, но не сам бросающий.
+  bool _canReceive(GameStatePlaying current, String participantId) {
+    if (participantId == current.currentThrower.participantId) return false;
+    return _containsParticipant(current.activeTeamLineup, participantId);
+  }
+
+  /// Действие защиты выполняет игрок противоположной команды.
+  bool _isOpponentPlayer(GameStatePlaying current, String participantId) {
+    if (participantId == current.currentThrower.participantId) return false;
+    return _containsParticipant(current.opponentTeamLineup, participantId);
+  }
+
+  /// Свободный диск подбирает команда [team], которая становится активной.
+  GameStateTakerSelection _pickupState(
+    MatchTeam team,
+    GameStatePlaying current,
+  ) {
+    final isOpponent = team.id == current.opponentTeam.id;
+
+    return GameStateTakerSelection(
+      match: current.match,
+      activeTeam: team,
+      activeTeamLineup: isOpponent
+          ? current.opponentTeamLineup
+          : current.activeTeamLineup,
+      opponentTeam: isOpponent ? current.activeTeam : current.opponentTeam,
+      opponentTeamLineup: isOpponent
+          ? current.activeTeamLineup
+          : current.opponentTeamLineup,
+    );
+  }
+
+  MatchDetail _addPoint(MatchDetail match, String teamId) {
+    final updatedTeams = match.teams.map((team) {
+      if (team.id == teamId) {
+        return team.copyWith(score: team.score + 1);
+      }
+      return team;
+    }).toList();
+
+    return match.copyWith(teams: updatedTeams);
+  }
+
+  /// Возвращает выбор состава для следующего поинта, сохраняя составы команд.
+  GameStateLineupSelection _nextPointState(
+    GameStatePlaying current,
+    MatchDetail updatedMatch,
+  ) {
+    final team1Id = current.match.teams[0].id;
+    final isTeam1Active = current.activeTeam.id == team1Id;
+
+    final team1Lineup = isTeam1Active
+        ? current.activeTeamLineup
+        : current.opponentTeamLineup;
+    final team2Lineup = isTeam1Active
+        ? current.opponentTeamLineup
+        : current.activeTeamLineup;
+
+    return GameStateLineupSelection(
+      match: updatedMatch,
+      team1SelectedIds: _playerIds(team1Lineup),
+      team2SelectedIds: _playerIds(team2Lineup),
+    );
+  }
 }

@@ -54,8 +54,43 @@ class PassToAction extends MatchAction {
   final MatchParticipant receiver;
 }
 
-class DeclareTurnoverAction extends MatchAction {
-  const DeclareTurnoverAction();
+/// Игрок с диском не завершил бросок: throwaway, выход в аут или
+/// потерянная ловля. Событие INCOMPLETE_PASS записывается бросающему.
+class ThrowAwayAction extends MatchAction {
+  const ThrowAwayAction();
+}
+
+/// Вид блока: без уточнения, блок маркером или блок полевым защитником.
+enum BlockKind { unspecified, marker, field }
+
+/// Защитник заблокировал бросок соперника.
+class BlockAction extends MatchAction {
+  const BlockAction({
+    required this.blocker,
+    this.kind = BlockKind.unspecified,
+  });
+
+  final MatchParticipant blocker;
+  final BlockKind kind;
+}
+
+/// Защитник поймал пас соперника и сразу получил владение.
+class InterceptionAction extends MatchAction {
+  const InterceptionAction(this.interceptor);
+
+  final MatchParticipant interceptor;
+}
+
+/// Защитник перехватил пас в голевой зоне и завершил поинт.
+class CallahanAction extends MatchAction {
+  const CallahanAction(this.interceptor);
+
+  final MatchParticipant interceptor;
+}
+
+/// Объявление brick для пулла, который только что выполнялся.
+class DeclareBrickAction extends MatchAction {
+  const DeclareBrickAction();
 }
 
 class ScoreGoalAction extends MatchAction {

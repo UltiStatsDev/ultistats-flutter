@@ -36,8 +36,8 @@ void main() {
       game.dispatch(const EndHalftimeAction());
       game.dispatch(EndTimeoutAction(team: before.opponentTeam));
       game.dispatch(PassToAction(before.activeTeamLineup.last));
-      game.dispatch(const DeclareTurnoverAction());
-      game.dispatch(ScoreGoalAction(before.currentThrower));
+      game.dispatch(const ThrowAwayAction());
+      game.dispatch(ScoreGoalAction(before.activeTeamLineup.first));
       expect(fixture.state, same(paused));
       await tester.pump(const Duration(seconds: 5));
       expect(fixture.timer.elapsed, elapsed + const Duration(seconds: 5));
@@ -129,7 +129,7 @@ void main() {
     expect(find.text('Команда 2'), findsNWidgets(2));
     expect(find.text('0:0'), findsOneWidget);
     expect(find.text('ВРЕМЯ МАТЧА'), findsOneWidget);
-    expect(find.text('DROP'), findsNothing);
+    expect(find.text('THROW'), findsNothing);
     // На таймауте игровое время продолжает идти.
     expect(fixture.timer.isRunning, isTrue);
     expect(
@@ -152,7 +152,7 @@ void main() {
     await tester.pump();
     expect(fixture.state, same(before));
     expect(find.text('ТАЙМАУТ'), findsNothing);
-    expect(find.text('DROP'), findsOneWidget);
+    expect(find.text('THROW'), findsOneWidget);
     expect(fixture.timer.isRunning, isTrue);
     await tester.pumpWidget(const SizedBox.shrink());
   });

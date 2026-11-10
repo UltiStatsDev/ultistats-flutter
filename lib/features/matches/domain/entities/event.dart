@@ -72,6 +72,13 @@ class Event1 extends Event {
         type: EventType.TURNOVER,
       );
 
+  Event1.brick({DateTime? occurredAt, required String participantId})
+    : this(
+        occurredAt: occurredAt,
+        participantId: participantId,
+        type: EventType.BRICK,
+      );
+
   Event1.pickup({DateTime? occurredAt, required String participantId})
     : this(
         occurredAt: occurredAt,
@@ -121,6 +128,50 @@ class Event2 extends Event1 {
          participantId: participantId,
          toParticipantId: toParticipantId,
          type: EventType.BLOCK,
+       );
+
+  Event2.blockMarker({
+    DateTime? occurredAt,
+    required String participantId,
+    required String toParticipantId,
+  }) : this(
+         occurredAt: occurredAt,
+         participantId: participantId,
+         toParticipantId: toParticipantId,
+         type: EventType.BLOCK_MARKER,
+       );
+
+  Event2.blockField({
+    DateTime? occurredAt,
+    required String participantId,
+    required String toParticipantId,
+  }) : this(
+         occurredAt: occurredAt,
+         participantId: participantId,
+         toParticipantId: toParticipantId,
+         type: EventType.BLOCK_FIELD,
+       );
+
+  Event2.interception({
+    DateTime? occurredAt,
+    required String participantId,
+    required String toParticipantId,
+  }) : this(
+         occurredAt: occurredAt,
+         participantId: participantId,
+         toParticipantId: toParticipantId,
+         type: EventType.INTERCEPTION,
+       );
+
+  Event2.callahan({
+    DateTime? occurredAt,
+    required String participantId,
+    required String toParticipantId,
+  }) : this(
+         occurredAt: occurredAt,
+         participantId: participantId,
+         toParticipantId: toParticipantId,
+         type: EventType.CALLAHAN,
        );
 }
 
