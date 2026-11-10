@@ -11,9 +11,14 @@ PlayerDetailModel _$PlayerDetailModelFromJson(Map<String, dynamic> json) =>
       id: json['id'] as String,
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
-      memberships: (json['memberships'] as List<dynamic>)
-          .map((e) => PlayerMembershipModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      memberships:
+          (json['memberships'] as List<dynamic>?)
+              ?.map(
+                (e) =>
+                    PlayerMembershipModel.fromJson(e as Map<String, dynamic>),
+              )
+              .toList() ??
+          [],
       photoUrl: json['photoUrl'] as String?,
     );
 

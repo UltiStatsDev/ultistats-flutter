@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/features/teams/domain/entities/team_list_item.dart';
 import 'package:ultistats/features/teams/presentation/providers/common/team_search_provider.dart';
@@ -114,7 +115,14 @@ class _TeamSearchField extends StatelessWidget {
                 teamSearchProvider(textEditingValue.text).future,
               );
               return results.where((team) => !excludedIds.contains(team.id));
-            } catch (e) {
+            } catch (e, st) {
+              log(
+                "Error while loading team suggestions",
+                error: e,
+                stackTrace: st,
+                name: "TeamSelectorTile",
+                level: AppLogLevel.warning,
+              );
               return const Iterable<TeamListItem>.empty();
             }
           },

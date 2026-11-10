@@ -1,0 +1,119 @@
+import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
+import 'package:ultistats/features/matches/domain/entities/match_participant.dart';
+import 'package:ultistats/features/matches/domain/entities/match_team.dart';
+
+sealed class MatchGameState {
+  const MatchGameState({required this.match});
+
+  final MatchDetail match;
+}
+
+class GameStateError extends MatchGameState {
+  final String message;
+  final Exception exception;
+  final StackTrace stackTrace;
+
+  const GameStateError(
+    this.message,
+    this.exception,
+    this.stackTrace,
+    MatchDetail match,
+  ) : super(match: match);
+}
+
+class GameStateFinished extends MatchGameState {
+  /// Пока идут запросы к серверу, экран показывает «Завершаем матч»
+  /// и не даёт уйти назад.
+  final bool isSyncing;
+
+  const GameStateFinished({required super.match, this.isSyncing = false});
+}
+
+class GameStateLineupSelection extends MatchGameState {
+  final Set<String> team1SelectedIds;
+  final Set<String> team2SelectedIds;
+
+  const GameStateLineupSelection({
+    required super.match,
+    this.team1SelectedIds = const {},
+    this.team2SelectedIds = const {},
+  });
+
+  GameStateLineupSelection copyWith({
+    Set<String>? team1SelectedIds,
+    Set<String>? team2SelectedIds,
+  }) {
+    return GameStateLineupSelection(
+      match: match,
+      team1SelectedIds: team1SelectedIds ?? this.team1SelectedIds,
+      team2SelectedIds: team2SelectedIds ?? this.team2SelectedIds,
+    );
+  }
+}
+
+abstract class GameStateWithLineup extends MatchGameState {
+  final MatchTeam activeTeam;
+  final List<MatchParticipant> activeTeamLineup;
+
+  final MatchTeam opponentTeam;
+  final List<MatchParticipant> opponentTeamLineup;
+
+  const GameStateWithLineup({
+    required super.match,
+    required this.activeTeam,
+    required this.activeTeamLineup,
+    required this.opponentTeam,
+    required this.opponentTeamLineup,
+  });
+}
+
+class GameStatePullerSelection extends GameStateWithLineup {
+  const GameStatePullerSelection({
+    required super.match,
+    required super.activeTeam,
+    required super.activeTeamLineup,
+    required super.opponentTeam,
+    required super.opponentTeamLineup,
+  });
+}
+
+class GameStateTakerSelection extends GameStateWithLineup {
+  const GameStateTakerSelection({
+    required super.match,
+    required super.activeTeam,
+    required super.activeTeamLineup,
+    required super.opponentTeam,
+    required super.opponentTeamLineup,
+  });
+}
+
+class GameStatePlaying extends GameStateWithLineup {
+  final MatchParticipant currentThrower;
+
+  const GameStatePlaying({
+    required super.match,
+    required super.activeTeam,
+    required super.activeTeamLineup,
+    required super.opponentTeam,
+    required super.opponentTeamLineup,
+    required this.currentThrower,
+  });
+}
+
+class GameStateTimeout extends MatchGameState {
+  final GameStatePlaying resumeState;
+  final DateTime startedAt;
+
+  GameStateTimeout({required this.resumeState, required this.startedAt})
+    : super(match: resumeState.match);
+
+  MatchTeam get team => resumeState.activeTeam;
+}
+
+class GameStateHalftime extends MatchGameState {
+  final GameStateLineupSelection resumeState;
+  final DateTime startedAt;
+
+  GameStateHalftime({required this.resumeState, required this.startedAt})
+    : super(match: resumeState.match);
+}

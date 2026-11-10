@@ -1,8 +1,6 @@
-import 'dart:developer';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/matches/domain/params/create_match_params.dart';
 import 'package:ultistats/features/matches/domain/params/update_match_params.dart';
 import 'package:ultistats/features/matches/presentation/providers/edit_match/edit_match_state.dart';
@@ -14,12 +12,14 @@ class EditMatchNotifier extends Notifier<EditMatchState> {
   EditMatchState build() => const EditMatchInitial();
 
   Future<void> deleteMatch({required String id}) async {
+    log("Deleting match $id", name: runtimeType.toString());
     state = EditMatchLoading();
 
     try {
       final matchesRepo = ref.read(matchesRepositoryProvider);
       await matchesRepo.deleteById(id);
       ref.invalidate(matchesListProvider);
+      log("Match $id deleted", name: runtimeType.toString());
       state = EditMatchDeleted();
     } catch (e, st) {
       log(
@@ -38,10 +38,20 @@ class EditMatchNotifier extends Notifier<EditMatchState> {
     required int playersPerTeam,
     DateTime? plannedStartTime,
   }) async {
+    final isUpdate = matchId != null;
+    log(
+      isUpdate
+          ? "Updating match $matchId (teams: ${teamIds.join(', ')}, "
+                "players per team: $playersPerTeam)"
+          : "Creating match (teams: ${teamIds.join(', ')}, "
+                "players per team: $playersPerTeam)",
+      name: runtimeType.toString(),
+    );
     state = EditMatchLoading();
 
     try {
       final matchesRepo = ref.read(matchesRepositoryProvider);
+      String? savedMatchId = matchId;
 
       if (matchId != null) {
         await matchesRepo.updateById(
@@ -64,6 +74,12 @@ class EditMatchNotifier extends Notifier<EditMatchState> {
 
       ref.invalidate(matchDetailProvider);
       ref.invalidate(matchesListProvider);
+      log(
+        isUpdate
+            ? "Match $savedMatchId updated"
+            : "Match created (teams: ${teamIds.join(', ')})",
+        name: runtimeType.toString(),
+      );
       state = EditMatchSaved();
     } catch (e, st) {
       log(

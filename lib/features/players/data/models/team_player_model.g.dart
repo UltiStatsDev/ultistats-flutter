@@ -8,8 +8,8 @@ part of 'team_player_model.dart';
 
 TeamPlayerModel _$TeamPlayerModelFromJson(Map<String, dynamic> json) =>
     TeamPlayerModel(
-      teamId: json['teamId'] as String,
       playerId: json['playerId'] as String,
+      teamId: json['teamId'] as String,
       number: (json['number'] as num?)?.toInt(),
       firstName: json['firstName'] as String,
       lastName: json['lastName'] as String,
@@ -18,8 +18,8 @@ TeamPlayerModel _$TeamPlayerModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$TeamPlayerModelToJson(TeamPlayerModel instance) =>
     <String, dynamic>{
-      'teamId': instance.teamId,
       'playerId': instance.playerId,
+      'teamId': instance.teamId,
       'number': instance.number,
       'firstName': instance.firstName,
       'lastName': instance.lastName,

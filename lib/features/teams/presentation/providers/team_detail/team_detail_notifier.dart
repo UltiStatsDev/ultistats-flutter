@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/players/presentation/providers/player_detail/player_detail_notifier.dart';
 import 'package:ultistats/features/teams/presentation/providers/team_detail/team_detail_state.dart';
 
@@ -17,12 +17,27 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
   }
 
   Future<void> _loadTeam(String id) async {
+    log(
+      "Loading team $id",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
     try {
       final repository = ref.read(teamsRepositoryProvider);
       final team = await repository.getById(id);
 
+      log(
+        "Loaded team $id \"${team.name}\" (players: ${team.players.length})",
+        name: runtimeType.toString(),
+      );
       state = TeamDetailLoaded(team);
     } catch (e, st) {
+      log(
+        "Error while _loadTeam",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
       state = TeamDetailError(e, st);
     }
   }
@@ -35,6 +50,11 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
     final currentState = state;
     if (currentState is! TeamDetailLoaded) return;
 
+    log(
+      "Setting number $number for player $playerId in team $id",
+      name: runtimeType.toString(),
+    );
+
     state = currentState.copyWith(
       processingPlayerIds: {...currentState.processingPlayerIds, playerId},
     );
@@ -44,6 +64,11 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
       await repository.addOrUpdatePlayerInTeam(id, playerId, number);
       final team = await repository.getById(id);
 
+      log(
+        "Player $playerId saved in team $id",
+        name: runtimeType.toString(),
+        level: AppLogLevel.debug,
+      );
       if (state is TeamDetailLoaded) {
         state = TeamDetailLoaded(
           team,
@@ -76,6 +101,11 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
     final currentState = state;
     if (currentState is! TeamDetailLoaded) return;
 
+    log(
+      "Removing player $playerId from team $id",
+      name: runtimeType.toString(),
+    );
+
     state = currentState.copyWith(
       processingPlayerIds: {...currentState.processingPlayerIds, playerId},
     );
@@ -85,6 +115,11 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
       await repository.removePlayerFromTeam(id, playerId);
       final team = await repository.getById(id);
 
+      log(
+        "Player $playerId removed from team $id",
+        name: runtimeType.toString(),
+        level: AppLogLevel.debug,
+      );
       if (state is TeamDetailLoaded) {
         state = TeamDetailLoaded(
           team,
@@ -104,6 +139,12 @@ class TeamDetailNotifier extends _$TeamDetailNotifier {
         );
       }
       completer?.completeError(e, st);
+      log(
+        "Error while removePlayer",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
     }
   }
 

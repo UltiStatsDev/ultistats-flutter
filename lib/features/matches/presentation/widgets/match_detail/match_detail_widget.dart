@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/confirm_edit_button.dart';
 import 'package:ultistats/core/widgets/photo_widget.dart';
+import 'package:ultistats/features/auth/presentation/providers/auth_controller.dart';
 import 'package:ultistats/features/matches/domain/entities/match_detail.dart';
 import 'package:ultistats/features/matches/presentation/providers/match_detail/match_detail_notifier.dart';
 import 'package:ultistats/features/matches/presentation/providers/match_detail/match_detail_state.dart';
@@ -25,6 +26,7 @@ class MatchDetailWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final match = state.match;
     final locale = Localizations.localeOf(context);
+    final canWrite = ref.watch(canWriteSportsProvider);
 
     final dateFormat = DateFormat('dd MMMM, HH:mm', locale.countryCode);
 
@@ -32,20 +34,23 @@ class MatchDetailWidget extends ConsumerWidget {
       children: [
         MatchDetailAppBar(
           onBackPressed: () => context.router.pop(),
-          onEditPressed: () {
-            context.router.push(
-              EditMatchRoute(
-                title: "Редактирование",
-                confirmButtonText: "Сохранить",
-                initialData: EditMatchScreenInitial(
-                  id: match.id,
-                  team1: match.teams[0].toListItem(),
-                  team2: match.teams[1].toListItem(),
-                  plannedStartTime: match.plannedStartTimestamp,
-                ),
-              ),
-            );
-          },
+          onEditPressed: canWrite
+              ? () {
+                  context.router.push(
+                    EditMatchRoute(
+                      title: "Редактирование",
+                      confirmButtonText: "Сохранить",
+                      initialData: EditMatchScreenInitial(
+                        id: match.id,
+                        team1: match.teams[0].toListItem(),
+                        team2: match.teams[1].toListItem(),
+                        plannedStartTime: match.plannedStartTimestamp,
+                        playersPerTeam: match.playersPerTeam,
+                      ),
+                    ),
+                  );
+                }
+              : null,
         ),
         const SizedBox(height: 20),
         _buildScoreboard(context),
@@ -79,16 +84,16 @@ class MatchDetailWidget extends ConsumerWidget {
             value: dateFormat.format(match.endedAt!),
           ),
         const Spacer(),
-        if (match.status == MatchStatus.planned)
+        if (canWrite && match.status == MatchStatus.planned)
           ConfirmEditButton(
             confirmButtonText: "Начать матч",
             onTap: () => _startMatch(ref),
           ),
 
-        if (match.status == MatchStatus.inProgress)
+        if (canWrite && match.status == MatchStatus.inProgress)
           ConfirmEditButton(
             confirmButtonText: "К игровому полю",
-            onTap: () => context.router.push(MatchRoute(match: match)),
+            onTap: () => context.router.push(MatchGameRoute(match: match)),
           ),
         const SizedBox(height: 12),
       ],

@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
+import 'package:ultistats/features/auth/presentation/providers/auth_controller.dart';
 import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_notifier.dart';
 import 'package:ultistats/router/app_router.gr.dart';
 
@@ -11,6 +12,7 @@ class NoMatchesWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final canWrite = ref.watch(canWriteSportsProvider);
     return Stack(
       children: [
         Center(
@@ -28,21 +30,23 @@ class NoMatchesWidget extends ConsumerWidget {
             ],
           ),
         ),
-        Positioned(
-          right: 19 - theme.screenPadding,
-          bottom: 24,
-          child: FloatingActionButton(
-            onPressed: () {
-              context.router.push(
-                EditMatchRoute(
-                  title: "Создать матч",
-                  confirmButtonText: "Создать",
-                ),
-              );
-            },
-            child: const Icon(Icons.add),
+        if (canWrite)
+          Positioned(
+            right: 19 - theme.screenPadding,
+            bottom: 24,
+            child: FloatingActionButton(
+              heroTag: null,
+              onPressed: () {
+                context.router.push(
+                  EditMatchRoute(
+                    title: "Создать матч",
+                    confirmButtonText: "Создать",
+                  ),
+                );
+              },
+              child: const Icon(Icons.add),
+            ),
           ),
-        ),
       ],
     );
   }

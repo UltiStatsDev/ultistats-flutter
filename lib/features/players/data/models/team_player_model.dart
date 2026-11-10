@@ -6,16 +6,16 @@ part 'team_player_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class TeamPlayerModel {
-  final String teamId;
   final String playerId;
+  final String teamId;
   final int? number;
   final String firstName;
   final String lastName;
   final String? photoUrl;
 
   const TeamPlayerModel({
-    required this.teamId,
     required this.playerId,
+    required this.teamId,
     this.number,
     required this.firstName,
     required this.lastName,

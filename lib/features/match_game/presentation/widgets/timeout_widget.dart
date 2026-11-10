@@ -1,0 +1,25 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ultistats/features/match_game/domain/match_game_state.dart';
+import 'package:ultistats/features/match_game/domain/match_action.dart';
+import 'package:ultistats/features/match_game/presentation/providers/match_game_notifier.dart';
+import 'package:ultistats/features/match_game/presentation/widgets/common/pause_widget.dart';
+
+class TimeoutWidget extends ConsumerWidget {
+  const TimeoutWidget({super.key, required this.state});
+
+  final GameStateTimeout state;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.read(matchGameProvider(state.match).notifier);
+
+    return PauseWidget(
+      startedAt: state.startedAt,
+      title: 'ТАЙМАУТ',
+      subtitle: state.team.name,
+      finishLabel: 'ЗАВЕРШИТЬ ТАЙМАУТ',
+      onFinish: () => notifier.dispatch(EndTimeoutAction(team: state.team)),
+    );
+  }
+}

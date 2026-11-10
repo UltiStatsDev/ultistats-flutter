@@ -15,6 +15,7 @@ class DashboardScreen extends ConsumerWidget {
     MatchesTabRoute(),
     TeamsTabRoute(),
     PlayersTabRoute(),
+    AccountRoute(),
   ];
 
   @override

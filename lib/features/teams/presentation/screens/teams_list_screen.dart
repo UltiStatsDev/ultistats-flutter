@@ -33,8 +33,11 @@ class TeamsListScreen extends ConsumerWidget {
               switchInCurve: Curves.easeIn,
               switchOutCurve: Curves.easeOut,
               child: switch (state) {
-                TeamsListLoading() => const LoadingTeamsListWidget(key: ValueKey(1)),
-                TeamsListError(:final exception, :final stackTrace) => ErrorScreen(
+                TeamsListLoading() => const LoadingTeamsListWidget(
+                  key: ValueKey(1),
+                ),
+                TeamsListError(:final exception, :final stackTrace) =>
+                  ErrorScreen(
                     key: const ValueKey(2),
                     exception: exception,
                     stackTrace: stackTrace,
@@ -43,8 +46,10 @@ class TeamsListScreen extends ConsumerWidget {
                   ),
                 TeamsListLoaded(:final teams) when teams.isEmpty =>
                   const NoTeamsWidget(key: ValueKey(3)),
-                TeamsListLoaded() =>
-                  TeamsListWidget(key: const ValueKey(4), state: state),
+                TeamsListLoaded() => TeamsListWidget(
+                  key: const ValueKey(4),
+                  state: state,
+                ),
               },
             ),
           ),

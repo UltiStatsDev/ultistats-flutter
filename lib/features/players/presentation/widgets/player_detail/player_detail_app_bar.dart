@@ -12,7 +12,8 @@ class PlayerDetailAppBar extends StatelessWidget {
       children: [
         IconButton(onPressed: onBackPressed, icon: Icon(Icons.arrow_back)),
         Spacer(),
-        IconButton(onPressed: onEditPressed, icon: Icon(Icons.edit)),
+        if (onEditPressed != null)
+          IconButton(onPressed: onEditPressed, icon: Icon(Icons.edit)),
       ],
     );
   }

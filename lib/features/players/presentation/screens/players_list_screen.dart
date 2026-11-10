@@ -33,8 +33,8 @@ class PlayersListScreen extends ConsumerWidget {
               reverseDuration: const Duration(milliseconds: 200),
               child: switch (state) {
                 PlayersListLoading() => const LoadingPlayersListWidget(
-                    key: ValueKey(1),
-                  ),
+                  key: ValueKey(1),
+                ),
                 PlayersListError(:final exception, :final stackTrace) =>
                   ErrorScreen(
                     key: const ValueKey(2),
@@ -46,9 +46,9 @@ class PlayersListScreen extends ConsumerWidget {
                 PlayersListLoaded(:final players) when players.isEmpty =>
                   const NoPlayersWidget(key: ValueKey(3)),
                 PlayersListLoaded() => PlayersListWidget(
-                    key: const ValueKey(4),
-                    state: state,
-                  ),
+                  key: const ValueKey(4),
+                  state: state,
+                ),
               },
             ),
           ),

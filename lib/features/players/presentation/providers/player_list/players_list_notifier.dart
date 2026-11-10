@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/players/domain/params/player_filter_params.dart';
 import 'package:ultistats/features/players/presentation/providers/player_list/players_list_state.dart';
 
@@ -19,12 +20,23 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
 
   Future<PlayersListLoaded> _fetchPage(int page) async {
     final repository = ref.read(playersRepositoryProvider);
+    log(
+      "Loading players page $page (query: \"$_searchQuery\")",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
     final result = await repository.getList(
       PlayerFilterParams(
         page: page,
         size: _pageSize,
         name: _searchQuery.isEmpty ? null : _searchQuery,
       ),
+    );
+
+    log(
+      "Loaded ${result.content.length} players "
+      "(page ${result.currentPage + 1}/${result.totalPages})",
+      name: runtimeType.toString(),
     );
 
     return PlayersListLoaded(
@@ -40,6 +52,12 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
     try {
       state = await _fetchPage(0);
     } catch (e, st) {
+      log(
+        "Error while loadInitial",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
       state = PlayersListError(e, st);
     }
   }
@@ -47,6 +65,11 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
   void onSearchChanged(String query) {
     if (_searchQuery == query) return;
     _searchQuery = query;
+    log(
+      "Search query changed to \"$query\"",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
 
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
@@ -66,6 +89,12 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
       final newState = await _fetchPage(0);
       state = newState;
     } catch (e, st) {
+      log(
+        "Error while _performSearch",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
       state = PlayersListError(e, st);
     }
   }
@@ -81,6 +110,12 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
     try {
       state = await _fetchPage(0);
     } catch (e, st) {
+      log(
+        "Error while refresh",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
       if (currentState is PlayersListLoaded) {
         state = currentState.copyWith(isRefreshing: false);
       } else {
@@ -112,7 +147,13 @@ class PlayersListNotifier extends Notifier<PlayersListState> {
         totalPages: nextPage.totalPages,
         hasReachedEnd: nextPage.hasReachedEnd,
       );
-    } catch (e) {
+    } catch (e, st) {
+      log(
+        "Error while _loadMore",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
       state = currentState.copyWith(isLoadingMore: false);
     }
   }

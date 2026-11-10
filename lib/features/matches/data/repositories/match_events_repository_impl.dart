@@ -23,6 +23,12 @@ class MatchEventsRepositoryImpl implements MatchEventsRepository {
   }
 
   @override
+  Future<Event> undoLastEvent(String matchId) async {
+    final model = await _api.undoLastEvent(matchId);
+    return model.toEntity();
+  }
+
+  @override
   Future<void> updateEvent(UpdateEventParams params) async {
     final request = UpdateEventRequest.fromParams(params);
     await _api.updateEvent(params.matchId, params.eventId, request);

@@ -1,7 +1,7 @@
 import 'dart:async';
-import 'dart:developer';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/matches/domain/params/match_filter_params.dart';
 import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_state.dart';
 
@@ -20,12 +20,24 @@ class MatchesListNotifier extends Notifier<MatchesListState> {
 
   Future<MatchesListLoaded> _fetchPage(int page) async {
     final repository = ref.read(matchesRepositoryProvider);
+    log(
+      "Loading matches page $page",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
     final result = await repository.getList(
       MatchFilterParams(
         page: page,
         size: _pageSize,
+
         /// TODO В будущем здесь можно добавить фильтр по названию команд
       ),
+    );
+
+    log(
+      "Loaded ${result.content.length} matches "
+      "(page ${result.currentPage + 1}/${result.totalPages})",
+      name: runtimeType.toString(),
     );
 
     return MatchesListLoaded(
@@ -54,6 +66,11 @@ class MatchesListNotifier extends Notifier<MatchesListState> {
   void onSearchChanged(String query) {
     if (_searchQuery == query) return;
     _searchQuery = query;
+    log(
+      "Search query changed to \"$query\"",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
 
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {

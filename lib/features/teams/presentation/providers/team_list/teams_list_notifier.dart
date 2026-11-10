@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/di.dart';
+import 'package:ultistats/core/logging/app_logger.dart';
 import 'package:ultistats/features/teams/domain/params/team_filter_params.dart';
 import 'package:ultistats/features/teams/presentation/providers/team_list/teams_list_state.dart';
 
 class TeamsListNotifier extends Notifier<TeamsListState> {
   static const int _pageSize = 20;
   static const double _scrollThreshold = 200.0;
-  
+
   String _searchQuery = '';
   Timer? _debounceTimer;
 
@@ -19,12 +20,23 @@ class TeamsListNotifier extends Notifier<TeamsListState> {
 
   Future<TeamsListLoaded> _fetchPage(int page) async {
     final repository = ref.read(teamsRepositoryProvider);
+    log(
+      "Loading teams page $page (query: \"$_searchQuery\")",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
     final result = await repository.getList(
       TeamFilterParams(
-        page: page, 
+        page: page,
         size: _pageSize,
         name: _searchQuery.isEmpty ? null : _searchQuery,
       ),
+    );
+
+    log(
+      "Loaded ${result.content.length} teams "
+      "(page ${result.currentPage + 1}/${result.totalPages})",
+      name: runtimeType.toString(),
     );
 
     return TeamsListLoaded(
@@ -40,6 +52,12 @@ class TeamsListNotifier extends Notifier<TeamsListState> {
     try {
       state = await _fetchPage(0);
     } catch (e, st) {
+      log(
+        "Error while loadInitial",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
       state = TeamsListError(e, st);
     }
   }
@@ -47,7 +65,12 @@ class TeamsListNotifier extends Notifier<TeamsListState> {
   void onSearchChanged(String query) {
     if (_searchQuery == query) return;
     _searchQuery = query;
-    
+    log(
+      "Search query changed to \"$query\"",
+      name: runtimeType.toString(),
+      level: AppLogLevel.debug,
+    );
+
     _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 300), () {
       _performSearch();
@@ -67,6 +90,12 @@ class TeamsListNotifier extends Notifier<TeamsListState> {
       final newState = await _fetchPage(0);
       state = newState;
     } catch (e, st) {
+      log(
+        "Error while _performSearch",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
       state = TeamsListError(e, st);
     }
   }
@@ -82,6 +111,12 @@ class TeamsListNotifier extends Notifier<TeamsListState> {
     try {
       state = await _fetchPage(0);
     } catch (e, st) {
+      log(
+        "Error while refresh",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
       if (currentState is TeamsListLoaded) {
         state = currentState.copyWith(isRefreshing: false);
       } else {
@@ -113,7 +148,13 @@ class TeamsListNotifier extends Notifier<TeamsListState> {
         totalPages: nextPage.totalPages,
         hasReachedEnd: nextPage.hasReachedEnd,
       );
-    } catch (e) {
+    } catch (e, st) {
+      log(
+        "Error while _loadMore",
+        error: e,
+        stackTrace: st,
+        name: runtimeType.toString(),
+      );
       state = currentState.copyWith(isLoadingMore: false);
     }
   }

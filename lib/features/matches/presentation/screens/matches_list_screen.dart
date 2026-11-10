@@ -33,8 +33,11 @@ class MatchesListScreen extends ConsumerWidget {
               switchInCurve: Curves.easeIn,
               switchOutCurve: Curves.easeOut,
               child: switch (state) {
-                MatchesListLoading() => const LoadingMatchesListWidget(key: ValueKey(1)),
-                MatchesListError(:final exception, :final stackTrace) => ErrorScreen(
+                MatchesListLoading() => const LoadingMatchesListWidget(
+                  key: ValueKey(1),
+                ),
+                MatchesListError(:final exception, :final stackTrace) =>
+                  ErrorScreen(
                     key: const ValueKey(2),
                     exception: exception,
                     stackTrace: stackTrace,
@@ -43,8 +46,10 @@ class MatchesListScreen extends ConsumerWidget {
                   ),
                 MatchesListLoaded(:final matches) when matches.isEmpty =>
                   const NoMatchesWidget(key: ValueKey(3)),
-                MatchesListLoaded() =>
-                  MatchesListWidget(key: const ValueKey(4), state: state),
+                MatchesListLoaded() => MatchesListWidget(
+                  key: const ValueKey(4),
+                  state: state,
+                ),
               },
             ),
           ),
