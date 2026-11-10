@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:ultistats/core/di.dart';
 import 'package:ultistats/core/logging/app_logger.dart';
@@ -121,3 +122,10 @@ class AuthController extends _$AuthController {
     }
   }
 }
+
+/// Может ли текущий пользователь создавать, изменять и удалять спортивные
+/// данные. Пока сессия восстанавливается, считаем, что нельзя: кнопки
+/// появятся, когда сервер подтвердит право `SPORTS_WRITE`.
+final canWriteSportsProvider = Provider<bool>((ref) {
+  return ref.watch(authControllerProvider).value?.canWriteSports ?? false;
+});

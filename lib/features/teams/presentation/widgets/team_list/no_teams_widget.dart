@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
+import 'package:ultistats/features/auth/presentation/providers/auth_controller.dart';
 import 'package:ultistats/features/teams/presentation/providers/team_list/teams_list_notifier.dart';
 import 'package:ultistats/features/teams/presentation/screens/edit_team_screen.dart';
 import 'package:ultistats/router/app_router.gr.dart';
@@ -12,6 +13,7 @@ class NoTeamsWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final canWrite = ref.watch(canWriteSportsProvider);
     return Stack(
       children: [
         Center(
@@ -29,23 +31,24 @@ class NoTeamsWidget extends ConsumerWidget {
             ],
           ),
         ),
-        Positioned(
-          right: 19 - theme.screenPadding,
-          bottom: 24,
-          child: FloatingActionButton(
-            heroTag: null,
-            onPressed: () {
-              context.router.push(
-                EditTeamRoute(
-                  title: "Создание команды",
-                  confirmButtonText: "Создать команду",
-                  initialData: EditTeamScreenInitial(),
-                ),
-              );
-            },
-            child: const Icon(Icons.add),
+        if (canWrite)
+          Positioned(
+            right: 19 - theme.screenPadding,
+            bottom: 24,
+            child: FloatingActionButton(
+              heroTag: null,
+              onPressed: () {
+                context.router.push(
+                  EditTeamRoute(
+                    title: "Создание команды",
+                    confirmButtonText: "Создать команду",
+                    initialData: EditTeamScreenInitial(),
+                  ),
+                );
+              },
+              child: const Icon(Icons.add),
+            ),
           ),
-        ),
       ],
     );
   }

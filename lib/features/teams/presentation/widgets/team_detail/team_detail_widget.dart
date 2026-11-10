@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/photo_widget.dart';
+import 'package:ultistats/features/auth/presentation/providers/auth_controller.dart';
 import 'package:ultistats/features/teams/domain/entities/team_detail.dart';
 import 'package:ultistats/features/teams/presentation/providers/team_detail/team_detail_notifier.dart';
 import 'package:ultistats/features/teams/presentation/providers/team_detail/team_detail_state.dart';
@@ -57,6 +58,7 @@ class TeamDetailWidget extends ConsumerWidget {
     final theme = Theme.of(context);
 
     final state = ref.watch(teamDetailProvider(team.id));
+    final canWrite = ref.watch(canWriteSportsProvider);
     final processingIds = state is TeamDetailLoaded
         ? state.processingPlayerIds
         : const <String>{};
@@ -65,20 +67,22 @@ class TeamDetailWidget extends ConsumerWidget {
       children: [
         TeamDetailAppBar(
           onBackPressed: () => context.router.pop(),
-          onEditPressed: () {
-            context.router.push(
-              EditTeamRoute(
-                title: "Редактирование",
-                confirmButtonText: "Сохранить",
-                initialData: EditTeamScreenInitial(
-                  name: team.name,
-                  id: team.id,
-                  city: team.city,
-                  photoUrl: team.photoUrl,
-                ),
-              ),
-            );
-          },
+          onEditPressed: canWrite
+              ? () {
+                  context.router.push(
+                    EditTeamRoute(
+                      title: "Редактирование",
+                      confirmButtonText: "Сохранить",
+                      initialData: EditTeamScreenInitial(
+                        name: team.name,
+                        id: team.id,
+                        city: team.city,
+                        photoUrl: team.photoUrl,
+                      ),
+                    ),
+                  );
+                }
+              : null,
         ),
         Expanded(
           child: SingleChildScrollView(
@@ -135,39 +139,45 @@ class TeamDetailWidget extends ConsumerWidget {
                           ),
                         );
                       },
-                      onDelete: () {
-                        _deletePlayer(ref: ref, id: player.playerId);
-                      },
-                      onEdit: () {
-                        _updatePlayer(
-                          context: context,
-                          ref: ref,
-                          firstName: player.firstName,
-                          lastName: player.lastName,
-                          playerId: player.playerId,
-                        );
-                      },
+                      onDelete: canWrite
+                          ? () {
+                              _deletePlayer(ref: ref, id: player.playerId);
+                            }
+                          : null,
+                      onEdit: canWrite
+                          ? () {
+                              _updatePlayer(
+                                context: context,
+                                ref: ref,
+                                firstName: player.firstName,
+                                lastName: player.lastName,
+                                playerId: player.playerId,
+                              );
+                            }
+                          : null,
                     );
                   },
                 ),
                 const SizedBox(height: 12),
-                AddPlayerToTeamWidget(
-                  onPlayerSelected: (player) {
-                    _updatePlayer(
-                      context: context,
-                      ref: ref,
-                      firstName: player.firstName,
-                      lastName: player.lastName,
-                      playerId: player.id,
-                    );
-                  },
-                  isProcessing: processingIds.any(
-                    (procId) => !team.players.any((p) => p.playerId == procId),
+                if (canWrite)
+                  AddPlayerToTeamWidget(
+                    onPlayerSelected: (player) {
+                      _updatePlayer(
+                        context: context,
+                        ref: ref,
+                        firstName: player.firstName,
+                        lastName: player.lastName,
+                        playerId: player.id,
+                      );
+                    },
+                    isProcessing: processingIds.any(
+                      (procId) =>
+                          !team.players.any((p) => p.playerId == procId),
+                    ),
+                    existingPlayerIds: team.players
+                        .map((p) => p.playerId)
+                        .toSet(),
                   ),
-                  existingPlayerIds: team.players
-                      .map((p) => p.playerId)
-                      .toSet(),
-                ),
                 const SizedBox(height: 16),
               ],
             ),

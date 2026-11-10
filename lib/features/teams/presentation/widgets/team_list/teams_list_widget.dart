@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/themes/app_colors.dart';
 import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/app_refreshing_indicator.dart';
+import 'package:ultistats/features/auth/presentation/providers/auth_controller.dart';
 import 'package:ultistats/features/teams/presentation/providers/team_list/teams_list_notifier.dart';
 import 'package:ultistats/features/teams/presentation/providers/team_list/teams_list_state.dart';
 import 'package:ultistats/features/teams/presentation/screens/edit_team_screen.dart';
@@ -47,6 +48,7 @@ class _TeamsListWidgetState extends ConsumerState<TeamsListWidget> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final canWrite = ref.watch(canWriteSportsProvider);
     return Stack(
       children: [
         AppRefreshingIndicator(
@@ -75,23 +77,24 @@ class _TeamsListWidgetState extends ConsumerState<TeamsListWidget> {
             separatorBuilder: (context, index) => const SizedBox(height: 12),
           ),
         ),
-        Positioned(
-          right: 19 - theme.screenPadding,
-          bottom: 24,
-          child: FloatingActionButton(
-            heroTag: null,
-            onPressed: () {
-              context.router.push(
-                EditTeamRoute(
-                  title: "Создание команды",
-                  confirmButtonText: "Создать команду",
-                  initialData: const EditTeamScreenInitial(),
-                ),
-              );
-            },
-            child: const Icon(Icons.add),
+        if (canWrite)
+          Positioned(
+            right: 19 - theme.screenPadding,
+            bottom: 24,
+            child: FloatingActionButton(
+              heroTag: null,
+              onPressed: () {
+                context.router.push(
+                  EditTeamRoute(
+                    title: "Создание команды",
+                    confirmButtonText: "Создать команду",
+                    initialData: const EditTeamScreenInitial(),
+                  ),
+                );
+              },
+              child: const Icon(Icons.add),
+            ),
           ),
-        ),
         Positioned(
           top: 0,
           left: 0,

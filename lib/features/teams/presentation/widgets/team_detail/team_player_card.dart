@@ -8,15 +8,15 @@ class TeamPlayerCard extends StatelessWidget {
     super.key,
     required this.player,
     required this.onPressed,
-    required this.onDelete,
-    required this.onEdit,
+    this.onDelete,
+    this.onEdit,
     this.isProcessing = false,
   });
 
   final TeamPlayer player;
   final VoidCallback onPressed;
-  final VoidCallback onDelete;
-  final VoidCallback onEdit;
+  final VoidCallback? onDelete;
+  final VoidCallback? onEdit;
   final bool isProcessing;
 
   @override
@@ -41,7 +41,7 @@ class TeamPlayerCard extends StatelessWidget {
                 child: Text(
                   "#${player.number?.toString() ?? "---"}",
                   style: theme.textTheme.labelMedium?.copyWith(
-                      fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
@@ -71,8 +71,8 @@ class TeamPlayerCard extends StatelessWidget {
                   child: CircularProgressIndicator(color: theme.primaryColor),
                 ),
               )
-            else
-              ...[
+            else ...[
+              if (onEdit != null)
                 IconButton(
                   onPressed: onEdit,
                   icon: Icon(
@@ -81,7 +81,8 @@ class TeamPlayerCard extends StatelessWidget {
                   ),
                   iconSize: 24,
                 ),
-                SizedBox(width: 8),
+              if (onEdit != null && onDelete != null) const SizedBox(width: 8),
+              if (onDelete != null)
                 IconButton(
                   onPressed: onDelete,
                   icon: Icon(
@@ -90,8 +91,7 @@ class TeamPlayerCard extends StatelessWidget {
                   ),
                   iconSize: 24,
                 ),
-              ]
-
+            ],
           ],
         ),
       ),
