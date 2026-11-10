@@ -51,3 +51,5 @@ app.*.map.json
 
 # Enviroment
 env/*.json
+# Конфигурация prod-сборки без секретов: используется CI при релизе.
+!env/env.prod.json
