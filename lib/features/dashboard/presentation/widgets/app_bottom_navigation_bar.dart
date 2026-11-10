@@ -59,6 +59,12 @@ class AppBottomNavigationBar extends StatelessWidget {
                 icon: Icons.person_outlined,
                 label: "Игроки",
               ),
+              _NavigationBarDestination(
+                activeIndex: tabsRouter.activeIndex,
+                index: 3,
+                icon: Icons.account_circle_outlined,
+                label: "Аккаунт",
+              ),
             ],
           ),
         ),

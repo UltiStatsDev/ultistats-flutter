@@ -70,6 +70,8 @@ class AppRouter extends RootStackRouter {
             ),
           ],
         ),
+
+        CustomRoute(page: AccountRoute.page, path: "account"),
       ],
     ),
     CustomRoute(

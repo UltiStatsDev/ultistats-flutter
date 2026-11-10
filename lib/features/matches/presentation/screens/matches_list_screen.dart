@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/widgets/error_screen.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/core/widgets/search_filter_bar.dart';
-import 'package:ultistats/features/auth/presentation/widgets/account_button.dart';
 import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_notifier.dart';
 import 'package:ultistats/features/matches/presentation/providers/match_list/matches_list_state.dart';
 import 'package:ultistats/features/matches/presentation/widgets/match_list/loading_matches_list_widget.dart';
@@ -25,7 +24,6 @@ class MatchesListScreen extends ConsumerWidget {
           SearchFilterBar(
             onChanged: (value) =>
                 ref.read(matchesListProvider.notifier).onSearchChanged(value),
-            trailing: const AccountButton(),
           ),
           const SizedBox(height: 5),
           Expanded(
@@ -35,8 +33,11 @@ class MatchesListScreen extends ConsumerWidget {
               switchInCurve: Curves.easeIn,
               switchOutCurve: Curves.easeOut,
               child: switch (state) {
-                MatchesListLoading() => const LoadingMatchesListWidget(key: ValueKey(1)),
-                MatchesListError(:final exception, :final stackTrace) => ErrorScreen(
+                MatchesListLoading() => const LoadingMatchesListWidget(
+                  key: ValueKey(1),
+                ),
+                MatchesListError(:final exception, :final stackTrace) =>
+                  ErrorScreen(
                     key: const ValueKey(2),
                     exception: exception,
                     stackTrace: stackTrace,
@@ -45,8 +46,10 @@ class MatchesListScreen extends ConsumerWidget {
                   ),
                 MatchesListLoaded(:final matches) when matches.isEmpty =>
                   const NoMatchesWidget(key: ValueKey(3)),
-                MatchesListLoaded() =>
-                  MatchesListWidget(key: const ValueKey(4), state: state),
+                MatchesListLoaded() => MatchesListWidget(
+                  key: const ValueKey(4),
+                  state: state,
+                ),
               },
             ),
           ),
