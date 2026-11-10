@@ -37,9 +37,9 @@ jobs:
         run: flutter pub run build_runner build --delete-conflicting-outputs
         
       - name: Create env file
-        run: | 
+        run: |
           mkdir -p env
-          echo '${{ secrets.ENV_JSON_PROD }}' > env/env.json
+          cp env/env.prod.json env/env.json
 
       - name: Build APK
         run: flutter build apk --release --flavor prod --dart-define-from-file=env/env.json
