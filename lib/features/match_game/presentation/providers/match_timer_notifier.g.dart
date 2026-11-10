@@ -58,7 +58,7 @@ final class MatchTimerProvider
   }
 }
 
-String _$matchTimerHash() => r'8995754ce16a9e556073c23ab337d56c912c0470';
+String _$matchTimerHash() => r'87b64fc7da669288f38fb4efc39745bb83b78756';
 
 final class MatchTimerFamily extends $Family
     with

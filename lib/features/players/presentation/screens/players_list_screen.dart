@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ultistats/core/widgets/error_screen.dart';
 import 'package:ultistats/core/widgets/screen_wrapper.dart';
 import 'package:ultistats/core/widgets/search_filter_bar.dart';
+import 'package:ultistats/features/auth/presentation/widgets/account_button.dart';
 import 'package:ultistats/features/players/presentation/providers/player_list/players_list_state.dart';
 import 'package:ultistats/features/players/presentation/widgets/players_list/loading_players_list_widget.dart';
 import 'package:ultistats/features/players/presentation/widgets/players_list/no_players_widget.dart';
@@ -25,6 +26,7 @@ class PlayersListScreen extends ConsumerWidget {
           SearchFilterBar(
             onChanged: (value) =>
                 ref.read(playersListProvider.notifier).onSearchChanged(value),
+            trailing: const AccountButton(),
           ),
           const SizedBox(height: 5),
           Expanded(

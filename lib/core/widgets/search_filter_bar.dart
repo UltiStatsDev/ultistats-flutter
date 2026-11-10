@@ -3,12 +3,10 @@ import 'package:ultistats/core/themes/app_themes.dart';
 import 'package:ultistats/core/widgets/app_ink_well.dart';
 
 class SearchFilterBar extends StatelessWidget {
-  const SearchFilterBar({
-    super.key,
-    this.onChanged,
-  });
+  const SearchFilterBar({super.key, this.onChanged, this.trailing});
 
   final ValueChanged<String>? onChanged;
+  final Widget? trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +28,7 @@ class SearchFilterBar extends StatelessWidget {
             ),
           ),
         ),
-        // SizedBox(width: 8),
-        // _SearchButton(icon: Icons.search, onPressed: () {}),
-        // SizedBox(width: 8),
-        // _SearchButton(icon: Icons.filter_alt_outlined, onPressed: () {}),
+        if (trailing != null) ...[const SizedBox(width: 8), trailing!],
       ],
     );
   }

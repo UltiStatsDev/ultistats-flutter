@@ -58,7 +58,7 @@ final class MatchGameNotifierProvider
   }
 }
 
-String _$matchGameNotifierHash() => r'106e5aa60fb94991e7015d19c6033b06386ea41f';
+String _$matchGameNotifierHash() => r'e9f6d70d2b237d9aef0b629def0d31155b3af207';
 
 final class MatchGameNotifierFamily extends $Family
     with

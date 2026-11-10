@@ -78,5 +78,11 @@ class AppRouter extends RootStackRouter {
       duration: Duration(seconds: 0),
       reverseDuration: Duration(seconds: 0),
     ),
+    CustomRoute(
+      page: LoginRoute.page,
+      path: "/login",
+      duration: Duration(milliseconds: 250),
+      reverseDuration: Duration(milliseconds: 200),
+    ),
   ];
 }

@@ -1,7 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:ultistats/core/config/app_storage.dart';
 import 'package:ultistats/core/config/config.dart';
 import 'package:ultistats/core/logging/app_logger.dart';
+import 'package:ultistats/core/network/cookie_store.dart';
+import 'package:ultistats/core/network/cookie_store_factory.dart';
+
+import 'package:ultistats/features/auth/data/auth_credentials.dart';
+import 'package:ultistats/features/auth/data/auth_interceptor.dart';
+import 'package:ultistats/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:ultistats/features/auth/data/sources/auth_api.dart';
+import 'package:ultistats/features/auth/domain/repositories/auth_repository.dart';
 
 import 'package:ultistats/features/players/data/sources/players_api.dart';
 import 'package:ultistats/features/teams/data/sources/teams_api.dart';
@@ -24,7 +33,34 @@ import 'package:ultistats/features/match_game/data/match_event_queue.dart';
 
 const _requestStartKey = 'requestStartedAt';
 
+// =============================================================================
+// Аутентификация
+// =============================================================================
+
+final authCredentialsProvider = Provider<AuthCredentials>((ref) {
+  return AuthCredentials();
+});
+
+final cookieStoreProvider = Provider<CookieStore>((ref) {
+  return createCookieStore(AppStorage.supportDirectory);
+});
+
+final authApiProvider = Provider<AuthApi>((ref) {
+  final dio = ref.watch(dioProvider);
+  return AuthApi(dio);
+});
+
+final authRepositoryProvider = Provider<AuthRepository>((ref) {
+  return AuthRepositoryImpl(
+    api: ref.watch(authApiProvider),
+    credentials: ref.watch(authCredentialsProvider),
+    cookies: ref.watch(cookieStoreProvider),
+  );
+});
+
 final dioProvider = Provider<Dio>((ref) {
+  final credentials = ref.watch(authCredentialsProvider);
+  final cookieStore = ref.watch(cookieStoreProvider);
   final dio = Dio(
     BaseOptions(
       baseUrl: AppConfig.baseUrl,
@@ -36,6 +72,9 @@ final dioProvider = Provider<Dio>((ref) {
       },
     ),
   );
+
+  cookieStore.attach(dio);
+  dio.interceptors.add(AuthInterceptor(dio: dio, credentials: credentials));
 
   dio.interceptors.add(
     InterceptorsWrapper(
