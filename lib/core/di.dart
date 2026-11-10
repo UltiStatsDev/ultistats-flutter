@@ -70,6 +70,9 @@ final dioProvider = Provider<Dio>((ref) {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
+      // На web без этого браузер не отправит и не сохранит cookie сессии
+      // в кросс-доменных запросах. На нативных платформах флаг игнорируется.
+      extra: const {'withCredentials': true},
     ),
   );
 
