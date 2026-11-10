@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - '.github/**'
 
 jobs:
   build:
@@ -48,6 +50,7 @@ jobs:
         with: 
           files: build/app/outputs/flutter-apk/ultistats_v${{ steps.pubspec_version.outputs.VERSION }}.apk
           tag_name: v${{ steps.pubspec_version.outputs.VERSION }}
+          target_commitish: ${{ github.sha }}
           name: Release v${{ steps.pubspec_version.outputs.VERSION }}
           body: |
             Version: ${{ steps.pubspec_version.outputs.VERSION }}
